@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
 
 // Screens (placeholder – actual paths added later)
 import '../../features/auth/presentation/login_screen.dart';
