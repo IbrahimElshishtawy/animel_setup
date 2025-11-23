@@ -98,7 +98,7 @@ class AppRouter {
       ),
       GoRoute(
         path: "/profile/pets/add-step1",
-        builder: (context, state) => const AddPetStep1Screen(),
+        builder: (context, state) => const AddPetStep2Screen(),
       ),
       GoRoute(
         path: "/animal-details",
