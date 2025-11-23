@@ -1,4 +1,6 @@
-﻿import 'package:flutter/material.dart';
+﻿// ignore_for_file: deprecated_member_use
+
+import 'package:flutter/material.dart';
 
 class CategoryChip extends StatelessWidget {
   final String label;
@@ -28,9 +30,7 @@ class CategoryChip extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 14,
-            color: selected
-                ? Theme.of(context).primaryColor
-                : Colors.black87,
+            color: selected ? Theme.of(context).primaryColor : Colors.black87,
             fontWeight: FontWeight.w600,
           ),
         ),
