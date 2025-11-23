@@ -41,7 +41,10 @@ class WelcomeAuthScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () => context.go("/login"),
-                  child: const Text("Login"),
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -56,7 +59,10 @@ class WelcomeAuthScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () => context.go("/register"),
-                  child: const Text("Sign up"),
+                  child: const Text(
+                    "Sign up",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
