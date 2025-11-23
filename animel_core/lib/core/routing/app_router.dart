@@ -1,4 +1,5 @@
 import 'package:animel_core/features/auth/presentation/welcome_auth_screen.dart';
+import 'package:animel_core/features/home/presentation/animal_details_screen.dart';
 import 'package:go_router/go_router.dart';
 
 // ONBOARDING
@@ -98,6 +99,25 @@ class AppRouter {
       GoRoute(
         path: "/profile/pets/add-step1",
         builder: (context, state) => const AddPetStep1Screen(),
+      ),
+      GoRoute(
+        path: "/animal-details",
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>;
+          return AnimalDetailsScreen(
+            name: data['name'] as String,
+            status: data['status'] as String,
+            category: data['category'] as String,
+            color: data['color'] as String,
+            age: data['age'] as String,
+            ownerName: data['ownerName'] as String,
+            ownerEmail: data['ownerEmail'] as String,
+            description: data['description'] as String,
+            location: data['location'] as String,
+            imageUrl: data['imageUrl'] as String,
+            reward: data['reward'] as double?,
+          );
+        },
       ),
     ],
   );
