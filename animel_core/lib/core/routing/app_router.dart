@@ -1,23 +1,24 @@
+import 'package:animel_core/features/auth/presentation/welcome_auth_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-// Auth
+// ONBOARDING
+import '../../features/splash/presentation/splash_screen.dart';
+import '../../features/onboarding/presentation/choose_language_screen.dart';
+import '../../features/onboarding/presentation/permissions_info_screen.dart';
+
+// AUTH
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/presentation/verify_email_screen.dart';
 
-// Home & Search
+// HOME & OTHERS (زي ما عملنا قبل كده)
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/search/presentation/search_screen.dart';
-
-// Report
 import '../../features/report/presentation/report_step1_screen.dart';
 import '../../features/report/presentation/report_step2_screen.dart';
-
-// Adopt & Donation
 import '../../features/adoption/presentation/adopt_list_screen.dart';
 import '../../features/donation/presentation/donation_screen.dart';
-
-// Profile
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/profile/presentation/my_account_screen.dart';
 import '../../features/profile/presentation/edit_account_screen.dart';
@@ -26,8 +27,27 @@ import '../../features/profile/presentation/add_pet_step1_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: "/login",
+    initialLocation: "/splash",
     routes: [
+      // ONBOARDING
+      GoRoute(
+        path: "/splash",
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: "/choose-language",
+        builder: (context, state) => const ChooseLanguageScreen(),
+      ),
+      GoRoute(
+        path: "/permissions-info",
+        builder: (context, state) => const PermissionsInfoScreen(),
+      ),
+      GoRoute(
+        path: "/welcome-auth",
+        builder: (context, state) => const WelcomeAuthScreen(),
+      ),
+
+      // AUTH
       GoRoute(path: "/login", builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: "/register",
@@ -37,6 +57,8 @@ class AppRouter {
         path: "/verify-email",
         builder: (context, state) => const VerifyEmailScreen(),
       ),
+
+      // MAIN
       GoRoute(path: "/home", builder: (context, state) => const HomeScreen()),
       GoRoute(
         path: "/search",
