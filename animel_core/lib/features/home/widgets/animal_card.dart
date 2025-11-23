@@ -7,8 +7,7 @@ class AnimalCard extends StatelessWidget {
   final AnimalDemo data;
   const AnimalCard({super.key, required this.data});
 
-  bool get _isAlreadyHome =>
-      (data.status ?? '').toLowerCase() == 'already home';
+  bool get _isAlreadyHome => (data.status).toLowerCase() == 'already home';
 
   @override
   Widget build(BuildContext context) {
