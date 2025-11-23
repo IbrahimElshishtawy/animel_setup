@@ -1,45 +1,93 @@
-// ignore_for_file: unnecessary_underscores
-
+import 'package:animel_core/features/profile/widgets/profile_header_card.dart';
+import 'package:animel_core/features/profile/widgets/profile_menu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../core/widgets/bottom_nav_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      {"title": "My account", "route": "/profile/account"},
-      {"title": "My pets", "route": "/profile/pets"},
-      {"title": "Language", "route": null},
-      {"title": "Privacy policy", "route": null},
-      {"title": "Contact", "route": null},
-    ];
+    const lightPurple = Color(0xFFF6ECF3);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
-      body: ListView.separated(
-        itemCount: items.length + 1,
-        separatorBuilder: (_, __) => const Divider(height: 1),
-        itemBuilder: (context, index) {
-          if (index == items.length) {
-            return ListTile(
-              title: const Text("Logout", style: TextStyle(color: Colors.red)),
-              onTap: () {
-                context.go("/login");
-              },
-            );
-          }
-
-          final item = items[index];
-          return ListTile(
-            title: Text(item["title"]!),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: item["route"] != null
-                ? () => context.go(item["route"]!)
-                : null,
-          );
-        },
+      backgroundColor: lightPurple,
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: Container(
+              color: Colors.white,
+              child: ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
+                children: [
+                  const SizedBox(height: 8),
+                  const Text(
+                    'My profile',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF4B1A45),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ProfileHeaderCard(
+                    name: 'User',
+                    email: 'name@example.com',
+                    onTap: () => context.go('/profile/account'),
+                  ),
+                  const SizedBox(height: 24),
+                  ProfileMenuItem(
+                    icon: Icons.pets_outlined,
+                    label: 'My pets',
+                    onTap: () => context.go('/profile/pets'),
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.notifications_none,
+                    label: 'Notifications',
+                    onTap: () {},
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.language_outlined,
+                    label: 'Language',
+                    subtitle: '(EN)',
+                    onTap: () {},
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.lock_outline,
+                    label: 'Privacy policy',
+                    onTap: () {},
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.info_outline,
+                    label: 'Contact',
+                    onTap: () {},
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.delete_outline,
+                    label: 'Delete account',
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 12),
+                  ProfileMenuItem(
+                    icon: Icons.logout,
+                    label: 'Logout',
+                    isDestructive: true,
+                    onTap: () {
+                      // تسجيل خروج
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
