@@ -1,5 +1,6 @@
 import 'package:animel_core/features/home/data/animal_demo.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/already_home_dialog.dart';
 
 class AnimalCard extends StatelessWidget {
@@ -18,12 +19,33 @@ class AnimalCard extends StatelessWidget {
             context: context,
             builder: (_) => const AlreadyHomeDialog(),
           );
+        } else {
+          context.go(
+            '/animal-details',
+            extra: {
+              'name': data.name,
+              'status': data.status,
+              'category': data.category.isNotEmpty ? data.category : 'Cat',
+              'color': data.color.isNotEmpty ? data.color : 'Gray & White',
+              'age': data.age.isNotEmpty ? data.age : '2 years',
+              'ownerName': data.ownerName.isNotEmpty
+                  ? data.ownerName
+                  : 'Lara Ramez',
+              'ownerEmail': data.ownerEmail.isNotEmpty ? data.ownerEmail : '',
+              'description': data.description.isNotEmpty
+                  ? data.description
+                  : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+              'location': data.location,
+              'imageUrl': data.imageUrl,
+              'reward': 100.0,
+            },
+          );
         }
       },
       child: Container(
         decoration: BoxDecoration(
           color: const Color(0xFFF3E9F5),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +63,6 @@ class AnimalCard extends StatelessWidget {
                     child: Image.network(data.imageUrl, fit: BoxFit.cover),
                   ),
                 ),
-
                 if (_isAlreadyHome)
                   Positioned(
                     top: 10,
@@ -73,13 +94,12 @@ class AnimalCard extends StatelessWidget {
                   ),
               ],
             ),
-
             Padding(
               padding: const EdgeInsets.fromLTRB(1, 4, 1, 1),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // الاسم
+                  const SizedBox(height: 8),
                   Center(
                     child: Text(
                       data.name,
@@ -91,7 +111,6 @@ class AnimalCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -116,8 +135,6 @@ class AnimalCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-
-                  // الوقت
                   Row(
                     children: [
                       const Icon(
