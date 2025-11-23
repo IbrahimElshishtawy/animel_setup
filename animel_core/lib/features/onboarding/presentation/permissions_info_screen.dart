@@ -81,7 +81,10 @@ class PermissionsInfoScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () => _continue(context),
-                  child: const Text("Continue"),
+                  child: const Text(
+                    "Continue",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
