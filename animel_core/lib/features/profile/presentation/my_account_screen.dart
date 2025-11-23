@@ -1,34 +1,103 @@
+import 'package:animel_core/features/profile/widgets/account_buttons_row.dart';
+import 'package:animel_core/features/profile/widgets/account_header_icon.dart';
+import 'package:animel_core/features/profile/widgets/profile_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class MyAccountScreen extends StatelessWidget {
   const MyAccountScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const lightPurple = Color(0xFFF6ECF3);
+    const purple = Color(0xFF4B1A45);
+
     return Scaffold(
+      backgroundColor: lightPurple,
       appBar: AppBar(
-        title: const Text("My account"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => context.go("/profile/account/edit"),
-          ),
-        ],
+        backgroundColor: Colors.white,
+        elevation: 0,
+        foregroundColor: purple,
+        title: const Text(
+          'My account',
+          style: TextStyle(color: Colors.black87),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text("First name: John"),
-            SizedBox(height: 8),
-            Text("Last name: Doe"),
-            SizedBox(height: 8),
-            Text("Email: john@example.com"),
-            SizedBox(height: 8),
-            Text("Address: Cairo, Egypt"),
-          ],
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: Container(
+              color: Colors.white,
+              child: ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
+                children: [
+                  const AccountHeaderIcon(),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: const [
+                      Expanded(
+                        child: ProfileTextField(
+                          label: 'First name',
+                          initialValue: 'Metwally',
+                          enabled: false,
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: ProfileTextField(
+                          label: 'Last name',
+                          initialValue: 'Metwally',
+                          enabled: false,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const ProfileTextField(
+                    label: 'Email',
+                    initialValue: 'name@example.com',
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 12),
+                  const ProfileTextField(
+                    label: 'Address',
+                    initialValue: '',
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: const [
+                      Expanded(
+                        child: ProfileTextField(
+                          label: 'State',
+                          initialValue: 'Metwally',
+                          enabled: false,
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: ProfileTextField(
+                          label: 'City/Town',
+                          initialValue: 'Metwally',
+                          enabled: false,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 28),
+                  AccountButtonsRow(
+                    onClose: () => Navigator.of(context).pop(),
+                    onEdit: () => Navigator.of(
+                      context,
+                    ).pushNamed('/profile/account/edit'),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
