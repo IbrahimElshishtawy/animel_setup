@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../../core/widgets/bottom_nav_bar.dart';
+import '../widgets/home_header.dart';
+import '../widgets/address_field.dart';
+import '../widgets/categories_row.dart';
+import '../widgets/animals_grid.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,49 +15,40 @@ class HomeScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("HopePaw"), centerTitle: true),
+      backgroundColor: const Color(0xFFF6ECF3),
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              Text(
-                "Welcome, User",
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: Container(
+              color: Colors.white,
+              child: ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 18,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Because every paw deserves to find its way home 🐾",
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: const Color(0xFFF6EFF8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "Recently added",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                children: [
+                  HomeHeader(onProfileTap: () => context.go('/profile')),
+                  const SizedBox(height: 18),
+                  const AddressField(),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Recently added',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
-                    SizedBox(height: 12),
-                    Text(
-                      "This is a demo section. لاحقاً هنحط كروت الحيوانات هنا.",
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 12),
+                  const CategoriesRow(),
+                  const SizedBox(height: 18),
+                  const Divider(height: 1, thickness: 0.6),
+                  const SizedBox(height: 16),
+                  const AnimalsGrid(),
+                  const SizedBox(height: 24),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
