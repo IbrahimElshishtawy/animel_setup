@@ -16,7 +16,6 @@ import '../../features/auth/presentation/verify_email_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/search/presentation/search_screen.dart';
 import '../../features/report/presentation/report_step1_screen.dart';
-import '../../features/report/presentation/report_step2_screen.dart';
 import '../../features/adoption/presentation/adopt_list_screen.dart';
 import '../../features/donation/presentation/donation_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
@@ -68,10 +67,7 @@ class AppRouter {
         path: "/report",
         builder: (context, state) => const ReportStep1Screen(),
       ),
-      GoRoute(
-        path: "/report-step2",
-        builder: (context, state) => const ReportStep2Screen(),
-      ),
+
       GoRoute(
         path: "/adopt",
         builder: (context, state) => const AdoptListScreen(),
