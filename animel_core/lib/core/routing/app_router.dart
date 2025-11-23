@@ -23,7 +23,6 @@ import '../../features/profile/presentation/my_account_screen.dart';
 import '../../features/profile/presentation/edit_account_screen.dart';
 import '../../features/profile/presentation/my_pets_screen.dart';
 import '../../features/profile/presentation/add_pet_step1_screen.dart';
-import '../../features/profile/presentation/add_pet_step2_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -78,10 +77,6 @@ class AppRouter {
       GoRoute(
         path: "/profile/pets/add-step1",
         builder: (context, state) => const AddPetStep1Screen(),
-      ),
-      GoRoute(
-        path: "/profile/pets/add-step2",
-        builder: (context, state) => const AddPetStep2Screen(),
       ),
     ],
   );
