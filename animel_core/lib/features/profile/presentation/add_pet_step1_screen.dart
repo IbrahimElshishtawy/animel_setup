@@ -16,6 +16,10 @@ class _AddPetStep1ScreenState extends State<AddPetStep1Screen> {
   final _type = TextEditingController();
   final _breed = TextEditingController();
   final _color = TextEditingController();
+  final _behavior = TextEditingController();
+  final _about = TextEditingController();
+  final _favorites = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -24,11 +28,23 @@ class _AddPetStep1ScreenState extends State<AddPetStep1Screen> {
     _type.dispose();
     _breed.dispose();
     _color.dispose();
+    _behavior.dispose();
+    _about.dispose();
+    _favorites.dispose();
     super.dispose();
   }
 
   void _next() {
     context.go("/profile/pets/add-step2");
+  }
+
+  Future<void> _save() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() => _isLoading = false);
+
+    if (!mounted) return;
+    context.go("/profile/pets");
   }
 
   @override
@@ -54,6 +70,21 @@ class _AddPetStep1ScreenState extends State<AddPetStep1Screen> {
             AppTextField(label: "Color", controller: _color),
             const SizedBox(height: 24),
             AppButton(title: "Next", onPressed: _next),
+            AppTextField(label: "Behavior", controller: _behavior),
+            const SizedBox(height: 12),
+            AppTextField(
+              label: "About / special marks",
+              controller: _about,
+              maxLines: 3,
+            ),
+            const SizedBox(height: 12),
+            AppTextField(
+              label: "Favorites",
+              controller: _favorites,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 24),
+            AppButton(title: "Save", isLoading: _isLoading, onPressed: _save),
           ],
         ),
       ),
