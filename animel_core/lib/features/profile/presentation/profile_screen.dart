@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/widgets/bottom_nav_bar.dart';
+import '../widgets/delete_account_bottom_sheet.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -14,7 +15,7 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: lightPurple,
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 4),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -57,7 +58,7 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.language_outlined,
                     label: 'Language',
                     subtitle: '(EN)',
-                    onTap: () {},
+                    onTap: () => context.go('/profile/language'),
                   ),
                   ProfileMenuItem(
                     icon: Icons.lock_outline,
@@ -67,12 +68,24 @@ class ProfileScreen extends StatelessWidget {
                   ProfileMenuItem(
                     icon: Icons.info_outline,
                     label: 'Contact',
-                    onTap: () {},
+                    onTap: () => context.go('/profile/contact'),
                   ),
                   ProfileMenuItem(
                     icon: Icons.delete_outline,
                     label: 'Delete account',
-                    onTap: () {},
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: false,
+                        backgroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(28),
+                          ),
+                        ),
+                        builder: (_) => const DeleteAccountBottomSheet(),
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   ProfileMenuItem(
@@ -80,7 +93,7 @@ class ProfileScreen extends StatelessWidget {
                     label: 'Logout',
                     isDestructive: true,
                     onTap: () {
-                      // تسجيل خروج
+                      // logout
                     },
                   ),
                 ],
