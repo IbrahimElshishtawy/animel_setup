@@ -25,10 +25,29 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.pets, size: 80, color: Color(0xFF4B1A45)),
-              const SizedBox(height: 24),
+              Spacer(flex: 3),
+              SizedBox(
+                height: 130,
+                width: 130,
+                child: Image.asset(
+                  'assets/image/image.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              // Spacer(flex: 1),
+              const Text(
+                "HopePaw",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF4B1A45),
+                  letterSpacing: 1,
+                ),
+              ),
+              Spacer(flex: 1),
               DropdownButtonFormField<String>(
-                value: _lang,
+                initialValue: _lang,
                 items: const [
                   DropdownMenuItem(value: "en", child: Text("English")),
                   DropdownMenuItem(value: "ar", child: Text("العربية")),
@@ -38,7 +57,8 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
                   labelText: "Choose a language",
                 ),
               ),
-              const SizedBox(height: 24),
+              Spacer(flex: 2),
+              //    const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -59,6 +79,7 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
                   ),
                 ),
               ),
+              Spacer(flex: 2),
             ],
           ),
         ),
