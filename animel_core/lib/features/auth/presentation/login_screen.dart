@@ -41,8 +41,28 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Spacer(flex: 2),
+              SizedBox(
+                height: 130,
+                width: 130,
+                child: Image.asset(
+                  'assets/image/image.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              // Spacer(flex: 1),
+              const Text(
+                "HopePaw",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF4B1A45),
+                  letterSpacing: 1,
+                ),
+              ),
               const SizedBox(height: 32),
               Text(
                 "Welcome back 👋",
@@ -92,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Text("Don’t have an account? Register"),
                 ),
               ),
+              Spacer(flex: 3),
             ],
           ),
         ),
