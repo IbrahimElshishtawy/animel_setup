@@ -1,3 +1,4 @@
+import 'package:animel_core/features/profile/widgets/account_header_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/app_text_field.dart';
@@ -44,6 +45,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            const AccountHeaderIcon(),
             AppTextField(label: "First name", controller: _firstName),
             const SizedBox(height: 12),
             AppTextField(label: "Last name", controller: _lastName),
