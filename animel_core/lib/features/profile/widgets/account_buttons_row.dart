@@ -49,7 +49,10 @@ class AccountButtonsRow extends StatelessWidget {
               onPressed: onEdit,
               child: const Text(
                 'Edit',
-                style: TextStyle(fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
