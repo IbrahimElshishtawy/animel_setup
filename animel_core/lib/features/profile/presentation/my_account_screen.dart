@@ -2,6 +2,7 @@ import 'package:animel_core/features/profile/widgets/account_buttons_row.dart';
 import 'package:animel_core/features/profile/widgets/account_header_icon.dart';
 import 'package:animel_core/features/profile/widgets/profile_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MyAccountScreen extends StatelessWidget {
   const MyAccountScreen({super.key});
@@ -16,12 +17,16 @@ class MyAccountScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: lightPurple,
         elevation: 0,
+        leading: const BackButton(color: purple),
         foregroundColor: purple,
-        scrolledUnderElevation: 0,
         centerTitle: false,
         title: const Text(
           'My account',
-          style: TextStyle(color: purple, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            color: purple,
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+          ),
         ),
       ),
       body: SafeArea(
@@ -33,7 +38,6 @@ class MyAccountScreen extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: ListView(
@@ -97,10 +101,8 @@ class MyAccountScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 28),
                     AccountButtonsRow(
-                      onClose: () => Navigator.of(context).pop(),
-                      onEdit: () => Navigator.of(
-                        context,
-                      ).pushNamed('/profile/account/edit'),
+                      onClose: () => context.pop(),
+                      onEdit: () => context.push('/profile/account/edit'),
                     ),
                   ],
                 ),
