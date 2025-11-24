@@ -14,87 +14,96 @@ class MyAccountScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: lightPurple,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: lightPurple,
         elevation: 0,
         foregroundColor: purple,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
         title: const Text(
           'My account',
-          style: TextStyle(color: Colors.black87),
+          style: TextStyle(color: purple, fontWeight: FontWeight.w600),
         ),
       ),
       body: SafeArea(
         child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 430),
-            child: Container(
-              color: Colors.white,
-              child: ListView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 24,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 430),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+
+                  borderRadius: BorderRadius.circular(18),
                 ),
-                children: [
-                  const AccountHeaderIcon(),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: const [
-                      Expanded(
-                        child: ProfileTextField(
-                          label: 'First name',
-                          initialValue: 'Metwally',
-                          enabled: false,
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 60,
+                  ),
+                  children: [
+                    const AccountHeaderIcon(),
+                    const SizedBox(height: 40),
+                    Row(
+                      children: const [
+                        Expanded(
+                          child: ProfileTextField(
+                            label: 'First name',
+                            initialValue: 'Metwally',
+                            enabled: false,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: ProfileTextField(
-                          label: 'Last name',
-                          initialValue: 'Metwally',
-                          enabled: false,
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: ProfileTextField(
+                            label: 'Last name',
+                            initialValue: 'Metwally',
+                            enabled: false,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  const ProfileTextField(
-                    label: 'Email',
-                    initialValue: 'name@example.com',
-                    enabled: false,
-                  ),
-                  const SizedBox(height: 12),
-                  const ProfileTextField(
-                    label: 'Address',
-                    initialValue: '',
-                    enabled: false,
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: const [
-                      Expanded(
-                        child: ProfileTextField(
-                          label: 'State',
-                          initialValue: 'Metwally',
-                          enabled: false,
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const ProfileTextField(
+                      label: 'Email',
+                      initialValue: 'name@example.com',
+                      enabled: false,
+                    ),
+                    const SizedBox(height: 12),
+                    const ProfileTextField(
+                      label: 'Address',
+                      initialValue: '',
+                      enabled: false,
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: const [
+                        Expanded(
+                          child: ProfileTextField(
+                            label: 'State',
+                            initialValue: 'Metwally',
+                            enabled: false,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: ProfileTextField(
-                          label: 'City/Town',
-                          initialValue: 'Metwally',
-                          enabled: false,
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: ProfileTextField(
+                            label: 'City/Town',
+                            initialValue: 'Metwally',
+                            enabled: false,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-                  AccountButtonsRow(
-                    onClose: () => Navigator.of(context).pop(),
-                    onEdit: () => Navigator.of(
-                      context,
-                    ).pushNamed('/profile/account/edit'),
-                  ),
-                ],
+                      ],
+                    ),
+                    const SizedBox(height: 28),
+                    AccountButtonsRow(
+                      onClose: () => Navigator.of(context).pop(),
+                      onEdit: () => Navigator.of(
+                        context,
+                      ).pushNamed('/profile/account/edit'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
