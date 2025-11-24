@@ -1,5 +1,7 @@
 import 'package:animel_core/features/auth/presentation/welcome_auth_screen.dart';
 import 'package:animel_core/features/home/presentation/animal_details_screen.dart';
+import 'package:animel_core/features/profile/presentation/contact_screen.dart';
+import 'package:animel_core/features/profile/presentation/profile_language_screen.dart';
 import 'package:go_router/go_router.dart';
 
 // ONBOARDING
@@ -66,6 +68,14 @@ class AppRouter {
       GoRoute(
         path: "/report",
         builder: (context, state) => const ReportStep1Screen(),
+      ),
+      GoRoute(
+        path: "/profile/language",
+        builder: (context, state) => const ProfileLanguageScreen(),
+      ),
+      GoRoute(
+        path: "/profile/contact",
+        builder: (context, state) => const ContactScreen(),
       ),
 
       GoRoute(
