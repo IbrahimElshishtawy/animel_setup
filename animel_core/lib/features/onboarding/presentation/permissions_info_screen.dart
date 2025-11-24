@@ -18,18 +18,35 @@ class PermissionsInfoScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 24),
-              const Icon(Icons.pets, size: 80, color: Color(0xFF4B1A45)),
+              SizedBox(
+                height: 130,
+                width: 130,
+                child: Image.asset(
+                  'assets/image/image.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              const Text(
+                "HopePaw",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF4B1A45),
+                  letterSpacing: 1,
+                ),
+              ),
               const SizedBox(height: 16),
               const Text(
-                "HopePaw Community welcomes you",
+                "Community Welcomes you",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF4B1A45),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -37,14 +54,14 @@ class PermissionsInfoScreen extends StatelessWidget {
                     children: const [
                       Text(
                         "For the best experience, please follow these steps.",
-                        style: TextStyle(fontSize: 14),
+                        style: TextStyle(fontSize: 17),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 20),
                       Text(
                         "Location Settings",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                          fontSize: 20,
                         ),
                       ),
                       SizedBox(height: 4),
@@ -52,15 +69,15 @@ class PermissionsInfoScreen extends StatelessWidget {
                         "When a pet is lost, we need to connect with people nearby. "
                         "Please set your location in your device settings to allow all the time for HopePaw.",
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 20),
                       Text(
                         "Enable Notifications",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                          fontSize: 20,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: 8),
                       Text(
                         "We notify people when a pet goes missing or when a search is in progress. "
                         "Please allow notifications to stay informed and help others.",
@@ -69,7 +86,7 @@ class PermissionsInfoScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -87,7 +104,7 @@ class PermissionsInfoScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 20),
             ],
           ),
         ),
