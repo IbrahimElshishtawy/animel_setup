@@ -7,7 +7,6 @@ class ContactScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const lightPurple = Color(0xFFF6ECF3);
     const purple = Color(0xFF4B1A45);
-    const cardColor = Color(0xFFFFE7CC);
 
     return Scaffold(
       backgroundColor: lightPurple,
