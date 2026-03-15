@@ -4,6 +4,7 @@ class ProfileMenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String? subtitle;
+  final Widget? trailing;
   final bool isDestructive;
   final VoidCallback onTap;
 
@@ -13,12 +14,14 @@ class ProfileMenuItem extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.subtitle,
+    this.trailing,
     this.isDestructive = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = isDestructive ? const Color(0xFFE53935) : Colors.black87;
+    final theme = Theme.of(context);
+    final color = isDestructive ? const Color(0xFFE53935) : theme.textTheme.bodyLarge?.color;
 
     return Material(
       color: Colors.transparent,
@@ -32,7 +35,7 @@ class ProfileMenuItem extends StatelessWidget {
                 icon,
                 color: isDestructive
                     ? const Color(0xFFE53935)
-                    : const Color(0xFF4B1A45),
+                    : theme.primaryColor,
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -54,15 +57,17 @@ class ProfileMenuItem extends StatelessWidget {
                         subtitle!,
                         style: const TextStyle(
                           fontSize: 13,
-                          color: Colors.black45,
+                          color: Colors.grey,
                         ),
                       ),
                     ],
                   ],
                 ),
               ),
-              if (!isDestructive)
-                const Icon(Icons.chevron_right, color: Colors.black45),
+              if (trailing != null)
+                trailing!
+              else if (!isDestructive)
+                const Icon(Icons.chevron_right, color: Colors.grey),
             ],
           ),
         ),

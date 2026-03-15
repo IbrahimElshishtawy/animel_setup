@@ -84,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen>
                   const SizedBox(height: 20),
 
                   const Text(
-                    "HopePaw",
+                    "Animal Connect",
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w800,
