@@ -1,7 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
+
+import 'auth_shell.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,15 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   Future<void> _onLogin() async {
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(seconds: 1));
 
-    setState(() => _isLoading = false);
-
     if (!mounted) return;
-    context.go("/home");
+    setState(() => _isLoading = false);
+    context.go('/home');
   }
 
   @override
@@ -34,88 +36,117 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    return AuthPageShell(
+      showBackButton: true,
+      fallbackRoute: '/welcome-auth',
+      eyebrow: 'Sign in',
+      title: 'Welcome back.',
+      subtitle:
+          'Continue helping animals, checking rescue activity, and staying connected to your community.',
+      hero: AuthHeroPanel(
+        height: 154,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 280;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Spacer(flex: 2),
-              SizedBox(
-                height: 130,
-                width: 130,
-                child: Image.asset(
-                  'assets/image/image.png',
-                  fit: BoxFit.contain,
+            return Row(
+              children: [
+                Container(
+                  width: compact ? 66 : 76,
+                  height: compact ? 66 : 76,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.72),
+                    borderRadius: BorderRadius.circular(22),
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: const Image(
+                    image: AssetImage('assets/image/image.png'),
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-
-              // Spacer(flex: 1),
-              const Text(
-                "HopePaw",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF4B1A45),
-                  letterSpacing: 1,
+                const SizedBox(width: 14),
+                const Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Safe access',
+                        style: TextStyle(
+                          color: authPrimary,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 20,
+                        ),
+                      ),
+                      SizedBox(height: 6),
+                      Text(
+                        'A softer sign-in flow for your daily animal care work.',
+                        style: TextStyle(color: authMuted, height: 1.45),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                "Welcome back 👋",
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Login to HopePaw to help pets find their home.",
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[700],
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              AppTextField(
-                label: "Email",
-                hint: "name@example.com",
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
-              const SizedBox(height: 16),
-
-              AppTextField(
-                label: "Password",
-                hint: "Your password",
-                controller: _passwordController,
-                obscure: true,
-                prefixIcon: const Icon(Icons.lock_outline),
-              ),
-              const SizedBox(height: 24),
-
-              AppButton(
-                title: "Login",
-                isLoading: _isLoading,
-                onPressed: _onLogin,
-              ),
-
-              const SizedBox(height: 16),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    // لاحقاً: go to /register
-                  },
-                  child: const Text("Don’t have an account? Register"),
-                ),
-              ),
-              Spacer(flex: 3),
-            ],
-          ),
+              ],
+            );
+          },
         ),
+      ),
+      footer: AuthFooterPrompt(
+        prompt: 'Don\'t have an account?',
+        actionLabel: 'Create one',
+        onTap: () => context.go('/register'),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AuthTextFieldBox(
+            label: 'Email',
+            controller: _emailController,
+            hint: 'name@example.com',
+            keyboardType: TextInputType.emailAddress,
+            prefixIcon: const Icon(Icons.mail_outline_rounded),
+          ),
+          const SizedBox(height: 16),
+          AuthTextFieldBox(
+            label: 'Password',
+            controller: _passwordController,
+            hint: 'Your password',
+            obscureText: _obscurePassword,
+            prefixIcon: const Icon(Icons.lock_outline_rounded),
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() => _obscurePassword = !_obscurePassword);
+              },
+              icon: Icon(
+                _obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {},
+              child: const Text(
+                'Forgot password?',
+                style: TextStyle(
+                  color: authPrimary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          AuthPrimaryButton(
+            label: 'Login',
+            onPressed: _onLogin,
+            isLoading: _isLoading,
+          ),
+          const SizedBox(height: 12),
+          AuthSocialButton(label: 'Continue with Google', onTap: () {}),
+        ],
       ),
     );
   }

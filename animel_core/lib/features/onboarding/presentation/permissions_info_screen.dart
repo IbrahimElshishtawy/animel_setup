@@ -1,4 +1,6 @@
-﻿import 'package:flutter/material.dart';
+﻿// ignore_for_file: deprecated_member_use
+
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'widgets/onboarding_frame.dart';
@@ -124,9 +126,9 @@ class PermissionsInfoScreen extends StatelessWidget {
           Text(
             'Permissions will only be requested when they are needed.',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFF7D6A78),
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: const Color(0xFF7D6A78)),
           ),
         ],
       ),

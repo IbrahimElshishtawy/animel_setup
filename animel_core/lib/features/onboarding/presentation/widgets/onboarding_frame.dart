@@ -1,4 +1,6 @@
-﻿import 'dart:ui';
+﻿// ignore_for_file: deprecated_member_use
+
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -124,11 +126,7 @@ class OnboardingFrame extends StatelessWidget {
 }
 
 class OnboardingHeroCard extends StatelessWidget {
-  const OnboardingHeroCard({
-    super.key,
-    required this.child,
-    this.height = 172,
-  });
+  const OnboardingHeroCard({super.key, required this.child, this.height = 172});
 
   final Widget child;
   final double height;
@@ -240,11 +238,7 @@ class OnboardingAccentPill extends StatelessWidget {
         runSpacing: 4,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          const Icon(
-            Icons.auto_awesome_rounded,
-            size: 16,
-            color: _accentColor,
-          ),
+          const Icon(Icons.auto_awesome_rounded, size: 16, color: _accentColor),
           Text(
             label,
             style: const TextStyle(
@@ -318,12 +312,9 @@ class _BackgroundGlow extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [color, Colors.transparent],
-          ),
+          gradient: RadialGradient(colors: [color, Colors.transparent]),
         ),
       ),
     );
   }
 }
-
