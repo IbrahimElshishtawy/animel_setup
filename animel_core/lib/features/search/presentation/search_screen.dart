@@ -49,9 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       location: "Cairo, Egypt",
                       time: "Added 2h ago",
                       status: "Lost",
-                      onTap: () {
-                        // TODO: go to details
-                      },
+                      onTap: () {},
                     ),
                     AnimalCard(
                       name: "Max",

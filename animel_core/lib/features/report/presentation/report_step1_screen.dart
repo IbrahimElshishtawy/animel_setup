@@ -72,11 +72,7 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                   vertical: 16,
                 ),
                 children: [
-                  ReportPhotoPicker(
-                    onTap: () {
-                      // TODO: فتح Image Picker وإضافة الصور (حد أقصى 4)
-                    },
-                  ),
+                  ReportPhotoPicker(onTap: () {}),
                   const SizedBox(height: 16),
 
                   ReportTypeToggle(
@@ -212,9 +208,7 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {
-                        // TODO: validate + send report
-                      },
+                      onPressed: () {},
                       child: const Text(
                         'Add animal',
                         style: TextStyle(

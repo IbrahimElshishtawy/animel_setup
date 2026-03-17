@@ -77,12 +77,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 onPressed: _onVerify,
               ),
               const SizedBox(height: 16),
-              TextButton(
-                onPressed: () {
-                  // TODO: resend code
-                },
-                child: const Text("Resend code"),
-              ),
+              TextButton(onPressed: () {}, child: const Text("Resend code")),
             ],
           ),
         ),

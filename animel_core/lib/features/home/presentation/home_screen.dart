@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -33,7 +35,11 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     _buildServicesGrid(context),
                     const SizedBox(height: 24),
-                    _buildSectionHeader(context, 'Recently Added', () => context.push('/animal-list')),
+                    _buildSectionHeader(
+                      context,
+                      'Recently Added',
+                      () => context.push('/animal-list'),
+                    ),
                     const SizedBox(height: 12),
                   ],
                 ),
@@ -47,21 +53,22 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title, VoidCallback? onSeeAll) {
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    VoidCallback? onSeeAll,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         if (onSeeAll != null)
-          TextButton(
-            onPressed: onSeeAll,
-            child: const Text('See All'),
-          ),
+          TextButton(onPressed: onSeeAll, child: const Text('See All')),
       ],
     );
   }
@@ -75,15 +82,45 @@ class HomeScreen extends StatelessWidget {
       mainAxisSpacing: 12,
       childAspectRatio: 1.5,
       children: [
-        _buildServiceCard(context, 'Buy Animals', MdiIcons.paw, Colors.orange, '/animal-list'),
-        _buildServiceCard(context, 'Adoption', MdiIcons.heart, Colors.red, '/adopt'),
-        _buildServiceCard(context, 'Supplies', MdiIcons.store, Colors.blue, '/shop'),
-        _buildServiceCard(context, 'Map View', MdiIcons.mapMarker, Colors.green, '/map'),
+        _buildServiceCard(
+          context,
+          'Buy Animals',
+          MdiIcons.paw,
+          Colors.orange,
+          '/animal-list',
+        ),
+        _buildServiceCard(
+          context,
+          'Adoption',
+          MdiIcons.heart,
+          Colors.red,
+          '/adopt',
+        ),
+        _buildServiceCard(
+          context,
+          'Supplies',
+          MdiIcons.store,
+          Colors.blue,
+          '/shop',
+        ),
+        _buildServiceCard(
+          context,
+          'Map View',
+          MdiIcons.mapMarker,
+          Colors.green,
+          '/map',
+        ),
       ],
     );
   }
 
-  Widget _buildServiceCard(BuildContext context, String title, IconData icon, Color color, String route) {
+  Widget _buildServiceCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    String route,
+  ) {
     return GestureDetector(
       onTap: () => context.push(route),
       child: Container(
@@ -114,12 +151,9 @@ class HomeScreen extends StatelessWidget {
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
         ),
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return _buildMockAnimalCard(context);
-          },
-          childCount: 4,
-        ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return _buildMockAnimalCard(context);
+        }, childCount: 4),
       ),
     );
   }
@@ -146,8 +180,14 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Persian Cat', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text('\$500', style: TextStyle(color: Colors.green, fontSize: 12)),
+                Text(
+                  'Persian Cat',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '\$500',
+                  style: TextStyle(color: Colors.green, fontSize: 12),
+                ),
               ],
             ),
           ),
