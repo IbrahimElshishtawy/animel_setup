@@ -30,6 +30,16 @@ class AnimalConnectApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             themeMode: state.themeMode,
             routerConfig: AppRouter.router,
+            builder: (context, child) {
+              final mediaQuery = MediaQuery.of(context);
+
+              return MediaQuery(
+                data: mediaQuery.copyWith(
+                  textScaler: const TextScaler.linear(0.92),
+                ),
+                child: child ?? const SizedBox.shrink(),
+              );
+            },
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,

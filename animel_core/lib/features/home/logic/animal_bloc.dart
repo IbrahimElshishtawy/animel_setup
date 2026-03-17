@@ -52,7 +52,9 @@ class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
             price: 500,
             location: 'New York',
             description: 'A beautiful and calm white Persian cat.',
-            imageUrls: ['assets/image/image.png'],
+            imageUrls: [
+              'https://images.pexels.com/photos/617278/pexels-photo-617278.jpeg?auto=compress&cs=tinysrgb&w=1200',
+            ],
             isForAdoption: false,
             ownerId: 'owner1',
             healthStatus: 'Vaccinated',
@@ -68,7 +70,9 @@ class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
             price: 1200,
             location: 'Los Angeles',
             description: 'Energetic and friendly Golden Retriever.',
-            imageUrls: ['assets/image/image.png'],
+            imageUrls: [
+              'https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg?auto=compress&cs=tinysrgb&w=1200',
+            ],
             isForAdoption: false,
             ownerId: 'owner2',
             healthStatus: 'Healthy',

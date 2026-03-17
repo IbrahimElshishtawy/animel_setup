@@ -6,6 +6,13 @@ class ProductDetailScreen extends StatelessWidget {
 
   const ProductDetailScreen({super.key, required this.product});
 
+  ImageProvider _resolveImage(String imageUrl) {
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return NetworkImage(imageUrl);
+    }
+    return AssetImage(imageUrl);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -17,11 +24,22 @@ class ProductDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              'assets/image/image.png',
+            Image(
+              image: _resolveImage(product.imageUrl),
               width: double.infinity,
               height: 300,
               fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                width: double.infinity,
+                height: 300,
+                color: const Color(0xFFF1E8EF),
+                alignment: Alignment.center,
+                child: const Icon(
+                  Icons.pets,
+                  size: 56,
+                  color: Color(0xFF7D355F),
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),

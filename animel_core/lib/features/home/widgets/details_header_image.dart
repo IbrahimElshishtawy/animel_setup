@@ -11,6 +11,13 @@ class DetailsHeaderImage extends StatefulWidget {
 class _DetailsHeaderImageState extends State<DetailsHeaderImage> {
   int current = 0;
 
+  ImageProvider _resolveImage(String imageUrl) {
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return NetworkImage(imageUrl);
+    }
+    return AssetImage(imageUrl);
+  }
+
   @override
   Widget build(BuildContext context) {
     final images = [widget.imageUrl, widget.imageUrl, widget.imageUrl];
@@ -29,7 +36,19 @@ class _DetailsHeaderImageState extends State<DetailsHeaderImage> {
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
                 ),
-                child: Image.network(images[index], fit: BoxFit.cover),
+                child: Image(
+                  image: _resolveImage(images[index]),
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    color: const Color(0xFFF1E8EF),
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      Icons.pets,
+                      size: 44,
+                      color: Color(0xFF7D355F),
+                    ),
+                  ),
+                ),
               );
             },
           ),

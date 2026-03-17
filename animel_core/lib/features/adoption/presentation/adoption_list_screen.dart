@@ -57,11 +57,18 @@ class _AdoptionListScreenState extends State<AdoptionListScreen> {
                     contentPadding: const EdgeInsets.all(12),
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        'assets/image/image.png',
+                      child: Image.network(
+                        animal.imageUrls.first,
                         width: 70,
                         height: 70,
                         fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 70,
+                          height: 70,
+                          color: const Color(0xFFF1E8EF),
+                          alignment: Alignment.center,
+                          child: const Icon(Icons.pets, color: Color(0xFF7D355F)),
+                        ),
                       ),
                     ),
                     title: Text(animal.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
