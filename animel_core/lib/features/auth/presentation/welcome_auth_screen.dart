@@ -16,45 +16,51 @@ class WelcomeAuthScreen extends StatelessWidget {
       subtitle:
           'A calm, thoughtful place to support rescues, reconnect lost pets, and stay close to the community around you.',
       hero: AuthHeroPanel(
-        height: 188,
+        height: 176,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final compact = constraints.maxWidth < 290;
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: compact ? 64 : 78,
-                  width: compact ? 64 : 78,
-                  child: const Image(
-                    image: AssetImage('assets/image/image.png'),
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'HopePaw',
-                  style: TextStyle(
-                    color: authPrimary,
-                    fontSize: compact ? 24 : 28,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.4,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: const [
-                    _HeroChip(label: 'Rescue alerts'),
-                    _HeroChip(label: 'Lost & found'),
-                    _HeroChip(label: 'Adoption care'),
+            return FittedBox(
+              fit: BoxFit.scaleDown,
+              child: SizedBox(
+                width: compact ? 220 : 260,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: compact ? 54 : 68,
+                      width: compact ? 54 : 68,
+                      child: const Image(
+                        image: AssetImage('assets/image/image.png'),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'HopePaw',
+                      style: TextStyle(
+                        color: authPrimary,
+                        fontSize: compact ? 22 : 26,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: const [
+                        _HeroChip(label: 'Rescue alerts'),
+                        _HeroChip(label: 'Lost & found'),
+                        _HeroChip(label: 'Adoption care'),
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
             );
           },
         ),
@@ -174,7 +180,7 @@ class _HeroChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.72),
         borderRadius: BorderRadius.circular(999),
@@ -184,7 +190,7 @@ class _HeroChip extends StatelessWidget {
         style: const TextStyle(
           color: authPrimary,
           fontWeight: FontWeight.w700,
-          fontSize: 12,
+          fontSize: 11,
         ),
       ),
     );

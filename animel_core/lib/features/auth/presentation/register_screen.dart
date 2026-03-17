@@ -48,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       title: 'Join HopePaw with a calm, modern setup.',
       subtitle:
           'Create your profile in a few simple steps and start supporting rescue, adoption, and daily care.',
-      hero: const AuthHeroPanel(height: 158, child: _RegisterHero()),
+      hero: const AuthHeroPanel(height: 150, child: _RegisterHero()),
       footer: AuthFooterPrompt(
         prompt: 'Already have an account?',
         actionLabel: 'Login',
@@ -174,44 +174,60 @@ class _RegisterHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 74,
-          height: 74,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.72),
-            borderRadius: BorderRadius.circular(22),
-          ),
-          padding: const EdgeInsets.all(10),
-          child: const Image(
-            image: AssetImage('assets/image/image.png'),
-            fit: BoxFit.contain,
-          ),
-        ),
-        const SizedBox(width: 14),
-        const Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Gentle onboarding',
-                style: TextStyle(
-                  color: authPrimary,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: constraints.maxWidth,
+            child: Row(
+              children: [
+                Container(
+                  width: 66,
+                  height: 66,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.72),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: const Image(
+                    image: AssetImage('assets/image/image.png'),
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-              SizedBox(height: 6),
-              Text(
-                'Set up your profile and shape a more personal pet-care experience.',
-                style: TextStyle(color: authMuted, height: 1.45),
-              ),
-            ],
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Gentle onboarding',
+                        style: TextStyle(
+                          color: authPrimary,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Set up your profile and shape a more personal pet-care experience.',
+                        style: TextStyle(
+                          color: authMuted,
+                          height: 1.35,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }
