@@ -1,7 +1,7 @@
+import 'package:animel_core/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen_genl10n/app_localizations.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/logic/theme_bloc.dart';
@@ -36,10 +36,7 @@ class AnimalConnectApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [
-              Locale('en'),
-              Locale('ar'),
-            ],
+            supportedLocales: const [Locale('en'), Locale('ar')],
           );
         },
       ),
