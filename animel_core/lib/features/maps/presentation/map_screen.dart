@@ -33,9 +33,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _bootstrap();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _bootstrap());
   }
 
   Future<void> _bootstrap() async {
@@ -45,11 +43,9 @@ class _MapScreenState extends State<MapScreen> {
     if (animalBloc.state is AnimalInitial || animalBloc.state is AnimalError) {
       animalBloc.add(FetchAnimals());
     }
-
     if (adoptionBloc.state is AdoptionInitial || adoptionBloc.state is AdoptionError) {
       adoptionBloc.add(FetchAdoptionAnimals());
     }
-
     await _loadCurrentLocation();
   }
 
@@ -82,11 +78,8 @@ class _MapScreenState extends State<MapScreen> {
       }
 
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
-
       if (!mounted) return;
 
       final target = LatLng(position.latitude, position.longitude);
@@ -96,8 +89,7 @@ class _MapScreenState extends State<MapScreen> {
         _hasLocationPermission = true;
         _areaLabel = _describeArea(target);
       });
-
-      _animateTo(target, zoom: 13.2);
+      _animateTo(target);
     } catch (_) {
       if (!mounted) return;
       setState(() {
@@ -118,14 +110,11 @@ class _MapScreenState extends State<MapScreen> {
     return 'Nearby around your current area';
   }
 
-  Future<void> _animateTo(LatLng target, {double zoom = 13.2}) async {
+  Future<void> _animateTo(LatLng target, {double zoom = 13.4}) async {
     final controller = _mapController;
     if (controller == null) return;
-
     await controller.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: target, zoom: zoom),
-      ),
+      CameraUpdate.newCameraPosition(CameraPosition(target: target, zoom: zoom)),
     );
   }
 
@@ -141,7 +130,6 @@ class _MapScreenState extends State<MapScreen> {
       Offset(-0.011, -0.004),
       Offset(0.013, -0.002),
     ];
-
     return List.generate(animals.length, (index) {
       final animal = animals[index];
       final offset = offsets[index % offsets.length];
@@ -149,10 +137,10 @@ class _MapScreenState extends State<MapScreen> {
         id: 'sale_${animal.id}',
         kind: _MapPointKind.sale,
         title: animal.name,
-        subtitle: '${animal.breed} - ${animal.location}',
+        subtitle: '${animal.breed} • ${animal.location}',
         distanceLabel: '${1.2 + (index * 0.6)} km away',
         position: _shift(_currentCenter, offset.dx, offset.dy),
-        accent: const Color(0xFFE27D60),
+        accent: const Color(0xFFE39A53),
         animal: animal,
       );
     });
@@ -165,7 +153,6 @@ class _MapScreenState extends State<MapScreen> {
       Offset(0.009, -0.012),
       Offset(-0.006, -0.014),
     ];
-
     return List.generate(animals.length, (index) {
       final animal = animals[index];
       final offset = offsets[index % offsets.length];
@@ -173,10 +160,10 @@ class _MapScreenState extends State<MapScreen> {
         id: 'adoption_${animal.id}',
         kind: _MapPointKind.adoption,
         title: animal.name,
-        subtitle: '${animal.breed} - Ready for adoption',
+        subtitle: '${animal.breed} • Ready for adoption',
         distanceLabel: '${0.9 + (index * 0.7)} km away',
         position: _shift(_currentCenter, offset.dx, offset.dy),
-        accent: const Color(0xFF3E9D6C),
+        accent: const Color(0xFF55A57F),
         animal: animal,
       );
     });
@@ -184,38 +171,14 @@ class _MapScreenState extends State<MapScreen> {
 
   List<_MapPoint> _buildPeoplePoints() {
     final people = [
-      _NearbyPerson(
-        id: 'person_1',
-        name: 'Mona Ali',
-        role: 'Adoption coordinator',
-        area: 'Same district',
-        accent: const Color(0xFF4B8FA5),
-        offset: const Offset(0.003, -0.005),
-      ),
-      _NearbyPerson(
-        id: 'person_2',
-        name: 'Omar Hassan',
-        role: 'Pet transporter',
-        area: '1.1 km away',
-        accent: const Color(0xFF7C4D9E),
-        offset: const Offset(-0.004, 0.003),
-      ),
-      _NearbyPerson(
-        id: 'person_3',
-        name: 'Sara Nabil',
-        role: 'Local rescuer',
-        area: 'Same area',
-        accent: const Color(0xFFDA6C56),
-        offset: const Offset(0.007, 0.001),
-      ),
-      _NearbyPerson(
-        id: 'person_4',
-        name: 'Dr. Karim',
-        role: 'Vet support',
-        area: '1.8 km away',
-        accent: const Color(0xFF3E9D6C),
-        offset: const Offset(-0.007, -0.007),
-      ),
+      _NearbyPerson('person_1', 'Mona Ali', 'Adoption coordinator', 'Same district',
+          const Color(0xFF4F88B9), const Offset(0.003, -0.005)),
+      _NearbyPerson('person_2', 'Omar Hassan', 'Pet transporter', '1.1 km away',
+          const Color(0xFF6B7EAA), const Offset(-0.004, 0.003)),
+      _NearbyPerson('person_3', 'Sara Nabil', 'Local rescuer', 'Same area',
+          const Color(0xFFD07A57), const Offset(0.007, 0.001)),
+      _NearbyPerson('person_4', 'Dr. Karim', 'Vet support', '1.8 km away',
+          const Color(0xFF2E7D75), const Offset(-0.007, -0.007)),
     ];
 
     return people
@@ -224,7 +187,7 @@ class _MapScreenState extends State<MapScreen> {
             id: person.id,
             kind: _MapPointKind.person,
             title: person.name,
-            subtitle: '${person.role} - ${person.area}',
+            subtitle: '${person.role} • ${person.area}',
             distanceLabel: person.area,
             position: _shift(_currentCenter, person.offset.dx, person.offset.dy),
             accent: person.accent,
@@ -235,27 +198,22 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   List<_MapPoint> _applyFilter(List<_MapPoint> points) {
-    switch (_activeFilter) {
-      case _MapFilter.sale:
-        return points.where((point) => point.kind == _MapPointKind.sale).toList();
-      case _MapFilter.adoption:
-        return points.where((point) => point.kind == _MapPointKind.adoption).toList();
-      case _MapFilter.people:
-        return points.where((point) => point.kind == _MapPointKind.person).toList();
-      case _MapFilter.all:
-        return points;
-    }
+    return switch (_activeFilter) {
+      _MapFilter.sale => points.where((point) => point.kind == _MapPointKind.sale).toList(),
+      _MapFilter.adoption =>
+        points.where((point) => point.kind == _MapPointKind.adoption).toList(),
+      _MapFilter.people =>
+        points.where((point) => point.kind == _MapPointKind.person).toList(),
+      _MapFilter.all => points,
+    };
   }
 
   double _markerHue(_MapPointKind kind) {
-    switch (kind) {
-      case _MapPointKind.sale:
-        return BitmapDescriptor.hueOrange;
-      case _MapPointKind.adoption:
-        return BitmapDescriptor.hueGreen;
-      case _MapPointKind.person:
-        return BitmapDescriptor.hueAzure;
-    }
+    return switch (kind) {
+      _MapPointKind.sale => BitmapDescriptor.hueOrange,
+      _MapPointKind.adoption => BitmapDescriptor.hueGreen,
+      _MapPointKind.person => BitmapDescriptor.hueAzure,
+    };
   }
 
   Set<Marker> _buildMarkers(List<_MapPoint> points) {
@@ -273,24 +231,18 @@ class _MapScreenState extends State<MapScreen> {
         Marker(
           markerId: MarkerId(point.id),
           position: point.position,
-          infoWindow: InfoWindow(
-            title: point.title,
-            snippet: point.subtitle,
-          ),
-          onTap: () {
-            setState(() => _selectedPointId = point.id);
-          },
+          infoWindow: InfoWindow(title: point.title, snippet: point.subtitle),
           icon: BitmapDescriptor.defaultMarkerWithHue(_markerHue(point.kind)),
+          onTap: () => setState(() => _selectedPointId = point.id),
         ),
       );
     }
-
     return markers;
   }
 
   void _focusPoint(_MapPoint point) {
     setState(() => _selectedPointId = point.id);
-    _animateTo(point.position, zoom: 14.4);
+    _animateTo(point.position, zoom: 14.6);
   }
 
   void _openPoint(_MapPoint point) {
@@ -298,12 +250,10 @@ class _MapScreenState extends State<MapScreen> {
       context.push('/chat-detail', extra: point.person!.name);
       return;
     }
-
     if (point.kind == _MapPointKind.adoption && point.animal != null) {
       context.push('/adoption-details', extra: point.animal);
       return;
     }
-
     if (point.animal != null) {
       context.push('/animal-details', extra: point.animal);
     }
@@ -312,7 +262,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F3F7),
+      backgroundColor: const Color(0xFFF4F4EF),
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
       body: BlocBuilder<AnimalBloc, AnimalState>(
         builder: (context, animalState) {
@@ -320,257 +270,48 @@ class _MapScreenState extends State<MapScreen> {
             builder: (context, adoptionState) {
               final saleAnimals =
                   animalState is AnimalLoaded ? animalState.animals : <Animal>[];
-              final adoptionAnimals = adoptionState is AdoptionLoaded
-                  ? adoptionState.animals
-                  : <Animal>[];
-
+              final adoptionAnimals =
+                  adoptionState is AdoptionLoaded ? adoptionState.animals : <Animal>[];
               final peoplePoints = _buildPeoplePoints();
-              final allPoints = [
+              final visiblePoints = _applyFilter([
                 ..._buildSalePoints(saleAnimals),
                 ..._buildAdoptionPoints(adoptionAnimals),
                 ...peoplePoints,
-              ];
+              ]);
 
-              final visiblePoints = _applyFilter(allPoints);
-              final panelHeight = _isResultsPanelVisible ? 286.0 : 56.0;
-              final floatingButtonsBottom = _isResultsPanelVisible ? 300.0 : 120.0;
               _MapPoint? selectedPoint;
               if (visiblePoints.isNotEmpty) {
-                final selectedMatch = visiblePoints.where(
-                  (point) => point.id == _selectedPointId,
-                );
+                final selectedMatch =
+                    visiblePoints.where((point) => point.id == _selectedPointId);
                 selectedPoint =
                     selectedMatch.isNotEmpty ? selectedMatch.first : visiblePoints.first;
               }
 
-              return Stack(
-                children: [
-                  GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: _currentCenter,
-                      zoom: 12.4,
-                    ),
-                    myLocationEnabled: _hasLocationPermission,
-                    myLocationButtonEnabled: false,
-                    mapToolbarEnabled: false,
-                    zoomControlsEnabled: false,
-                    compassEnabled: false,
-                    onTap: (_) => setState(() => _selectedPointId = null),
-                    onMapCreated: (controller) {
-                      _mapController = controller;
-                      _animateTo(_currentCenter, zoom: 12.4);
-                    },
-                    markers: _buildMarkers(visiblePoints),
-                  ),
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                      child: Column(
-                        children: [
-                          _MapTopCard(
-                            areaLabel: _areaLabel,
-                            isLoadingLocation: _isLoadingLocation,
-                            saleCount: saleAnimals.length,
-                            adoptionCount: adoptionAnimals.length,
-                            peopleCount: peoplePoints.length,
-                            onLocate: _loadCurrentLocation,
-                          ),
-                          const SizedBox(height: 12),
-                          _MapFilterBar(
-                            activeFilter: _activeFilter,
-                            onChanged: (filter) {
-                              setState(() => _activeFilter = filter);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 16,
-                    bottom: floatingButtonsBottom + 56,
-                    child: _MapFloatingButton(
-                      icon: Icons.my_location_rounded,
-                      onTap: _loadCurrentLocation,
-                    ),
-                  ),
-                  Positioned(
-                    right: 16,
-                    bottom: floatingButtonsBottom,
-                    child: _MapFloatingButton(
-                      icon: Icons.layers_outlined,
-                      onTap: () {
-                        setState(() {
-                          _activeFilter = _activeFilter == _MapFilter.all
-                              ? _MapFilter.people
-                              : _MapFilter.all;
-                        });
-                      },
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: panelHeight,
-                      margin: const EdgeInsets.fromLTRB(12, 0, 12, 92),
-                      padding: EdgeInsets.fromLTRB(
-                        16,
-                        _isResultsPanelVisible ? 12 : 10,
-                        16,
-                        _isResultsPanelVisible ? 16 : 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.97),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: const Color(0xFFE9DCE7)),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x184B1A45),
-                            blurRadius: 28,
-                            offset: Offset(0, 14),
-                          ),
-                        ],
-                      ),
-                      child: _isResultsPanelVisible
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Center(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _isResultsPanelVisible = false;
-                                      });
-                                    },
-                                    child: SizedBox(
-                                      height: 12,
-                                      child: Center(
-                                        child: Container(
-                                          width: 42,
-                                          height: 5,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFD6C7D1),
-                                            borderRadius: BorderRadius.circular(999),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    const Expanded(
-                                      child: Text(
-                                        'Nearby in your area',
-                                        style: TextStyle(
-                                          color: Color(0xFF2F1B2D),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${visiblePoints.length} results',
-                                      style: const TextStyle(
-                                        color: Color(0xFF8B7B88),
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  selectedPoint == null
-                                      ? 'Animals, adopters, and nearby helpers around the same location.'
-                                      : 'Focused on ${selectedPoint.title}. Tap the card action to continue.',
-                                  style: const TextStyle(
-                                    color: Color(0xFF8B7B88),
-                                    fontSize: 12.5,
-                                    height: 1.4,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Expanded(
-                                  child: visiblePoints.isEmpty
-                                      ? const Center(
-                                          child: Text(
-                                            'No nearby points in this filter yet.',
-                                            style: TextStyle(
-                                              color: Color(0xFF8B7B88),
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        )
-                                      : ListView.separated(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: visiblePoints.length,
-                                          separatorBuilder: (_, _) =>
-                                              const SizedBox(width: 10),
-                                          itemBuilder: (context, index) {
-                                            final point = visiblePoints[index];
-                                            return _NearbyMapCard(
-                                              point: point,
-                                              isSelected: point.id == selectedPoint?.id,
-                                              onTap: () => _focusPoint(point),
-                                              onAction: () => _openPoint(point),
-                                            );
-                                          },
-                                        ),
-                                ),
-                              ],
-                            )
-                          : InkWell(
-                              borderRadius: BorderRadius.circular(22),
-                              onTap: () {
-                                setState(() {
-                                  _isResultsPanelVisible = true;
-                                });
-                              },
-                              child: SizedBox(
-                                height: 36,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFF3EAF1),
-                                        borderRadius: BorderRadius.circular(11),
-                                      ),
-                                      child: const Icon(
-                                        Icons.keyboard_arrow_up_rounded,
-                                        color: Color(0xFF4B1A45),
-                                        size: 18,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Expanded(
-                                      child: Text(
-                                        'Nearby points hidden',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Color(0xFF2F1B2D),
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                    ),
-                                    const Text(
-                                      'Show',
-                                      style: TextStyle(
-                                        color: Color(0xFF8B7B88),
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                    ),
-                  ),
-                ],
+              return _MapLayout(
+                currentCenter: _currentCenter,
+                hasLocationPermission: _hasLocationPermission,
+                markers: _buildMarkers(visiblePoints),
+                areaLabel: _areaLabel,
+                isLoadingLocation: _isLoadingLocation,
+                saleCount: saleAnimals.length,
+                adoptionCount: adoptionAnimals.length,
+                peopleCount: peoplePoints.length,
+                activeFilter: _activeFilter,
+                onFilterChanged: (filter) => setState(() => _activeFilter = filter),
+                onLocate: _loadCurrentLocation,
+                onMapCreated: (controller) {
+                  _mapController = controller;
+                  _animateTo(_currentCenter, zoom: 12.4);
+                },
+                onMapTap: () => setState(() => _selectedPointId = null),
+                isResultsPanelVisible: _isResultsPanelVisible,
+                onTogglePanel: () {
+                  setState(() => _isResultsPanelVisible = !_isResultsPanelVisible);
+                },
+                points: visiblePoints,
+                selectedPoint: selectedPoint,
+                onFocusPoint: _focusPoint,
+                onOpenPoint: _openPoint,
               );
             },
           );
@@ -580,83 +321,222 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
-enum _MapFilter { all, sale, adoption, people }
-
-enum _MapPointKind { sale, adoption, person }
-
-class _MapPoint {
-  const _MapPoint({
-    required this.id,
-    required this.kind,
-    required this.title,
-    required this.subtitle,
-    required this.distanceLabel,
-    required this.position,
-    required this.accent,
-    this.animal,
-    this.person,
+class _MapLayout extends StatelessWidget {
+  const _MapLayout({
+    required this.currentCenter,
+    required this.hasLocationPermission,
+    required this.markers,
+    required this.areaLabel,
+    required this.isLoadingLocation,
+    required this.saleCount,
+    required this.adoptionCount,
+    required this.peopleCount,
+    required this.activeFilter,
+    required this.onFilterChanged,
+    required this.onLocate,
+    required this.onMapCreated,
+    required this.onMapTap,
+    required this.isResultsPanelVisible,
+    required this.onTogglePanel,
+    required this.points,
+    required this.selectedPoint,
+    required this.onFocusPoint,
+    required this.onOpenPoint,
   });
 
-  final String id;
-  final _MapPointKind kind;
-  final String title;
-  final String subtitle;
-  final String distanceLabel;
-  final LatLng position;
-  final Color accent;
-  final Animal? animal;
-  final _NearbyPerson? person;
+  final LatLng currentCenter;
+  final bool hasLocationPermission;
+  final Set<Marker> markers;
+  final String areaLabel;
+  final bool isLoadingLocation;
+  final int saleCount;
+  final int adoptionCount;
+  final int peopleCount;
+  final _MapFilter activeFilter;
+  final ValueChanged<_MapFilter> onFilterChanged;
+  final VoidCallback onLocate;
+  final ValueChanged<GoogleMapController> onMapCreated;
+  final VoidCallback onMapTap;
+  final bool isResultsPanelVisible;
+  final VoidCallback onTogglePanel;
+  final List<_MapPoint> points;
+  final _MapPoint? selectedPoint;
+  final ValueChanged<_MapPoint> onFocusPoint;
+  final ValueChanged<_MapPoint> onOpenPoint;
 
-  String get actionLabel {
-    switch (kind) {
-      case _MapPointKind.sale:
-        return 'View animal';
-      case _MapPointKind.adoption:
-        return 'Open adoption';
-      case _MapPointKind.person:
-        return 'Start chat';
-    }
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final panelHeight = isResultsPanelVisible ? 270.0 : 58.0;
+    final floatingButtonsBottom = isResultsPanelVisible ? 286.0 : 118.0;
+    final filters = [
+      (_MapFilter.all, 'All', Icons.grid_view_rounded),
+      (_MapFilter.sale, 'Sale', Icons.sell_outlined),
+      (_MapFilter.adoption, 'Adopt', Icons.favorite_border_rounded),
+      (_MapFilter.people, 'People', Icons.group_outlined),
+    ];
+
+    return Stack(
+      children: [
+        GoogleMap(
+          initialCameraPosition: CameraPosition(target: currentCenter, zoom: 12.4),
+          myLocationEnabled: hasLocationPermission,
+          myLocationButtonEnabled: false,
+          mapToolbarEnabled: false,
+          zoomControlsEnabled: false,
+          compassEnabled: false,
+          onTap: (_) => onMapTap(),
+          onMapCreated: onMapCreated,
+          markers: markers,
+        ),
+        IgnorePointer(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFFF4F4EF).withOpacity(0.86),
+                  const Color(0xFFF4F4EF).withOpacity(0),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: const [0, 0.24],
+              ),
+            ),
+            child: const SizedBox.expand(),
+          ),
+        ),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: Column(
+              children: [
+                _MapTopCard(
+                  areaLabel: areaLabel,
+                  isLoadingLocation: isLoadingLocation,
+                  saleCount: saleCount,
+                  adoptionCount: adoptionCount,
+                  peopleCount: peopleCount,
+                  onLocate: onLocate,
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.96),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: scheme.outlineVariant),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.06),
+                        blurRadius: 18,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: filters.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final (filter, label, icon) = filters[index];
+                      final isSelected = filter == activeFilter;
+                      return InkWell(
+                        onTap: () => onFilterChanged(filter),
+                        borderRadius: BorderRadius.circular(999),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 220),
+                          curve: Curves.easeOutCubic,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(999),
+                            color: isSelected ? scheme.primary : const Color(0xFFF3F4EF),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                icon,
+                                size: 15,
+                                color: isSelected ? Colors.white : scheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                label,
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  color: isSelected ? Colors.white : scheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        for (final data in [
+          (Icons.my_location_rounded, floatingButtonsBottom + 52, onLocate),
+          (Icons.layers_outlined, floatingButtonsBottom, onTogglePanel),
+        ])
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 240),
+            curve: Curves.easeOutCubic,
+            right: 16,
+            bottom: data.$2,
+            child: _MapFloatingButton(icon: data.$1, onTap: data.$3),
+          ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 260),
+            curve: Curves.easeOutCubic,
+            height: panelHeight,
+            margin: const EdgeInsets.fromLTRB(12, 0, 12, 92),
+            padding: EdgeInsets.fromLTRB(
+              14,
+              isResultsPanelVisible ? 12 : 10,
+              14,
+              isResultsPanelVisible ? 14 : 10,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.96),
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: scheme.outlineVariant),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 28,
+                  offset: const Offset(0, 14),
+                ),
+              ],
+            ),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 220),
+              child: isResultsPanelVisible
+                  ? _ExpandedPanel(
+                      key: const ValueKey('expanded'),
+                      points: points,
+                      selectedPoint: selectedPoint,
+                      onTogglePanel: onTogglePanel,
+                      onFocusPoint: onFocusPoint,
+                      onOpenPoint: onOpenPoint,
+                    )
+                  : _CollapsedPanel(
+                      key: const ValueKey('collapsed'),
+                      resultsCount: points.length,
+                      onTogglePanel: onTogglePanel,
+                    ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
-
-  String get badgeLabel {
-    switch (kind) {
-      case _MapPointKind.sale:
-        return 'For sale';
-      case _MapPointKind.adoption:
-        return 'Adoption';
-      case _MapPointKind.person:
-        return 'Nearby helper';
-    }
-  }
-
-  IconData get icon {
-    switch (kind) {
-      case _MapPointKind.sale:
-        return Icons.sell_outlined;
-      case _MapPointKind.adoption:
-        return Icons.favorite_border_rounded;
-      case _MapPointKind.person:
-        return Icons.person_pin_circle_outlined;
-    }
-  }
-}
-
-class _NearbyPerson {
-  const _NearbyPerson({
-    required this.id,
-    required this.name,
-    required this.role,
-    required this.area,
-    required this.accent,
-    required this.offset,
-  });
-
-  final String id;
-  final String name;
-  final String role;
-  final String area;
-  final Color accent;
-  final Offset offset;
 }
 
 class _MapTopCard extends StatelessWidget {
@@ -678,20 +558,57 @@ class _MapTopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    Widget stat(String value, String label) {
+      return Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                label,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: Colors.white.withOpacity(0.78),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF4B1A45), Color(0xFF7B315E)],
+        borderRadius: BorderRadius.circular(28),
+        gradient: LinearGradient(
+          colors: [
+            scheme.primary,
+            Color.alphaBlend(scheme.secondary.withOpacity(0.28), scheme.primary),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x194B1A45),
-            blurRadius: 28,
-            offset: Offset(0, 14),
+            color: scheme.primary.withOpacity(0.22),
+            blurRadius: 26,
+            offset: const Offset(0, 14),
           ),
         ],
       ),
@@ -701,14 +618,14 @@ class _MapTopCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
+                  color: Colors.white.withOpacity(0.14),
                   borderRadius: BorderRadius.circular(999),
                 ),
-                child: const Text(
-                  'Community map',
-                  style: TextStyle(
+                child: Text(
+                  'Live map',
+                  style: theme.textTheme.labelMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                   ),
@@ -719,352 +636,56 @@ class _MapTopCard extends StatelessWidget {
                 onTap: onLocate,
                 borderRadius: BorderRadius.circular(16),
                 child: Container(
-                  width: 38,
-                  height: 38,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.14),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: isLoadingLocation
                       ? const Padding(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(11),
                           child: CircularProgressIndicator(
-                            strokeWidth: 2.2,
+                            strokeWidth: 2.1,
                             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Icon(
                           Icons.gps_fixed_rounded,
                           color: Colors.white,
-                          size: 20,
+                          size: 19,
                         ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          const Text(
-            'Professional nearby map for animals and people in the same area.',
-            style: TextStyle(
+          const SizedBox(height: 12),
+          Text(
+            'Nearby pets, adoptions, and trusted helpers in one polished view.',
+            style: theme.textTheme.headlineSmall?.copyWith(
               color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              height: 1.2,
+              height: 1.22,
             ),
           ),
           const SizedBox(height: 6),
           Text(
             areaLabel,
-            style: TextStyle(
+            style: theme.textTheme.bodySmall?.copyWith(
               color: Colors.white.withOpacity(0.84),
-              fontSize: 12,
-              height: 1.5,
+              height: 1.45,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(
-                child: _MapStat(value: '$saleCount', label: 'Sale points'),
-              ),
+              stat('$saleCount', 'Sale'),
               const SizedBox(width: 10),
-              Expanded(
-                child: _MapStat(value: '$adoptionCount', label: 'Adoption'),
-              ),
+              stat('$adoptionCount', 'Adopt'),
               const SizedBox(width: 10),
-              Expanded(
-                child: _MapStat(value: '$peopleCount', label: 'Helpers'),
-              ),
+              stat('$peopleCount', 'Helpers'),
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _MapStat extends StatelessWidget {
-  const _MapStat({
-    required this.value,
-    required this.label,
-  });
-
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MapFilterBar extends StatelessWidget {
-  const _MapFilterBar({
-    required this.activeFilter,
-    required this.onChanged,
-  });
-
-  final _MapFilter activeFilter;
-  final ValueChanged<_MapFilter> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final filters = [
-      (_MapFilter.all, 'All', Icons.grid_view_rounded),
-      (_MapFilter.sale, 'Sale', Icons.sell_outlined),
-      (_MapFilter.adoption, 'Adopt', Icons.favorite_border_rounded),
-      (_MapFilter.people, 'People', Icons.group_outlined),
-    ];
-
-    return Container(
-      height: 52,
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE9DCE7)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x104B1A45),
-            blurRadius: 20,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: filters.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          final (filter, label, icon) = filters[index];
-          final isSelected = filter == activeFilter;
-
-          return InkWell(
-            onTap: () => onChanged(filter),
-            borderRadius: BorderRadius.circular(999),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                color: isSelected ? const Color(0xFF4B1A45) : const Color(0xFFF8F2F6),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    icon,
-                    size: 16,
-                    color: isSelected ? Colors.white : const Color(0xFF715F6B),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    label,
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : const Color(0xFF715F6B),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _NearbyMapCard extends StatelessWidget {
-  const _NearbyMapCard({
-    required this.point,
-    required this.isSelected,
-    required this.onTap,
-    required this.onAction,
-  });
-
-  final _MapPoint point;
-  final bool isSelected;
-  final VoidCallback onTap;
-  final VoidCallback onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
-        width: 206,
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFF8F1F6) : const Color(0xFFFCFAFC),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: isSelected ? point.accent.withOpacity(0.45) : const Color(0xFFECE1E9),
-            width: isSelected ? 1.4 : 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 34,
-                  height: 34,
-                  decoration: BoxDecoration(
-                    color: point.accent.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(point.icon, color: point.accent, size: 18),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        point.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFF2F1B2D),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        point.distanceLabel,
-                        style: const TextStyle(
-                          color: Color(0xFF8B7B88),
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: point.accent.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                point.badgeLabel,
-                style: TextStyle(
-                  color: point.accent,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 10,
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Expanded(
-              child: Text(
-                point.subtitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Color(0xFF6F5C69),
-                  fontSize: 12,
-                  height: 1.4,
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: onAction,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4B1A45),
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  minimumSize: const Size.fromHeight(32),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: Text(
-                  point.actionLabel,
-                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MapFloatingButton extends StatelessWidget {
-  const _MapFloatingButton({
-    required this.icon,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: Ink(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.96),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE9DCE7)),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x154B1A45),
-                blurRadius: 18,
-                offset: Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Icon(icon, color: const Color(0xFF4B1A45)),
-        ),
       ),
     );
   }

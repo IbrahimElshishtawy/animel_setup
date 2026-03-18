@@ -2,41 +2,84 @@ import 'package:flutter/material.dart';
 
 class HomeHeader extends StatelessWidget {
   final VoidCallback onProfileTap;
+
   const HomeHeader({super.key, required this.onProfileTap});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onProfileTap,
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: const Color(0xFFE4CBDD),
-            child: const Icon(
-              Icons.person_outline,
-              size: 28,
-              color: Color(0xFF4B1A45),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'Welcome',
-                style: TextStyle(fontSize: 13, color: Colors.black54),
-              ),
-              SizedBox(height: 2),
-              Text(
-                'User',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onProfileTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Ink(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: scheme.outlineVariant),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 18,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
-          const Spacer(),
-          const Icon(Icons.chevron_right, color: Colors.black54),
-        ],
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    colors: [
+                      scheme.primary.withOpacity(0.16),
+                      scheme.secondary.withOpacity(0.18),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  size: 24,
+                  color: scheme.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Welcome back',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      'Find your next companion',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 15,
+                color: scheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
