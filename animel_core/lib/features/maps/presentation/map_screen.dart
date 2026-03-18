@@ -690,3 +690,362 @@ class _MapTopCard extends StatelessWidget {
     );
   }
 }
+
+class _ExpandedPanel extends StatelessWidget {
+  const _ExpandedPanel({
+    super.key,
+    required this.points,
+    required this.selectedPoint,
+    required this.onTogglePanel,
+    required this.onFocusPoint,
+    required this.onOpenPoint,
+  });
+
+  final List<_MapPoint> points;
+  final _MapPoint? selectedPoint;
+  final VoidCallback onTogglePanel;
+  final ValueChanged<_MapPoint> onFocusPoint;
+  final ValueChanged<_MapPoint> onOpenPoint;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: GestureDetector(
+            onTap: onTogglePanel,
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: scheme.outlineVariant,
+                borderRadius: BorderRadius.circular(999),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Nearby results',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            Text(
+              '${points.length} found',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          selectedPoint == null
+              ? 'Animals, adopters, and trusted community members close to this area.'
+              : 'Focused on ${selectedPoint!.title}. Tap the action button to continue.',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: scheme.onSurfaceVariant,
+            height: 1.45,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Expanded(
+          child: points.isEmpty
+              ? Center(
+                  child: Text(
+                    'No nearby points in this filter yet.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                )
+              : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: points.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 10),
+                  itemBuilder: (context, index) {
+                    final point = points[index];
+                    final isSelected = point.id == selectedPoint?.id;
+                    return GestureDetector(
+                      onTap: () => onFocusPoint(point),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        width: 192,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isSelected ? point.accent.withOpacity(0.08) : const Color(0xFFFCFCFA),
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(
+                            color: isSelected ? point.accent.withOpacity(0.38) : const Color(0xFFE4E8E3),
+                            width: isSelected ? 1.4 : 1,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 34,
+                                  height: 34,
+                                  decoration: BoxDecoration(
+                                    color: point.accent.withOpacity(0.12),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(point.icon, color: point.accent, size: 18),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        point.title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: theme.textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        point.distanceLabel,
+                                        style: theme.textTheme.labelSmall?.copyWith(
+                                          color: scheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: point.accent.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Text(
+                                point.badgeLabel,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: point.accent,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Expanded(
+                              child: Text(
+                                point.subtitle,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: scheme.onSurfaceVariant,
+                                  height: 1.45,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () => onOpenPoint(point),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: point.accent,
+                                  minimumSize: const Size.fromHeight(34),
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                                child: Text(
+                                  point.actionLabel,
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CollapsedPanel extends StatelessWidget {
+  const _CollapsedPanel({
+    super.key,
+    required this.resultsCount,
+    required this.onTogglePanel,
+  });
+
+  final int resultsCount;
+  final VoidCallback onTogglePanel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(22),
+      onTap: onTogglePanel,
+      child: SizedBox(
+        height: 36,
+        child: Row(
+          children: [
+            Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                color: scheme.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(11),
+              ),
+              child: Icon(
+                Icons.keyboard_arrow_up_rounded,
+                color: scheme.primary,
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '$resultsCount nearby points hidden',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            Text(
+              'Show',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MapFloatingButton extends StatelessWidget {
+  const _MapFloatingButton({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Ink(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.96),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: scheme.outlineVariant),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 18,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Icon(icon, color: scheme.primary, size: 20),
+        ),
+      ),
+    );
+  }
+}
+
+enum _MapFilter { all, sale, adoption, people }
+
+enum _MapPointKind { sale, adoption, person }
+
+class _MapPoint {
+  const _MapPoint({
+    required this.id,
+    required this.kind,
+    required this.title,
+    required this.subtitle,
+    required this.distanceLabel,
+    required this.position,
+    required this.accent,
+    this.animal,
+    this.person,
+  });
+
+  final String id;
+  final _MapPointKind kind;
+  final String title;
+  final String subtitle;
+  final String distanceLabel;
+  final LatLng position;
+  final Color accent;
+  final Animal? animal;
+  final _NearbyPerson? person;
+
+  String get actionLabel => switch (kind) {
+        _MapPointKind.sale => 'View animal',
+        _MapPointKind.adoption => 'Open adoption',
+        _MapPointKind.person => 'Start chat',
+      };
+
+  String get badgeLabel => switch (kind) {
+        _MapPointKind.sale => 'For sale',
+        _MapPointKind.adoption => 'Adoption',
+        _MapPointKind.person => 'Nearby helper',
+      };
+
+  IconData get icon => switch (kind) {
+        _MapPointKind.sale => Icons.sell_outlined,
+        _MapPointKind.adoption => Icons.favorite_border_rounded,
+        _MapPointKind.person => Icons.person_pin_circle_outlined,
+      };
+}
+
+class _NearbyPerson {
+  const _NearbyPerson(
+    this.id,
+    this.name,
+    this.role,
+    this.area,
+    this.accent,
+    this.offset,
+  );
+
+  final String id;
+  final String name;
+  final String role;
+  final String area;
+  final Color accent;
+  final Offset offset;
+}
