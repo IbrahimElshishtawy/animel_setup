@@ -1,81 +1,173 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/models/conversation_model.dart';
 import '../../../core/models/message_model.dart';
 import '../../../core/repositories/chat_repository.dart';
 
-// Events
 abstract class ChatEvent extends Equatable {
   const ChatEvent();
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
+
+class FetchConversations extends ChatEvent {}
 
 class FetchMessages extends ChatEvent {
   final String otherUserId;
+
   const FetchMessages(this.otherUserId);
+
   @override
-  List<Object> get props => [otherUserId];
+  List<Object?> get props => [otherUserId];
 }
 
 class SendMessageRequested extends ChatEvent {
   final String receiverId;
   final String content;
+
   const SendMessageRequested(this.receiverId, this.content);
+
   @override
-  List<Object> get props => [receiverId, content];
+  List<Object?> get props => [receiverId, content];
 }
 
-// States
-abstract class ChatState extends Equatable {
-  const ChatState();
-  @override
-  List<Object> get props => [];
-}
+class ClearChatMessage extends ChatEvent {}
 
-class ChatInitial extends ChatState {}
-class ChatLoading extends ChatState {}
-class ChatLoaded extends ChatState {
+class ChatState extends Equatable {
+  final List<Conversation> conversations;
   final List<Message> messages;
-  const ChatLoaded(this.messages);
+  final String activeUserId;
+  final String conversationId;
+  final bool isLoading;
+  final bool isSending;
+  final String? errorMessage;
+
+  const ChatState({
+    this.conversations = const [],
+    this.messages = const [],
+    this.activeUserId = '',
+    this.conversationId = '',
+    this.isLoading = false,
+    this.isSending = false,
+    this.errorMessage,
+  });
+
+  const ChatState.initial() : this();
+
+  ChatState copyWith({
+    List<Conversation>? conversations,
+    List<Message>? messages,
+    String? activeUserId,
+    String? conversationId,
+    bool? isLoading,
+    bool? isSending,
+    String? errorMessage,
+    bool clearError = false,
+  }) {
+    return ChatState(
+      conversations: conversations ?? this.conversations,
+      messages: messages ?? this.messages,
+      activeUserId: activeUserId ?? this.activeUserId,
+      conversationId: conversationId ?? this.conversationId,
+      isLoading: isLoading ?? this.isLoading,
+      isSending: isSending ?? this.isSending,
+      errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
+    );
+  }
+
   @override
-  List<Object> get props => [messages];
-}
-class ChatError extends ChatState {
-  final String message;
-  const ChatError(this.message);
-  @override
-  List<Object> get props => [message];
+  List<Object?> get props => [
+        conversations,
+        messages,
+        activeUserId,
+        conversationId,
+        isLoading,
+        isSending,
+        errorMessage,
+      ];
 }
 
-// Bloc
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final ChatRepository _chatRepository = ChatRepository();
+  final ChatRepository _repository = ChatRepository();
 
-  ChatBloc() : super(ChatInitial()) {
-    on<FetchMessages>((event, emit) async {
-      emit(ChatLoading());
-      try {
-        final messages = await _chatRepository.getMessages(event.otherUserId);
-        emit(ChatLoaded(messages));
-      } catch (e) {
-        emit(const ChatError('Failed to fetch messages'));
-      }
-    });
+  ChatBloc() : super(const ChatState.initial()) {
+    on<FetchConversations>(_onFetchConversations);
+    on<FetchMessages>(_onFetchMessages);
+    on<SendMessageRequested>(_onSendMessageRequested);
+    on<ClearChatMessage>(
+      (event, emit) => emit(state.copyWith(clearError: true)),
+    );
+  }
 
-    on<SendMessageRequested>((event, emit) async {
-      try {
-        final message = await _chatRepository.sendMessage(event.receiverId, event.content);
-        if (message != null) {
-          if (state is ChatLoaded) {
-            final updatedMessages = List<Message>.from((state as ChatLoaded).messages)..add(message);
-            emit(ChatLoaded(updatedMessages));
-          } else {
-            emit(ChatLoaded([message]));
-          }
-        }
-      } catch (e) {
-        // Silently fail or emit error
-      }
-    });
+  Future<void> _onFetchConversations(
+    FetchConversations event,
+    Emitter<ChatState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true, clearError: true));
+    try {
+      final conversations = await _repository.getConversations();
+      emit(state.copyWith(conversations: conversations, isLoading: false));
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: error.toString().replaceFirst('ApiException: ', ''),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onFetchMessages(
+    FetchMessages event,
+    Emitter<ChatState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true, activeUserId: event.otherUserId, clearError: true));
+    try {
+      final response = await _repository.getMessages(event.otherUserId);
+      emit(
+        state.copyWith(
+          isLoading: false,
+          activeUserId: event.otherUserId,
+          conversationId: response.conversationId,
+          messages: response.messages,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: error.toString().replaceFirst('ApiException: ', ''),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onSendMessageRequested(
+    SendMessageRequested event,
+    Emitter<ChatState> emit,
+  ) async {
+    emit(state.copyWith(isSending: true, clearError: true));
+    try {
+      final response = await _repository.sendMessage(event.receiverId, event.content);
+      final updatedMessages = List<Message>.from(state.messages)..add(response.message);
+
+      emit(
+        state.copyWith(
+          isSending: false,
+          activeUserId: event.receiverId,
+          conversationId: response.conversationId,
+          messages: updatedMessages,
+        ),
+      );
+      add(FetchConversations());
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isSending: false,
+          errorMessage: error.toString().replaceFirst('ApiException: ', ''),
+        ),
+      );
+    }
   }
 }

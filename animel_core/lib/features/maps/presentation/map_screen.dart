@@ -40,10 +40,10 @@ class _MapScreenState extends State<MapScreen> {
     final animalBloc = context.read<AnimalBloc>();
     final adoptionBloc = context.read<AdoptionBloc>();
 
-    if (animalBloc.state is AnimalInitial || animalBloc.state is AnimalError) {
+    if (animalBloc.state.animals.isEmpty && !animalBloc.state.isLoading) {
       animalBloc.add(FetchAnimals());
     }
-    if (adoptionBloc.state is AdoptionInitial || adoptionBloc.state is AdoptionError) {
+    if (adoptionBloc.state.animals.isEmpty && !adoptionBloc.state.isLoading) {
       adoptionBloc.add(FetchAdoptionAnimals());
     }
     await _loadCurrentLocation();
@@ -78,7 +78,9 @@ class _MapScreenState extends State<MapScreen> {
       }
 
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
       if (!mounted) return;
 
@@ -114,7 +116,9 @@ class _MapScreenState extends State<MapScreen> {
     final controller = _mapController;
     if (controller == null) return;
     await controller.animateCamera(
-      CameraUpdate.newCameraPosition(CameraPosition(target: target, zoom: zoom)),
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: target, zoom: zoom),
+      ),
     );
   }
 
@@ -137,7 +141,7 @@ class _MapScreenState extends State<MapScreen> {
         id: 'sale_${animal.id}',
         kind: _MapPointKind.sale,
         title: animal.name,
-        subtitle: '${animal.breed} • ${animal.location}',
+        subtitle: '${animal.breed} - ${animal.location}',
         distanceLabel: '${1.2 + (index * 0.6)} km away',
         position: _shift(_currentCenter, offset.dx, offset.dy),
         accent: const Color(0xFFE39A53),
@@ -160,7 +164,7 @@ class _MapScreenState extends State<MapScreen> {
         id: 'adoption_${animal.id}',
         kind: _MapPointKind.adoption,
         title: animal.name,
-        subtitle: '${animal.breed} • Ready for adoption',
+        subtitle: '${animal.breed} - Ready for adoption',
         distanceLabel: '${0.9 + (index * 0.7)} km away',
         position: _shift(_currentCenter, offset.dx, offset.dy),
         accent: const Color(0xFF55A57F),
@@ -171,14 +175,38 @@ class _MapScreenState extends State<MapScreen> {
 
   List<_MapPoint> _buildPeoplePoints() {
     final people = [
-      _NearbyPerson('person_1', 'Mona Ali', 'Adoption coordinator', 'Same district',
-          const Color(0xFF4F88B9), const Offset(0.003, -0.005)),
-      _NearbyPerson('person_2', 'Omar Hassan', 'Pet transporter', '1.1 km away',
-          const Color(0xFF6B7EAA), const Offset(-0.004, 0.003)),
-      _NearbyPerson('person_3', 'Sara Nabil', 'Local rescuer', 'Same area',
-          const Color(0xFFD07A57), const Offset(0.007, 0.001)),
-      _NearbyPerson('person_4', 'Dr. Karim', 'Vet support', '1.8 km away',
-          const Color(0xFF2E7D75), const Offset(-0.007, -0.007)),
+      _NearbyPerson(
+        'person_1',
+        'Mona Ali',
+        'Adoption coordinator',
+        'Same district',
+        const Color(0xFF4F88B9),
+        const Offset(0.003, -0.005),
+      ),
+      _NearbyPerson(
+        'person_2',
+        'Omar Hassan',
+        'Pet transporter',
+        '1.1 km away',
+        const Color(0xFF6B7EAA),
+        const Offset(-0.004, 0.003),
+      ),
+      _NearbyPerson(
+        'person_3',
+        'Sara Nabil',
+        'Local rescuer',
+        'Same area',
+        const Color(0xFFD07A57),
+        const Offset(0.007, 0.001),
+      ),
+      _NearbyPerson(
+        'person_4',
+        'Dr. Karim',
+        'Vet support',
+        '1.8 km away',
+        const Color(0xFF2E7D75),
+        const Offset(-0.007, -0.007),
+      ),
     ];
 
     return people
@@ -187,9 +215,13 @@ class _MapScreenState extends State<MapScreen> {
             id: person.id,
             kind: _MapPointKind.person,
             title: person.name,
-            subtitle: '${person.role} • ${person.area}',
+            subtitle: '${person.role} - ${person.area}',
             distanceLabel: person.area,
-            position: _shift(_currentCenter, person.offset.dx, person.offset.dy),
+            position: _shift(
+              _currentCenter,
+              person.offset.dx,
+              person.offset.dy,
+            ),
             accent: person.accent,
             person: person,
           ),
@@ -199,7 +231,8 @@ class _MapScreenState extends State<MapScreen> {
 
   List<_MapPoint> _applyFilter(List<_MapPoint> points) {
     return switch (_activeFilter) {
-      _MapFilter.sale => points.where((point) => point.kind == _MapPointKind.sale).toList(),
+      _MapFilter.sale =>
+        points.where((point) => point.kind == _MapPointKind.sale).toList(),
       _MapFilter.adoption =>
         points.where((point) => point.kind == _MapPointKind.adoption).toList(),
       _MapFilter.people =>
@@ -268,10 +301,8 @@ class _MapScreenState extends State<MapScreen> {
         builder: (context, animalState) {
           return BlocBuilder<AdoptionBloc, AdoptionState>(
             builder: (context, adoptionState) {
-              final saleAnimals =
-                  animalState is AnimalLoaded ? animalState.animals : <Animal>[];
-              final adoptionAnimals =
-                  adoptionState is AdoptionLoaded ? adoptionState.animals : <Animal>[];
+              final saleAnimals = animalState.animals;
+              final adoptionAnimals = adoptionState.animals;
               final peoplePoints = _buildPeoplePoints();
               final visiblePoints = _applyFilter([
                 ..._buildSalePoints(saleAnimals),
@@ -281,10 +312,12 @@ class _MapScreenState extends State<MapScreen> {
 
               _MapPoint? selectedPoint;
               if (visiblePoints.isNotEmpty) {
-                final selectedMatch =
-                    visiblePoints.where((point) => point.id == _selectedPointId);
-                selectedPoint =
-                    selectedMatch.isNotEmpty ? selectedMatch.first : visiblePoints.first;
+                final selectedMatch = visiblePoints.where(
+                  (point) => point.id == _selectedPointId,
+                );
+                selectedPoint = selectedMatch.isNotEmpty
+                    ? selectedMatch.first
+                    : visiblePoints.first;
               }
 
               return _MapLayout(
@@ -297,7 +330,8 @@ class _MapScreenState extends State<MapScreen> {
                 adoptionCount: adoptionAnimals.length,
                 peopleCount: peoplePoints.length,
                 activeFilter: _activeFilter,
-                onFilterChanged: (filter) => setState(() => _activeFilter = filter),
+                onFilterChanged: (filter) =>
+                    setState(() => _activeFilter = filter),
                 onLocate: _loadCurrentLocation,
                 onMapCreated: (controller) {
                   _mapController = controller;
@@ -306,7 +340,9 @@ class _MapScreenState extends State<MapScreen> {
                 onMapTap: () => setState(() => _selectedPointId = null),
                 isResultsPanelVisible: _isResultsPanelVisible,
                 onTogglePanel: () {
-                  setState(() => _isResultsPanelVisible = !_isResultsPanelVisible);
+                  setState(
+                    () => _isResultsPanelVisible = !_isResultsPanelVisible,
+                  );
                 },
                 points: visiblePoints,
                 selectedPoint: selectedPoint,
@@ -380,7 +416,10 @@ class _MapLayout extends StatelessWidget {
     return Stack(
       children: [
         GoogleMap(
-          initialCameraPosition: CameraPosition(target: currentCenter, zoom: 12.4),
+          initialCameraPosition: CameraPosition(
+            target: currentCenter,
+            zoom: 12.4,
+          ),
           myLocationEnabled: hasLocationPermission,
           myLocationButtonEnabled: false,
           mapToolbarEnabled: false,
@@ -448,23 +487,32 @@ class _MapLayout extends StatelessWidget {
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 220),
                           curve: Curves.easeOutCubic,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(999),
-                            color: isSelected ? scheme.primary : const Color(0xFFF3F4EF),
+                            color: isSelected
+                                ? scheme.primary
+                                : const Color(0xFFF3F4EF),
                           ),
                           child: Row(
                             children: [
                               Icon(
                                 icon,
                                 size: 15,
-                                color: isSelected ? Colors.white : scheme.onSurfaceVariant,
+                                color: isSelected
+                                    ? Colors.white
+                                    : scheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 6),
                               Text(
                                 label,
                                 style: theme.textTheme.labelMedium?.copyWith(
-                                  color: isSelected ? Colors.white : scheme.onSurfaceVariant,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : scheme.onSurfaceVariant,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -599,7 +647,10 @@ class _MapTopCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             scheme.primary,
-            Color.alphaBlend(scheme.secondary.withOpacity(0.28), scheme.primary),
+            Color.alphaBlend(
+              scheme.secondary.withOpacity(0.28),
+              scheme.primary,
+            ),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -618,7 +669,10 @@ class _MapTopCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.14),
                   borderRadius: BorderRadius.circular(999),
@@ -647,7 +701,9 @@ class _MapTopCard extends StatelessWidget {
                           padding: EdgeInsets.all(11),
                           child: CircularProgressIndicator(
                             strokeWidth: 2.1,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                         )
                       : const Icon(
@@ -783,10 +839,14 @@ class _ExpandedPanel extends StatelessWidget {
                         width: 192,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: isSelected ? point.accent.withOpacity(0.08) : const Color(0xFFFCFCFA),
+                          color: isSelected
+                              ? point.accent.withOpacity(0.08)
+                              : const Color(0xFFFCFCFA),
                           borderRadius: BorderRadius.circular(22),
                           border: Border.all(
-                            color: isSelected ? point.accent.withOpacity(0.38) : const Color(0xFFE4E8E3),
+                            color: isSelected
+                                ? point.accent.withOpacity(0.38)
+                                : const Color(0xFFE4E8E3),
                             width: isSelected ? 1.4 : 1,
                           ),
                         ),
@@ -802,27 +862,34 @@ class _ExpandedPanel extends StatelessWidget {
                                     color: point.accent.withOpacity(0.12),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Icon(point.icon, color: point.accent, size: 18),
+                                  child: Icon(
+                                    point.icon,
+                                    color: point.accent,
+                                    size: 18,
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         point.title,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: theme.textTheme.titleSmall?.copyWith(
-                                          fontWeight: FontWeight.w800,
-                                        ),
+                                        style: theme.textTheme.titleSmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w800,
+                                            ),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
                                         point.distanceLabel,
-                                        style: theme.textTheme.labelSmall?.copyWith(
-                                          color: scheme.onSurfaceVariant,
-                                        ),
+                                        style: theme.textTheme.labelSmall
+                                            ?.copyWith(
+                                              color: scheme.onSurfaceVariant,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -831,7 +898,10 @@ class _ExpandedPanel extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: point.accent.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(999),
@@ -864,7 +934,9 @@ class _ExpandedPanel extends StatelessWidget {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: point.accent,
                                   minimumSize: const Size.fromHeight(34),
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14),
                                   ),
@@ -1014,22 +1086,22 @@ class _MapPoint {
   final _NearbyPerson? person;
 
   String get actionLabel => switch (kind) {
-        _MapPointKind.sale => 'View animal',
-        _MapPointKind.adoption => 'Open adoption',
-        _MapPointKind.person => 'Start chat',
-      };
+    _MapPointKind.sale => 'View animal',
+    _MapPointKind.adoption => 'Open adoption',
+    _MapPointKind.person => 'Start chat',
+  };
 
   String get badgeLabel => switch (kind) {
-        _MapPointKind.sale => 'For sale',
-        _MapPointKind.adoption => 'Adoption',
-        _MapPointKind.person => 'Nearby helper',
-      };
+    _MapPointKind.sale => 'For sale',
+    _MapPointKind.adoption => 'Adoption',
+    _MapPointKind.person => 'Nearby helper',
+  };
 
   IconData get icon => switch (kind) {
-        _MapPointKind.sale => Icons.sell_outlined,
-        _MapPointKind.adoption => Icons.favorite_border_rounded,
-        _MapPointKind.person => Icons.person_pin_circle_outlined,
-      };
+    _MapPointKind.sale => Icons.sell_outlined,
+    _MapPointKind.adoption => Icons.favorite_border_rounded,
+    _MapPointKind.person => Icons.person_pin_circle_outlined,
+  };
 }
 
 class _NearbyPerson {

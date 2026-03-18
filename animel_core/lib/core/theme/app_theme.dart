@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -57,23 +59,50 @@ class AppTheme {
 
     final textTheme = baseTheme.textTheme
         .copyWith(
-          headlineLarge: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
-          headlineMedium: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-          headlineSmall: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-          titleLarge: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
-          titleMedium: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          titleSmall: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          headlineLarge: const TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w700,
+          ),
+          headlineMedium: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+          headlineSmall: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
+          titleLarge: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w700,
+          ),
+          titleMedium: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+          titleSmall: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
           bodyLarge: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          bodyMedium: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+          bodyMedium: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+          ),
           bodySmall: const TextStyle(fontSize: 11, fontWeight: FontWeight.w400),
-          labelLarge: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-          labelMedium: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-          labelSmall: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+          labelLarge: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+          labelMedium: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+          ),
+          labelSmall: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+          ),
         )
-        .apply(
-          bodyColor: textColor,
-          displayColor: textColor,
-        );
+        .apply(bodyColor: textColor, displayColor: textColor);
 
     return baseTheme.copyWith(
       primaryColor: primaryColor,
@@ -86,7 +115,7 @@ class AppTheme {
         foregroundColor: textColor,
         titleTextStyle: textTheme.titleLarge?.copyWith(color: textColor),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surfaceColor,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -114,7 +143,10 @@ class AppTheme {
         filled: true,
         fillColor: inputFillColor,
         hintStyle: textTheme.bodyMedium?.copyWith(color: mutedTextColor),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide(color: borderColor),
@@ -138,7 +170,9 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
-          textStyle: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -150,7 +184,9 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
-          textStyle: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       chipTheme: baseTheme.chipTheme.copyWith(
@@ -158,11 +194,11 @@ class AppTheme {
         selectedColor: primaryColor,
         disabledColor: inputFillColor,
         side: BorderSide(color: borderColor),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(999),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         labelStyle: textTheme.labelMedium,
-        secondaryLabelStyle: textTheme.labelMedium?.copyWith(color: Colors.white),
+        secondaryLabelStyle: textTheme.labelMedium?.copyWith(
+          color: Colors.white,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
     );

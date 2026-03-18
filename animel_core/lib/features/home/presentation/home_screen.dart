@@ -117,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       delay: const Duration(milliseconds: 480),
                       child: _SectionHeader(
                         title: 'Recently added',
-                        subtitle: 'Fresh listings with a lighter, more readable layout.',
+                        subtitle:
+                            'Fresh listings with a lighter, more readable layout.',
                         actionLabel: 'See all',
                         onTap: () => context.push('/animal-list'),
                       ),
@@ -138,51 +139,45 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildRecentAnimalsSliver(BuildContext context) {
     return BlocBuilder<AnimalBloc, AnimalState>(
       builder: (context, state) {
-        if (state is AnimalLoading) {
+        if (state.isLoading) {
           return const SliverToBoxAdapter(child: LoadingWidget());
         }
-
-        if (state is AnimalLoaded) {
-          return SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.72,
-                crossAxisSpacing: 14,
-                mainAxisSpacing: 14,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final animal = state.animals[index];
-                  return FadeInAnimation(
-                    delay: Duration(milliseconds: 560 + (index * 90)),
-                    child: _AnimalPreviewCard(animal: animal),
-                  );
-                },
-                childCount: state.animals.length > 4 ? 4 : state.animals.length,
-              ),
+        if (state.errorMessage != null) {
+          return SliverToBoxAdapter(
+            child: ErrorStateWidget(
+              message: state.errorMessage!,
+              onRetry: _fetch,
             ),
           );
         }
-
-        if (state is AnimalError) {
-          return SliverToBoxAdapter(
-            child: ErrorStateWidget(message: state.message, onRetry: _fetch),
-          );
+        if (state.animals.isEmpty) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
         }
-
-        return const SliverToBoxAdapter(child: SizedBox.shrink());
+        return SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.72,
+              crossAxisSpacing: 14,
+              mainAxisSpacing: 14,
+            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final animal = state.animals[index];
+              return FadeInAnimation(
+                delay: Duration(milliseconds: 560 + (index * 90)),
+                child: _AnimalPreviewCard(animal: animal),
+              );
+            }, childCount: state.animals.length > 4 ? 4 : state.animals.length),
+          ),
+        );
       },
     );
   }
 }
 
 class _HomeHeroCard extends StatelessWidget {
-  const _HomeHeroCard({
-    required this.onBrowseTap,
-    required this.onMapTap,
-  });
+  const _HomeHeroCard({required this.onBrowseTap, required this.onMapTap});
 
   final VoidCallback onBrowseTap;
   final VoidCallback onMapTap;
@@ -199,7 +194,10 @@ class _HomeHeroCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             scheme.primary,
-            Color.alphaBlend(scheme.secondary.withOpacity(0.28), scheme.primary),
+            Color.alphaBlend(
+              scheme.secondary.withOpacity(0.28),
+              scheme.primary,
+            ),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -249,17 +247,11 @@ class _HomeHeroCard extends StatelessWidget {
           Row(
             children: const [
               Expanded(
-                child: _HeroStat(
-                  value: '24h',
-                  label: 'Fresh updates',
-                ),
+                child: _HeroStat(value: '24h', label: 'Fresh updates'),
               ),
               SizedBox(width: 10),
               Expanded(
-                child: _HeroStat(
-                  value: 'Near',
-                  label: 'Map-first search',
-                ),
+                child: _HeroStat(value: 'Near', label: 'Map-first search'),
               ),
             ],
           ),
@@ -300,10 +292,7 @@ class _HomeHeroCard extends StatelessWidget {
 }
 
 class _HeroStat extends StatelessWidget {
-  const _HeroStat({
-    required this.value,
-    required this.label,
-  });
+  const _HeroStat({required this.value, required this.label});
 
   final String value;
   final String label;
@@ -323,9 +312,7 @@ class _HeroStat extends StatelessWidget {
         children: [
           Text(
             value,
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-            ),
+            style: theme.textTheme.titleLarge?.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 4),
           Text(
@@ -365,10 +352,7 @@ class _SectionHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: theme.textTheme.titleLarge,
-              ),
+              Text(title, style: theme.textTheme.titleLarge),
               const SizedBox(height: 4),
               Text(
                 subtitle,
@@ -381,10 +365,7 @@ class _SectionHeader extends StatelessWidget {
           ),
         ),
         if (actionLabel != null && onTap != null)
-          TextButton(
-            onPressed: onTap,
-            child: Text(actionLabel!),
-          ),
+          TextButton(onPressed: onTap, child: Text(actionLabel!)),
       ],
     );
   }
@@ -453,11 +434,7 @@ class _ServiceCard extends StatelessWidget {
                   color: item.color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Icon(
-                  item.icon,
-                  color: item.color,
-                  size: 22,
-                ),
+                child: Icon(item.icon, color: item.color, size: 22),
               ),
               const Spacer(),
               Text(
@@ -508,7 +485,9 @@ class _AnimalPreviewCard extends StatelessWidget {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
                     image: const DecorationImage(
                       image: AssetImage('assets/image/image.png'),
                       fit: BoxFit.cover,
@@ -520,7 +499,10 @@ class _AnimalPreviewCard extends StatelessWidget {
                         left: 10,
                         top: 10,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(999),
@@ -570,7 +552,7 @@ class _AnimalPreviewCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${animal.breed} • ${animal.age}',
+                      '${animal.breed} - ${animal.age}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -604,7 +586,9 @@ class _AnimalPreviewCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          animal.isForAdoption ? 'Free' : '\$${animal.price.toStringAsFixed(0)}',
+                          animal.isForAdoption
+                              ? 'Free'
+                              : '\$${animal.price.toStringAsFixed(0)}',
                           style: theme.textTheme.titleSmall?.copyWith(
                             color: scheme.primary,
                             fontWeight: FontWeight.w800,

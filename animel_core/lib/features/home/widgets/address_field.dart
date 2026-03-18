@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class AddressField extends StatelessWidget {
@@ -5,27 +7,18 @@ class AddressField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
+    final scheme = Theme.of(context).colorScheme;
 
     return TextField(
       decoration: InputDecoration(
-        prefixIcon: Icon(
-          Icons.search_rounded,
-          size: 20,
-          color: scheme.primary,
-        ),
+        prefixIcon: Icon(Icons.search_rounded, size: 20, color: scheme.primary),
         suffixIcon: Container(
           margin: const EdgeInsets.all(7),
           decoration: BoxDecoration(
             color: scheme.primary.withOpacity(0.08),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Icon(
-            Icons.tune_rounded,
-            size: 18,
-            color: scheme.primary,
-          ),
+          child: Icon(Icons.tune_rounded, size: 18, color: scheme.primary),
         ),
         hintText: 'Search by city, breed, or pet type',
       ),

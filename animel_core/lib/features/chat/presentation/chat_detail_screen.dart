@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../logic/chat_bloc.dart';
-import '../../auth/logic/auth_bloc.dart';
+
 import '../../../core/models/message_model.dart';
-import '../../../core/widgets/loading_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
+import '../../../core/widgets/loading_widget.dart';
+import '../../auth/logic/auth_bloc.dart';
+import '../logic/chat_bloc.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String userName;
@@ -41,7 +42,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = context.read<AuthBloc>().state;
-    String currentUserId = '';
+    var currentUserId = '';
     if (authState is Authenticated) {
       currentUserId = authState.user.id;
     }
@@ -53,21 +54,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           Expanded(
             child: BlocBuilder<ChatBloc, ChatState>(
               builder: (context, state) {
-                if (state is ChatLoading) {
+                if (state.isLoading) {
                   return const LoadingWidget();
-                } else if (state is ChatLoaded) {
-                  return ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: state.messages.length,
-                    itemBuilder: (context, index) {
-                      final message = state.messages[index];
-                      final isMe = message.senderId == currentUserId;
-                      return _buildMessageBubble(message, isMe);
-                    },
-                  );
-                } else if (state is ChatError) {
+                }
+                if (state.errorMessage != null) {
                   return ErrorStateWidget(
-                    message: state.message,
+                    message: state.errorMessage!,
                     onRetry: () {
                       context.read<ChatBloc>().add(
                         FetchMessages(widget.userId),
@@ -75,7 +67,19 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     },
                   );
                 }
-                return const Center(child: Text('Start a conversation'));
+                if (state.messages.isEmpty) {
+                  return const Center(child: Text('Start a conversation'));
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: state.messages.length,
+                  itemBuilder: (context, index) {
+                    final message = state.messages[index];
+                    final isMe = message.senderId == currentUserId;
+                    return _buildMessageBubble(message, isMe);
+                  },
+                );
               },
             ),
           ),

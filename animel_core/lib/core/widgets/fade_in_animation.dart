@@ -4,13 +4,18 @@ class FadeInAnimation extends StatefulWidget {
   final Widget child;
   final Duration delay;
 
-  const FadeInAnimation({super.key, required this.child, this.delay = Duration.zero});
+  const FadeInAnimation({
+    super.key,
+    required this.child,
+    this.delay = Duration.zero,
+  });
 
   @override
   State<FadeInAnimation> createState() => _FadeInAnimationState();
 }
 
-class _FadeInAnimationState extends State<FadeInAnimation> with SingleTickerProviderStateMixin {
+class _FadeInAnimationState extends State<FadeInAnimation>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   late Animation<Offset> _slideAnimation;
@@ -22,7 +27,10 @@ class _FadeInAnimationState extends State<FadeInAnimation> with SingleTickerProv
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.08),
       end: Offset.zero,
@@ -43,10 +51,7 @@ class _FadeInAnimationState extends State<FadeInAnimation> with SingleTickerProv
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _animation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: widget.child,
-      ),
+      child: SlideTransition(position: _slideAnimation, child: widget.child),
     );
   }
 }

@@ -15,10 +15,10 @@ class AnimalRepository {
       final response = await _apiClient.dio.get(
         '/animals',
         queryParameters: {
-          if (isForAdoption != null) 'isForAdoption': isForAdoption,
-          if (query != null) 'query': query,
-          if (type != null) 'type': type,
-          if (ownerId != null) 'ownerId': ownerId,
+          'isForAdoption': ?isForAdoption,
+          'query': ?query,
+          'type': ?type,
+          'ownerId': ?ownerId,
         },
       );
 
