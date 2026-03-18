@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
-    "smoke": "ts-node --transpile-only src/scripts/smokeTest.ts"
+    "smoke": "npm run build && node dist/scripts/smokeTest.js"
   },
   "keywords": [
     "animal-connect",
