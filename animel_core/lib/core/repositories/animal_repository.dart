@@ -1,6 +1,5 @@
-// ignore_for_file: use_null_aware_elements
-
 import '../models/animal_model.dart';
+import '../services/api_exception.dart';
 import '../services/api_client.dart';
 
 class AnimalRepository {
@@ -10,53 +9,72 @@ class AnimalRepository {
     bool? isForAdoption,
     String? query,
     String? type,
+    String? ownerId,
   }) async {
     try {
       final response = await _apiClient.dio.get(
         '/animals',
         queryParameters: {
-          'isForAdoption': ?isForAdoption,
+          if (isForAdoption != null) 'isForAdoption': isForAdoption,
           if (query != null) 'query': query,
           if (type != null) 'type': type,
+          if (ownerId != null) 'ownerId': ownerId,
         },
       );
 
-      if (response.statusCode == 200) {
-        return (response.data as List).map((e) => Animal.fromJson(e)).toList();
-      }
-      return [];
-    } catch (e) {
-      return [];
+      return (response.data as List<dynamic>)
+          .whereType<Map<String, dynamic>>()
+          .map(Animal.fromJson)
+          .toList();
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 
-  Future<Animal?> createAnimal(Map<String, dynamic> data) async {
+  Future<Animal> getAnimalDetails(String id) async {
+    try {
+      final response = await _apiClient.dio.get('/animals/$id');
+      return Animal.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
+
+  Future<List<Animal>> getMyAnimals() async {
+    try {
+      final response = await _apiClient.dio.get('/animals/mine');
+      return (response.data as List<dynamic>)
+          .whereType<Map<String, dynamic>>()
+          .map(Animal.fromJson)
+          .toList();
+    } catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
+
+  Future<Animal> createAnimal(Map<String, dynamic> data) async {
     try {
       final response = await _apiClient.dio.post('/animals', data: data);
-      if (response.statusCode == 201) {
-        return Animal.fromJson(response.data);
-      }
-      return null;
-    } catch (e) {
-      return null;
+      return Animal.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 
-  Future<bool> updateAnimal(String id, Map<String, dynamic> data) async {
+  Future<Animal> updateAnimal(String id, Map<String, dynamic> data) async {
     try {
       final response = await _apiClient.dio.put('/animals/$id', data: data);
-      return response.statusCode == 200;
-    } catch (e) {
-      return false;
+      return Animal.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 
-  Future<bool> deleteAnimal(String id) async {
+  Future<void> deleteAnimal(String id) async {
     try {
-      final response = await _apiClient.dio.delete('/animals/$id');
-      return response.statusCode == 200;
-    } catch (e) {
-      return false;
+      await _apiClient.dio.delete('/animals/$id');
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 }

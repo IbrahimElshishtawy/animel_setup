@@ -1,4 +1,5 @@
 import '../models/user_model.dart';
+import '../services/api_exception.dart';
 import '../services/api_client.dart';
 import '../services/storage_service.dart';
 
@@ -6,44 +7,44 @@ class AuthRepository {
   final ApiClient _apiClient = ApiClient();
   final StorageService _storageService = StorageService();
 
-  Future<UserProfile?> login(String email, String password) async {
+  Future<UserProfile> login(String email, String password) async {
     try {
       final response = await _apiClient.dio.post('/users/login', data: {
         'email': email,
         'password': password,
       });
 
-      if (response.statusCode == 200) {
-        final token = response.data['token'];
-        final userData = response.data['user'];
-        await _storageService.saveToken(token);
-        await _storageService.saveUserId(userData['_id']);
-        return UserProfile.fromJson(userData);
-      }
-      return null;
-    } catch (e) {
-      return null;
+      final token = response.data['token']?.toString() ?? '';
+      final userData = response.data['user'] as Map<String, dynamic>;
+      await _storageService.saveToken(token);
+      await _storageService.saveUserId(userData['_id'].toString());
+      return UserProfile.fromJson(userData);
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 
-  Future<UserProfile?> register(Map<String, dynamic> data) async {
+  Future<UserProfile> register(Map<String, dynamic> data) async {
     try {
       final response = await _apiClient.dio.post('/users/register', data: data);
-      if (response.statusCode == 201) {
-        final token = response.data['token'];
-        final userData = response.data['user'];
-        await _storageService.saveToken(token);
-        await _storageService.saveUserId(userData['_id']);
-        return UserProfile.fromJson(userData);
-      }
-      return null;
-    } catch (e) {
-      return null;
+      final token = response.data['token']?.toString() ?? '';
+      final userData = response.data['user'] as Map<String, dynamic>;
+      await _storageService.saveToken(token);
+      await _storageService.saveUserId(userData['_id'].toString());
+      return UserProfile.fromJson(userData);
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 
   Future<void> logout() async {
-    await _storageService.clearAll();
+    try {
+      await _apiClient.dio.post('/users/logout');
+    } catch (_) {
+      // The backend logout is stateless; local session cleanup still matters most.
+    } finally {
+      await _storageService.clearAll();
+    }
   }
 
   Future<UserProfile?> getCurrentUser() async {
@@ -52,24 +53,20 @@ class AuthRepository {
       if (token == null) return null;
 
       final response = await _apiClient.dio.get('/users/profile');
-      if (response.statusCode == 200) {
-        return UserProfile.fromJson(response.data);
-      }
-      return null;
-    } catch (e) {
+      return UserProfile.fromJson(response.data as Map<String, dynamic>);
+    } catch (_) {
       return null;
     }
   }
 
-  Future<UserProfile?> updateProfile(Map<String, dynamic> data) async {
+  Future<UserProfile> updateProfile(Map<String, dynamic> data) async {
     try {
-      final response = await _apiClient.dio.put('/users/profile', data: data);
-      if (response.statusCode == 200) {
-        return UserProfile.fromJson(response.data);
-      }
-      return null;
-    } catch (e) {
-      return null;
+      final payload = Map<String, dynamic>.from(data)
+        ..removeWhere((key, value) => value == null);
+      final response = await _apiClient.dio.put('/users/profile', data: payload);
+      return UserProfile.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 }

@@ -1,4 +1,6 @@
+import '../models/cart_model.dart';
 import '../models/product_model.dart';
+import '../services/api_exception.dart';
 import '../services/api_client.dart';
 
 class ShopRepository {
@@ -9,29 +11,77 @@ class ShopRepository {
       final response = await _apiClient.dio.get(
         '/shop/products',
         queryParameters: {
-          'query': ?query,
+          if (query != null && query.isNotEmpty) 'query': query,
           if (category != null && category != 'All') 'category': category,
         },
       );
 
-      if (response.statusCode == 200) {
-        return (response.data as List).map((e) => Product.fromJson(e)).toList();
-      }
-      return [];
-    } catch (e) {
-      return [];
+      return (response.data as List<dynamic>)
+          .whereType<Map<String, dynamic>>()
+          .map(Product.fromJson)
+          .toList();
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 
-  Future<Product?> getProductDetails(String id) async {
+  Future<Product> getProductDetails(String id) async {
     try {
       final response = await _apiClient.dio.get('/shop/products/$id');
-      if (response.statusCode == 200) {
-        return Product.fromJson(response.data);
-      }
-      return null;
-    } catch (e) {
-      return null;
+      return Product.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
+
+  Future<List<String>> getCategories() async {
+    try {
+      final response = await _apiClient.dio.get('/shop/categories');
+      return (response.data as List<dynamic>).map((e) => e.toString()).toList();
+    } catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
+
+  Future<Cart> getCart() async {
+    try {
+      final response = await _apiClient.dio.get('/shop/cart');
+      return Cart.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
+
+  Future<Cart> addToCart(String productId, {int quantity = 1}) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '/shop/cart/items',
+        data: {'productId': productId, 'quantity': quantity},
+      );
+      return Cart.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
+
+  Future<Cart> updateCartItem(String productId, int quantity) async {
+    try {
+      final response = await _apiClient.dio.put(
+        '/shop/cart/items/$productId',
+        data: {'quantity': quantity},
+      );
+      return Cart.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
+
+  Future<Cart> removeCartItem(String productId) async {
+    try {
+      final response = await _apiClient.dio.delete('/shop/cart/items/$productId');
+      return Cart.fromJson(response.data as Map<String, dynamic>);
+    } catch (error) {
+      throw ApiException.fromDio(error);
     }
   }
 }
