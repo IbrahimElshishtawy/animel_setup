@@ -15,13 +15,6 @@ class AnimalListScreen extends StatefulWidget {
 }
 
 class _AnimalListScreenState extends State<AnimalListScreen> {
-  ImageProvider _resolveImage(String imageUrl) {
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      return NetworkImage(imageUrl);
-    }
-    return AssetImage(imageUrl);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -77,8 +70,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                             decoration: BoxDecoration(
                               borderRadius: const BorderRadius.vertical(
                                   top: Radius.circular(15)),
-                              image: DecorationImage(
-                                image: _resolveImage(animal.imageUrls.first),
+                              image: const DecorationImage(
+                                image: AssetImage('assets/image/image.png'),
                                 fit: BoxFit.cover,
                               ),
                             ),

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../core/models/animal_model.dart';
+import '../../../core/repositories/animal_repository.dart';
 
 // Events
 abstract class AnimalEvent extends Equatable {
@@ -9,7 +10,12 @@ abstract class AnimalEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchAnimals extends AnimalEvent {}
+class FetchAnimals extends AnimalEvent {
+  final String? query;
+  const FetchAnimals({this.query});
+  @override
+  List<Object> get props => [query ?? ''];
+}
 
 // States
 abstract class AnimalState extends Equatable {
@@ -35,50 +41,40 @@ class AnimalError extends AnimalState {
 
 // Bloc
 class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
+  final AnimalRepository _repository = AnimalRepository();
+
   AnimalBloc() : super(AnimalInitial()) {
     on<FetchAnimals>((event, emit) async {
       emit(AnimalLoading());
       try {
-        await Future.delayed(const Duration(seconds: 1));
-        final List<Animal> mockAnimals = [
-          const Animal(
-            id: '1',
-            name: 'Snowy',
-            type: 'Cat',
-            breed: 'Persian',
-            age: '2 years',
-            gender: 'Female',
-            size: 'Small',
-            price: 500,
-            location: 'New York',
-            description: 'A beautiful and calm white Persian cat.',
-            imageUrls: [
-              'https://images.pexels.com/photos/617278/pexels-photo-617278.jpeg?auto=compress&cs=tinysrgb&w=1200',
-            ],
-            isForAdoption: false,
-            ownerId: 'owner1',
-            healthStatus: 'Vaccinated',
-          ),
-          const Animal(
-            id: '2',
-            name: 'Max',
-            type: 'Dog',
-            breed: 'Golden Retriever',
-            age: '1 year',
-            gender: 'Male',
-            size: 'Large',
-            price: 1200,
-            location: 'Los Angeles',
-            description: 'Energetic and friendly Golden Retriever.',
-            imageUrls: [
-              'https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg?auto=compress&cs=tinysrgb&w=1200',
-            ],
-            isForAdoption: false,
-            ownerId: 'owner2',
-            healthStatus: 'Healthy',
-          ),
-        ];
-        emit(AnimalLoaded(mockAnimals));
+        final animals = await _repository.getAnimals(
+          isForAdoption: false,
+          query: event.query,
+        );
+
+        if (animals.isEmpty && event.query == null) {
+          // Fallback to mock if empty (just for demo purposes)
+          emit(const AnimalLoaded([
+             Animal(
+              id: '1',
+              name: 'Snowy (Mock)',
+              type: 'Cat',
+              breed: 'Persian',
+              age: '2 years',
+              gender: 'Female',
+              size: 'Small',
+              price: 500,
+              location: 'New York',
+              description: 'A beautiful and calm white Persian cat.',
+              imageUrls: ['assets/image/image.png'],
+              isForAdoption: false,
+              ownerId: 'owner1',
+              healthStatus: 'Vaccinated',
+            ),
+          ]));
+        } else {
+          emit(AnimalLoaded(animals));
+        }
       } catch (e) {
         emit(const AnimalError('Failed to fetch animals'));
       }

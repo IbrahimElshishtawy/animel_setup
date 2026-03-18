@@ -33,6 +33,25 @@ class Animal extends Equatable {
     required this.healthStatus,
   });
 
+  factory Animal.fromJson(Map<String, dynamic> json) {
+    return Animal(
+      id: json['_id'] ?? json['id'] ?? '',
+      name: json['name'] ?? '',
+      type: json['type'] ?? '',
+      breed: json['breed'] ?? '',
+      age: json['age'] ?? '',
+      gender: json['gender'] ?? '',
+      size: json['size'] ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      location: json['location'] ?? '',
+      description: json['description'] ?? '',
+      imageUrls: List<String>.from(json['imageUrls'] ?? []),
+      isForAdoption: json['isForAdoption'] ?? false,
+      ownerId: json['ownerId'] ?? '',
+      healthStatus: json['healthStatus'] ?? '',
+    );
+  }
+
   @override
   List<Object?> get props => [
         id,

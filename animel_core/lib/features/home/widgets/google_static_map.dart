@@ -36,7 +36,7 @@ class GoogleStaticMap extends StatelessWidget {
         child: Image.network(
           url,
           fit: BoxFit.cover,
-          errorBuilder: (_, _, _) {
+          errorBuilder: (_, __, ___) {
             return Container(
               color: Colors.grey.shade300,
               alignment: Alignment.center,

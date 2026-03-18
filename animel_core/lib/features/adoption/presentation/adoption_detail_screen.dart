@@ -19,7 +19,7 @@ class AdoptionDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DetailsHeaderImage(imageUrl: animal.imageUrls.first),
+            DetailsHeaderImage(imageUrl: 'assets/image/image.png'),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(

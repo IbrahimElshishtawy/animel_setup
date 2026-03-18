@@ -52,9 +52,7 @@ class AdoptionBloc extends Bloc<AdoptionEvent, AdoptionState> {
             price: 0,
             location: 'Chicago',
             description: 'A very friendly beagle looking for a home.',
-            imageUrls: [
-              'https://images.pexels.com/photos/5731862/pexels-photo-5731862.jpeg?auto=compress&cs=tinysrgb&w=1200',
-            ],
+            imageUrls: ['assets/image/image.png'],
             isForAdoption: true,
             ownerId: 'shelter1',
             healthStatus: 'Vaccinated & Neutered',

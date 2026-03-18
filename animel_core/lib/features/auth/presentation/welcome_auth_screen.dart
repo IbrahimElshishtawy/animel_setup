@@ -1,196 +1,224 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import 'auth_shell.dart';
 
 class WelcomeAuthScreen extends StatelessWidget {
   const WelcomeAuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AuthPageShell(
-      eyebrow: 'Animal care, rescue, and adoption',
-      title: 'Because every paw deserves to find its way home.',
-      subtitle:
-          'A calm, thoughtful place to support rescues, reconnect lost pets, and stay close to the community around you.',
-      hero: AuthHeroPanel(
-        height: 176,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final compact = constraints.maxWidth < 290;
+    const lightPurple = Color(0xFFF6ECF3);
+    const purple = Color(0xFF4B1A45);
+    const orange = Color(0xFFE27D60);
 
-            return FittedBox(
-              fit: BoxFit.scaleDown,
-              child: SizedBox(
-                width: compact ? 220 : 260,
+    final baseTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
+      fontWeight: FontWeight.w700,
+      fontSize: 18,
+      height: 1.4,
+    );
+
+    return Scaffold(
+      backgroundColor: lightPurple,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 24,
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 8),
                     SizedBox(
-                      height: compact ? 54 : 68,
-                      width: compact ? 54 : 68,
-                      child: const Image(
-                        image: AssetImage('assets/image/image.png'),
+                      height: 28,
+                      child: Image.asset(
+                        'assets/image/image.png',
                         fit: BoxFit.contain,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'HopePaw',
-                      style: TextStyle(
-                        color: authPrimary,
-                        fontSize: compact ? 22 : 26,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.3,
+                    const SizedBox(height: 200),
+                    Center(
+                      child: RichText(
+                        textAlign: TextAlign.left,
+                        text: TextSpan(
+                          style: baseTextStyle,
+                          children: [
+                            const TextSpan(text: 'Because '),
+                            TextSpan(
+                              text: 'Every Paw Deserves\n',
+                              style: baseTextStyle?.copyWith(color: purple),
+                            ),
+                            TextSpan(
+                              text: 'To Find Its Way Home — ',
+                              style: baseTextStyle?.copyWith(color: orange),
+                            ),
+                            TextSpan(
+                              text:
+                                  '\nYour All-In-One App For Animal\nCare, Rescue, And Adoption',
+                              style: baseTextStyle?.copyWith(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: const [
-                        _HeroChip(label: 'Rescue alerts'),
-                        _HeroChip(label: 'Lost & found'),
-                        _HeroChip(label: 'Adoption care'),
-                      ],
+                    SizedBox(height: 120),
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 26,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(999),
+                              gradient: const LinearGradient(
+                                colors: [purple, orange],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: purple,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        onPressed: () => context.go('/login'),
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: purple,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        onPressed: () => context.go('/register'),
+                        child: const Text(
+                          'Sign up',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: _GoogleButton(
+                        onTap: () {
+                          // Google sign in
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
-      footer: Column(
-        children: [
-          AuthPrimaryButton(
-            label: 'Login',
-            onPressed: () => context.go('/login'),
-          ),
-          const SizedBox(height: 12),
-          AuthGhostButton(
-            label: 'Create account',
-            onPressed: () => context.go('/register'),
-          ),
-          const SizedBox(height: 12),
-          AuthSocialButton(label: 'Continue with Google', onTap: () {}),
-        ],
-      ),
-      child: const Column(
-        children: [
-          _FeatureTile(
-            icon: Icons.favorite_border_rounded,
-            title: 'Support the right mission',
-            subtitle:
-                'Track care, rescue activity, and local community updates in one polished experience.',
-          ),
-          SizedBox(height: 12),
-          _FeatureTile(
-            icon: Icons.location_searching_rounded,
-            title: 'Stay close to nearby cases',
-            subtitle:
-                'Location-aware updates help people respond faster when pets go missing or need help.',
-          ),
-          SizedBox(height: 12),
-          _FeatureTile(
-            icon: Icons.pets_outlined,
-            title: 'Designed for trust and care',
-            subtitle:
-                'A softer, cleaner flow that keeps the focus on helping animals and their people.',
-          ),
-        ],
-      ),
     );
   }
 }
 
-class _FeatureTile extends StatelessWidget {
-  const _FeatureTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
+class _GoogleButton extends StatelessWidget {
+  final VoidCallback onTap;
 
-  final IconData icon;
-  final String title;
-  final String subtitle;
+  const _GoogleButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE8DBE5)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF7F1F6),
-              borderRadius: BorderRadius.circular(14),
+    const purple = Color(0xFF4B1A45);
+    const orange = Color(0xFFE27D60);
+
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            gradient: const LinearGradient(
+              colors: [purple, orange],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
             ),
+          ),
+          padding: const EdgeInsets.all(1),
+          child: Container(
             alignment: Alignment.center,
-            child: Icon(icon, color: authPrimary),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: authInk,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                  ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(17),
+            ),
+            child: RichText(
+              text: const TextSpan(
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: authMuted,
-                    height: 1.5,
-                    fontSize: 13,
+                children: [
+                  TextSpan(text: 'Sign in with '),
+                  TextSpan(
+                    text: 'Google',
+                    style: TextStyle(color: orange),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _HeroChip extends StatelessWidget {
-  const _HeroChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.72),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: authPrimary,
-          fontWeight: FontWeight.w700,
-          fontSize: 11,
         ),
       ),
     );

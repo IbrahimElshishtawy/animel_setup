@@ -1,9 +1,7 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import 'auth_shell.dart';
+import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_text_field.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -18,16 +16,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   bool _isLoading = false;
-  bool _obscurePassword = true;
   bool _hasPet = false;
 
   Future<void> _onRegister() async {
     setState(() => _isLoading = true);
+
     await Future.delayed(const Duration(seconds: 1));
 
-    if (!mounted) return;
     setState(() => _isLoading = false);
-    context.go('/verify-email');
+
+    if (!mounted) return;
+    context.go("/verify-email");
   }
 
   @override
@@ -41,257 +40,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AuthPageShell(
-      showBackButton: true,
-      fallbackRoute: '/welcome-auth',
-      eyebrow: 'Create account',
-      title: 'Join HopePaw with a calm, modern setup.',
-      subtitle:
-          'Create your profile in a few simple steps and start supporting rescue, adoption, and daily care.',
-      hero: const AuthHeroPanel(height: 150, child: _RegisterHero()),
-      footer: AuthFooterPrompt(
-        prompt: 'Already have an account?',
-        actionLabel: 'Login',
-        onTap: () => context.go('/login'),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final stacked = constraints.maxWidth < 380;
+    final theme = Theme.of(context);
 
-              if (stacked) {
-                return Column(
-                  children: [
-                    AuthTextFieldBox(
-                      label: 'First name',
-                      controller: _firstName,
-                      hint: 'Your first name',
-                      prefixIcon: const Icon(Icons.person_outline_rounded),
-                    ),
-                    const SizedBox(height: 16),
-                    AuthTextFieldBox(
-                      label: 'Last name',
-                      controller: _lastName,
-                      hint: 'Your last name',
-                      prefixIcon: const Icon(Icons.badge_outlined),
-                    ),
-                  ],
-                );
-              }
-
-              return Row(
-                children: [
-                  Expanded(
-                    child: AuthTextFieldBox(
-                      label: 'First name',
-                      controller: _firstName,
-                      hint: 'Your first name',
-                      prefixIcon: const Icon(Icons.person_outline_rounded),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: AuthTextFieldBox(
-                      label: 'Last name',
-                      controller: _lastName,
-                      hint: 'Your last name',
-                      prefixIcon: const Icon(Icons.badge_outlined),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-          AuthTextFieldBox(
-            label: 'Email',
-            controller: _email,
-            hint: 'name@example.com',
-            keyboardType: TextInputType.emailAddress,
-            prefixIcon: const Icon(Icons.mail_outline_rounded),
-          ),
-          const SizedBox(height: 16),
-          AuthTextFieldBox(
-            label: 'Password',
-            controller: _password,
-            hint: 'At least 8 characters',
-            obscureText: _obscurePassword,
-            prefixIcon: const Icon(Icons.lock_outline_rounded),
-            suffixIcon: IconButton(
-              onPressed: () {
-                setState(() => _obscurePassword = !_obscurePassword);
-              },
-              icon: Icon(
-                _obscurePassword
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Do you already have a pet?',
-            style: TextStyle(color: authInk, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: _ChoiceCard(
-                  label: 'Yes, I do',
-                  subtitle: 'Customize my care journey.',
-                  isSelected: _hasPet,
-                  onTap: () => setState(() => _hasPet = true),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _ChoiceCard(
-                  label: 'Not yet',
-                  subtitle: 'I am here to help and explore.',
-                  isSelected: !_hasPet,
-                  onTap: () => setState(() => _hasPet = false),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 22),
-          AuthPrimaryButton(
-            label: 'Create account',
-            onPressed: _onRegister,
-            isLoading: _isLoading,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RegisterHero extends StatelessWidget {
-  const _RegisterHero();
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: SizedBox(
-            width: constraints.maxWidth,
-            child: Row(
-              children: [
-                Container(
-                  width: 66,
-                  height: 66,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.72),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: const Image(
-                    image: AssetImage('assets/image/image.png'),
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Gentle onboarding',
-                        style: TextStyle(
-                          color: authPrimary,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 18,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Set up your profile and shape a more personal pet-care experience.',
-                        style: TextStyle(
-                          color: authMuted,
-                          height: 1.35,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _ChoiceCard extends StatelessWidget {
-  const _ChoiceCard({
-    required this.label,
-    required this.subtitle,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final String label;
-  final String subtitle;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFFF9EEF4) : Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: isSelected ? authPrimary : const Color(0xFFE8DBE5),
-              width: isSelected ? 1.4 : 1,
-            ),
-          ),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Create account")),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                "Join HopePaw",
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 24),
+              AppTextField(label: "First name", controller: _firstName),
+              const SizedBox(height: 16),
+              AppTextField(label: "Last name", controller: _lastName),
+              const SizedBox(height: 16),
+              AppTextField(
+                label: "Email",
+                hint: "name@example.com",
+                controller: _email,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                label: "Password",
+                hint: "At least 8 characters",
+                controller: _password,
+                obscure: true,
+              ),
+              const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      label,
-                      style: const TextStyle(
-                        color: authInk,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                  Switch(
+                    value: _hasPet,
+                    onChanged: (val) => setState(() => _hasPet = val),
                   ),
-                  Icon(
-                    isSelected
-                        ? Icons.check_circle_rounded
-                        : Icons.radio_button_unchecked_rounded,
-                    color: isSelected ? authPrimary : const Color(0xFFCDB8C8),
-                  ),
+                  const SizedBox(width: 8),
+                  const Text("I already have a pet"),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  color: authMuted,
-                  fontSize: 12,
-                  height: 1.45,
+              const SizedBox(height: 24),
+              AppButton(
+                title: "Create account",
+                isLoading: _isLoading,
+                onPressed: _onRegister,
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: TextButton(
+                  onPressed: () => context.go("/login"),
+                  child: const Text("Already have an account? Login"),
                 ),
               ),
             ],

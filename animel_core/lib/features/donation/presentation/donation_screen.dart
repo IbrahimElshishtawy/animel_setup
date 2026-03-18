@@ -25,7 +25,12 @@ class DonationScreen extends StatelessWidget {
                 "Your donation helps pets get food, medical care, and a chance to find a new home.",
               ),
               const SizedBox(height: 24),
-              AppButton(title: "Contact to donate", onPressed: () {}),
+              AppButton(
+                title: "Contact to donate",
+                onPressed: () {
+                  // TODO: open contact / mail / whatsapp
+                },
+              ),
             ],
           ),
         ),
