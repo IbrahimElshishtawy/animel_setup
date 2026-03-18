@@ -1,12 +1,13 @@
 const ensureString = (value: string | undefined, fallback = '') => value?.trim() || fallback;
 
+const defaultMongoUri = 'mongodb://127.0.0.1:27017/animal-connect';
+const configuredMongoUri = ensureString(process.env.MONGO_URI);
+
 export const env = {
   nodeEnv: ensureString(process.env.NODE_ENV, 'development'),
   port: Number(process.env.PORT || 5000),
-  mongoUri: ensureString(
-    process.env.MONGO_URI,
-    'mongodb://127.0.0.1:27017/animal-connect',
-  ),
+  mongoUri: configuredMongoUri || defaultMongoUri,
+  isDefaultMongoUri: !configuredMongoUri,
   jwtSecret: ensureString(process.env.JWT_SECRET, 'animal-connect-dev-secret'),
   jwtExpiresIn: ensureString(process.env.JWT_EXPIRES_IN, '7d'),
 };
