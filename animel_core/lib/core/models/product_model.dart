@@ -19,6 +19,18 @@ class Product extends Equatable {
     required this.animalType,
   });
 
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['_id'] ?? json['id'] ?? '',
+      name: json['name'] ?? '',
+      category: json['category'] ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      description: json['description'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
+      animalType: json['animalType'] ?? '',
+    );
+  }
+
   @override
   List<Object?> get props => [id, name, category, price, description, imageUrl, animalType];
 }

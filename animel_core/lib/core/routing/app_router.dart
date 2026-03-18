@@ -2,6 +2,7 @@ import 'package:animel_core/features/auth/presentation/welcome_auth_screen.dart'
 import 'package:animel_core/features/home/presentation/animal_detail_screen.dart';
 import 'package:animel_core/features/profile/presentation/contact_screen.dart';
 import 'package:animel_core/features/profile/presentation/profile_language_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 // ONBOARDING
@@ -13,6 +14,7 @@ import '../../features/onboarding/presentation/permissions_info_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/presentation/verify_email_screen.dart';
+import '../../features/auth/logic/auth_bloc.dart';
 
 // HOME & OTHERS
 import '../../features/home/presentation/home_screen.dart';
@@ -39,6 +41,23 @@ import '../../core/models/product_model.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: "/splash",
+    redirect: (context, state) {
+      final authState = context.read<AuthBloc>().state;
+      final isLoggingIn = state.matchedLocation == '/login' ||
+                          state.matchedLocation == '/register' ||
+                          state.matchedLocation == '/welcome-auth' ||
+                          state.matchedLocation == '/splash';
+
+      if (authState is Unauthenticated) {
+        return isLoggingIn ? null : '/welcome-auth';
+      }
+
+      if (authState is Authenticated) {
+        if (isLoggingIn) return '/home';
+      }
+
+      return null;
+    },
     routes: [
       // ONBOARDING
       GoRoute(
@@ -132,8 +151,11 @@ class AppRouter {
       GoRoute(
         path: "/chat-detail",
         builder: (context, state) {
-          final userName = state.extra as String;
-          return ChatDetailScreen(userName: userName);
+          final extras = state.extra as Map<String, dynamic>;
+          return ChatDetailScreen(
+            userName: extras['userName'] as String,
+            userId: extras['userId'] as String,
+          );
         },
       ),
       GoRoute(

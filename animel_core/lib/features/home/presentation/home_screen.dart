@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../logic/animal_bloc.dart';
+import '../../auth/logic/auth_bloc.dart';
 
 import '../../../../core/widgets/bottom_nav_bar.dart';
 import '../../../../core/widgets/fade_in_animation.dart';
+import '../../../../core/widgets/loading_widget.dart';
+import '../../../../core/widgets/error_state_widget.dart';
 import '../widgets/home_header.dart';
 import '../widgets/address_field.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _fetch();
+  }
+
+  void _fetch() {
+    context.read<AnimalBloc>().add(const FetchAnimals());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,66 +145,74 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildRecentAnimalsSliver(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.75,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return FadeInAnimation(
-              delay: Duration(milliseconds: 600 + (index * 100)),
-              child: _buildMockAnimalCard(context),
-            );
-          },
-          childCount: 4,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMockAnimalCard(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Card(
-      elevation: 0,
-      color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey[50],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey[200]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                image: DecorationImage(
-                  image: AssetImage('assets/image/image.png'),
-                  fit: BoxFit.cover,
-                ),
+    return BlocBuilder<AnimalBloc, AnimalState>(
+      builder: (context, state) {
+        if (state is AnimalLoading) {
+          return const SliverToBoxAdapter(child: LoadingWidget());
+        } else if (state is AnimalLoaded) {
+          return SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final animal = state.animals[index];
+                  return FadeInAnimation(
+                    delay: Duration(milliseconds: 600 + (index * 100)),
+                    child: GestureDetector(
+                      onTap: () => context.push('/animal-details', extra: animal),
+                      child: Card(
+                        elevation: 0,
+                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : Colors.grey[50],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.1) : Colors.grey[200]!),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/image/image.png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(animal.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                  const SizedBox(height: 4),
+                                  Text('\$${animal.price}', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 14)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                childCount: state.animals.length > 4 ? 4 : state.animals.length,
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Persian Cat', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                const SizedBox(height: 4),
-                Text('\$500', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold, fontSize: 14)),
-              ],
-            ),
-          ),
-        ],
-      ),
+          );
+        } else if (state is AnimalError) {
+          return SliverToBoxAdapter(child: ErrorStateWidget(message: state.message, onRetry: _fetch));
+        }
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
+      },
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
+import '../logic/auth_bloc.dart';
+import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/app_button.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -11,92 +13,75 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _firstName = TextEditingController();
-  final _lastName = TextEditingController();
-  final _email = TextEditingController();
-  final _password = TextEditingController();
-  bool _isLoading = false;
-  bool _hasPet = false;
-
-  Future<void> _onRegister() async {
-    setState(() => _isLoading = true);
-
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() => _isLoading = false);
-
-    if (!mounted) return;
-    context.go("/verify-email");
-  }
-
-  @override
-  void dispose() {
-    _firstName.dispose();
-    _lastName.dispose();
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  }
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text("Create account")),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          context.go('/home');
+        } else if (state is AuthFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Register')),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Join HopePaw",
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 24),
-              AppTextField(label: "First name", controller: _firstName),
-              const SizedBox(height: 16),
-              AppTextField(label: "Last name", controller: _lastName),
-              const SizedBox(height: 16),
               AppTextField(
-                label: "Email",
-                hint: "name@example.com",
-                controller: _email,
-                keyboardType: TextInputType.emailAddress,
+                label: 'Full Name',
+                controller: _nameController,
+                hint: 'Enter your full name',
+                prefixIcon: const Icon(Icons.person),
               ),
               const SizedBox(height: 16),
               AppTextField(
-                label: "Password",
-                hint: "At least 8 characters",
-                controller: _password,
+                label: 'Email',
+                controller: _emailController,
+                hint: 'Enter your email',
+                prefixIcon: const Icon(Icons.email),
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                label: 'Phone Number',
+                controller: _phoneController,
+                hint: 'Enter your phone number',
+                prefixIcon: const Icon(Icons.phone),
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                label: 'Password',
+                controller: _passwordController,
+                hint: 'Enter your password',
+                prefixIcon: const Icon(Icons.lock),
                 obscure: true,
               ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Switch(
-                    value: _hasPet,
-                    onChanged: (val) => setState(() => _hasPet = val),
-                  ),
-                  const SizedBox(width: 8),
-                  const Text("I already have a pet"),
-                ],
-              ),
-              const SizedBox(height: 24),
-              AppButton(
-                title: "Create account",
-                isLoading: _isLoading,
-                onPressed: _onRegister,
-              ),
-              const SizedBox(height: 16),
-              Center(
-                child: TextButton(
-                  onPressed: () => context.go("/login"),
-                  child: const Text("Already have an account? Login"),
-                ),
+              const SizedBox(height: 32),
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  return AppButton(
+                    title: 'Register',
+                    onPressed: () {
+                      context.read<AuthBloc>().add(
+                        RegisterRequested({
+                          'name': _nameController.text,
+                          'email': _emailController.text,
+                          'password': _passwordController.text,
+                          'phoneNumber': _phoneController.text,
+                        }),
+                      );
+                    },
+                    isLoading: state is AuthLoading,
+                  );
+                },
               ),
             ],
           ),

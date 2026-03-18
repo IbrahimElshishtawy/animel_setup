@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import animalRoutes from './routes/animalRoutes';
 import userRoutes from './routes/userRoutes';
+import shopRoutes from './routes/shopRoutes';
+import chatRoutes from './routes/chatRoutes';
 
 dotenv.config();
 
@@ -15,6 +17,8 @@ app.use(express.json());
 // Routes
 app.use('/api/animals', animalRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/shop', shopRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Basic health check
 app.get('/health', (req, res) => {

@@ -8,6 +8,8 @@ import 'core/theme/logic/theme_bloc.dart';
 import 'features/home/logic/animal_bloc.dart';
 import 'features/adoption/logic/adoption_bloc.dart';
 import 'features/shop/logic/shop_bloc.dart';
+import 'features/auth/logic/auth_bloc.dart';
+import 'features/chat/logic/chat_bloc.dart';
 
 class AnimalConnectApp extends StatelessWidget {
   const AnimalConnectApp({super.key});
@@ -17,9 +19,11 @@ class AnimalConnectApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ThemeBloc()),
+        BlocProvider(create: (context) => AuthBloc()..add(AppStarted())),
         BlocProvider(create: (context) => AnimalBloc()),
         BlocProvider(create: (context) => AdoptionBloc()),
         BlocProvider(create: (context) => ShopBloc()),
+        BlocProvider(create: (context) => ChatBloc()),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {

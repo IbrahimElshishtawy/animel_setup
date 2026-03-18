@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../core/models/animal_model.dart';
+import '../../../core/repositories/adoption_repository.dart';
 
 // Events
 abstract class AdoptionEvent extends Equatable {
@@ -9,7 +10,19 @@ abstract class AdoptionEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchAdoptionAnimals extends AdoptionEvent {}
+class FetchAdoptionAnimals extends AdoptionEvent {
+  final String? query;
+  const FetchAdoptionAnimals({this.query});
+  @override
+  List<Object> get props => [query ?? ''];
+}
+
+class CreateAdoptionPostRequested extends AdoptionEvent {
+  final Map<String, dynamic> data;
+  const CreateAdoptionPostRequested(this.data);
+  @override
+  List<Object> get props => [data];
+}
 
 // States
 abstract class AdoptionState extends Equatable {
@@ -35,32 +48,27 @@ class AdoptionError extends AdoptionState {
 
 // Bloc
 class AdoptionBloc extends Bloc<AdoptionEvent, AdoptionState> {
+  final AdoptionRepository _adoptionRepository = AdoptionRepository();
+
   AdoptionBloc() : super(AdoptionInitial()) {
     on<FetchAdoptionAnimals>((event, emit) async {
       emit(AdoptionLoading());
       try {
-        await Future.delayed(const Duration(seconds: 1));
-        final List<Animal> mockAdoptionAnimals = [
-          const Animal(
-            id: '3',
-            name: 'Buddy',
-            type: 'Dog',
-            breed: 'Beagle',
-            age: '3 years',
-            gender: 'Male',
-            size: 'Medium',
-            price: 0,
-            location: 'Chicago',
-            description: 'A very friendly beagle looking for a home.',
-            imageUrls: ['assets/image/image.png'],
-            isForAdoption: true,
-            ownerId: 'shelter1',
-            healthStatus: 'Vaccinated & Neutered',
-          ),
-        ];
-        emit(AdoptionLoaded(mockAdoptionAnimals));
+        final animals = await _adoptionRepository.getAdoptionAnimals(query: event.query);
+        emit(AdoptionLoaded(animals));
       } catch (e) {
         emit(const AdoptionError('Failed to fetch adoption animals'));
+      }
+    });
+
+    on<CreateAdoptionPostRequested>((event, emit) async {
+      try {
+        final post = await _adoptionRepository.createAdoptionPost(event.data);
+        if (post != null) {
+          add(const FetchAdoptionAnimals());
+        }
+      } catch (e) {
+        // Handle error
       }
     });
   }
