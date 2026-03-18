@@ -1,14 +1,12 @@
-﻿import 'package:flutter/material.dart';
+﻿// ignore_for_file: use_null_aware_elements
+
+import 'package:flutter/material.dart';
 
 class SectionTitle extends StatelessWidget {
   final String title;
   final Widget? trailing;
 
-  const SectionTitle({
-    super.key,
-    required this.title,
-    this.trailing,
-  });
+  const SectionTitle({super.key, required this.title, this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +15,7 @@ class SectionTitle extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         if (trailing != null) trailing!,
       ],

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../auth/logic/auth_bloc.dart';
 import '../../../core/widgets/bottom_nav_bar.dart';
 
 class ChatListScreen extends StatelessWidget {
@@ -26,10 +24,10 @@ class ChatListScreen extends StatelessWidget {
             subtitle: const Text('Is the animal still available?'),
             trailing: const Text('12:30 PM'),
             onTap: () {
-              context.push('/chat-detail', extra: {
-                'userName': userName,
-                'userId': userId,
-              });
+              context.push(
+                '/chat-detail',
+                extra: {'userName': userName, 'userId': userId},
+              );
             },
           );
         },

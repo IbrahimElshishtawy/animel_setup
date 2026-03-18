@@ -28,6 +28,7 @@ class _CategoriesRowState extends State<CategoriesRow> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: items.length,
+        // ignore: unnecessary_underscores
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, i) {
           return CategoryCard(

@@ -1,22 +1,28 @@
-import 'package:dio/dio.dart';
+// ignore_for_file: use_null_aware_elements
+
 import '../models/animal_model.dart';
 import '../services/api_client.dart';
 
 class AnimalRepository {
   final ApiClient _apiClient = ApiClient();
 
-  Future<List<Animal>> getAnimals({bool? isForAdoption, String? query, String? type}) async {
+  Future<List<Animal>> getAnimals({
+    bool? isForAdoption,
+    String? query,
+    String? type,
+  }) async {
     try {
-      final response = await _apiClient.dio.get('/animals', queryParameters: {
-        if (isForAdoption != null) 'isForAdoption': isForAdoption,
-        if (query != null) 'query': query,
-        if (type != null) 'type': type,
-      });
+      final response = await _apiClient.dio.get(
+        '/animals',
+        queryParameters: {
+          'isForAdoption': ?isForAdoption,
+          if (query != null) 'query': query,
+          if (type != null) 'type': type,
+        },
+      );
 
       if (response.statusCode == 200) {
-        return (response.data as List)
-            .map((e) => Animal.fromJson(e))
-            .toList();
+        return (response.data as List).map((e) => Animal.fromJson(e)).toList();
       }
       return [];
     } catch (e) {

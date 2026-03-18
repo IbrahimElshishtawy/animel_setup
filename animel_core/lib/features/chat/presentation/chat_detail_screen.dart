@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import '../logic/chat_bloc.dart';
 import '../../auth/logic/auth_bloc.dart';
 import '../../../core/models/message_model.dart';
@@ -11,7 +10,11 @@ class ChatDetailScreen extends StatefulWidget {
   final String userName;
   final String userId;
 
-  const ChatDetailScreen({super.key, required this.userName, required this.userId});
+  const ChatDetailScreen({
+    super.key,
+    required this.userName,
+    required this.userId,
+  });
 
   @override
   State<ChatDetailScreen> createState() => _ChatDetailScreenState();
@@ -28,7 +31,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
-      context.read<ChatBloc>().add(SendMessageRequested(widget.userId, _messageController.text));
+      context.read<ChatBloc>().add(
+        SendMessageRequested(widget.userId, _messageController.text),
+      );
       _messageController.clear();
     }
   }
@@ -61,9 +66,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     },
                   );
                 } else if (state is ChatError) {
-                  return ErrorStateWidget(message: state.message, onRetry: () {
-                    context.read<ChatBloc>().add(FetchMessages(widget.userId));
-                  });
+                  return ErrorStateWidget(
+                    message: state.message,
+                    onRetry: () {
+                      context.read<ChatBloc>().add(
+                        FetchMessages(widget.userId),
+                      );
+                    },
+                  );
                 }
                 return const Center(child: Text('Start a conversation'));
               },
@@ -103,7 +113,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               controller: _messageController,
               decoration: InputDecoration(
                 hintText: 'Type a message...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
               ),
             ),
           ),

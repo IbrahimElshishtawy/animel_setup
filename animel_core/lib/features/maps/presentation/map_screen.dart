@@ -42,38 +42,6 @@ class _MapScreenState extends State<MapScreen> {
     final animalBloc = context.read<AnimalBloc>();
     final adoptionBloc = context.read<AdoptionBloc>();
 
-
-    for (var animal in saleAnimals) {
-      if (animal.latitude != 0 && animal.longitude != 0) {
-        markers.add(
-          Marker(
-            markerId: MarkerId('sale_${animal.id}'),
-            position: LatLng(animal.latitude, animal.longitude),
-            infoWindow: InfoWindow(
-              title: animal.name,
-              snippet: '${animal.breed} - \$${animal.price}',
-            ),
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-          ),
-        );
-      }
-    }
-
-    for (var animal in adoptionAnimals) {
-      if (animal.latitude != 0 && animal.longitude != 0) {
-        markers.add(
-          Marker(
-            markerId: MarkerId('adopt_${animal.id}'),
-            position: LatLng(animal.latitude, animal.longitude),
-            infoWindow: InfoWindow(
-              title: animal.name,
-              snippet: '${animal.breed} - For Adoption',
-            ),
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          ),
-        );
-      }
-
     if (animalBloc.state is AnimalInitial || animalBloc.state is AnimalError) {
       animalBloc.add(FetchAnimals());
     }
@@ -83,7 +51,7 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     await _loadCurrentLocation();
-  }}
+  }
 
   Future<void> _loadCurrentLocation() async {
     try {
@@ -315,7 +283,6 @@ class _MapScreenState extends State<MapScreen> {
           icon: BitmapDescriptor.defaultMarkerWithHue(_markerHue(point.kind)),
         ),
       );
->>>>>>> Stashed changes
     }
 
     return markers;
@@ -609,33 +576,6 @@ class _MapScreenState extends State<MapScreen> {
           );
         },
       ),
-<<<<<<< Updated upstream
-      body: BlocBuilder<AnimalBloc, AnimalState>(
-        builder: (context, animalState) {
-          return BlocBuilder<AdoptionBloc, AdoptionState>(
-            builder: (context, adoptionState) {
-              List<Animal> saleAnimals = [];
-              List<Animal> adoptionAnimals = [];
-
-              if (animalState is AnimalLoaded) {
-                saleAnimals = animalState.animals;
-              }
-              if (adoptionState is AdoptionLoaded) {
-                adoptionAnimals = adoptionState.animals;
-              }
-
-              return GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
-                  target: _center,
-                  zoom: 11.0,
-                ),
-                markers: _createMarkers(saleAnimals, adoptionAnimals),
-              );
-            },
-          );
-        },
-=======
     );
   }
 }
@@ -1125,7 +1065,6 @@ class _MapFloatingButton extends StatelessWidget {
           ),
           child: Icon(icon, color: const Color(0xFF4B1A45)),
         ),
->>>>>>> Stashed changes
       ),
     );
   }

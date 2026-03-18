@@ -6,15 +6,16 @@ class ShopRepository {
 
   Future<List<Product>> getProducts({String? query, String? category}) async {
     try {
-      final response = await _apiClient.dio.get('/shop/products', queryParameters: {
-        if (query != null) 'query': query,
-        if (category != null && category != 'All') 'category': category,
-      });
+      final response = await _apiClient.dio.get(
+        '/shop/products',
+        queryParameters: {
+          'query': ?query,
+          if (category != null && category != 'All') 'category': category,
+        },
+      );
 
       if (response.statusCode == 200) {
-        return (response.data as List)
-            .map((e) => Product.fromJson(e))
-            .toList();
+        return (response.data as List).map((e) => Product.fromJson(e)).toList();
       }
       return [];
     } catch (e) {
