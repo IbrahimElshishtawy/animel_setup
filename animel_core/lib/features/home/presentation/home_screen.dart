@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../logic/animal_bloc.dart';
-import '../../auth/logic/auth_bloc.dart';
 
 import '../../../../core/widgets/bottom_nav_bar.dart';
 import '../../../../core/widgets/fade_in_animation.dart';
@@ -49,7 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     FadeInAnimation(
                       delay: const Duration(milliseconds: 100),
-                      child: HomeHeader(onProfileTap: () => context.go('/profile')),
+                      child: HomeHeader(
+                        onProfileTap: () => context.go('/profile'),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     FadeInAnimation(
@@ -59,7 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 32),
                     FadeInAnimation(
                       delay: const Duration(milliseconds: 300),
-                      child: _buildSectionHeader(context, 'Explore Services', null),
+                      child: _buildSectionHeader(
+                        context,
+                        'Explore Services',
+                        null,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     FadeInAnimation(
@@ -69,7 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 32),
                     FadeInAnimation(
                       delay: const Duration(milliseconds: 500),
-                      child: _buildSectionHeader(context, 'Recently Added', () => context.push('/animal-list')),
+                      child: _buildSectionHeader(
+                        context,
+                        'Recently Added',
+                        () => context.push('/animal-list'),
+                      ),
                     ),
                     const SizedBox(height: 16),
                   ],
@@ -84,20 +93,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title, VoidCallback? onSeeAll) {
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    VoidCallback? onSeeAll,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         if (onSeeAll != null)
           TextButton(
             onPressed: onSeeAll,
-            child: const Text('See All', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              'See All',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
       ],
     );
@@ -112,15 +128,45 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisSpacing: 16,
       childAspectRatio: 1.4,
       children: [
-        _buildServiceCard(context, 'Buy Animals', MdiIcons.paw, Colors.orange, '/animal-list'),
-        _buildServiceCard(context, 'Adoption', MdiIcons.heart, Colors.red, '/adopt'),
-        _buildServiceCard(context, 'Supplies', MdiIcons.store, Colors.blue, '/shop'),
-        _buildServiceCard(context, 'Map View', MdiIcons.mapMarker, Colors.green, '/map'),
+        _buildServiceCard(
+          context,
+          'Buy Animals',
+          MdiIcons.paw,
+          Colors.orange,
+          '/animal-list',
+        ),
+        _buildServiceCard(
+          context,
+          'Adoption',
+          MdiIcons.heart,
+          Colors.red,
+          '/adopt',
+        ),
+        _buildServiceCard(
+          context,
+          'Supplies',
+          MdiIcons.store,
+          Colors.blue,
+          '/shop',
+        ),
+        _buildServiceCard(
+          context,
+          'Map View',
+          MdiIcons.mapMarker,
+          Colors.green,
+          '/map',
+        ),
       ],
     );
   }
 
-  Widget _buildServiceCard(BuildContext context, String title, IconData icon, Color color, String route) {
+  Widget _buildServiceCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    String route,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
@@ -137,7 +183,10 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(icon, color: color, size: 36),
             const SizedBox(height: 10),
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           ],
         ),
       ),
@@ -165,13 +214,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   return FadeInAnimation(
                     delay: Duration(milliseconds: 600 + (index * 100)),
                     child: GestureDetector(
-                      onTap: () => context.push('/animal-details', extra: animal),
+                      onTap: () =>
+                          context.push('/animal-details', extra: animal),
                       child: Card(
                         elevation: 0,
-                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : Colors.grey[50],
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white.withOpacity(0.05)
+                            : Colors.grey[50],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.1) : Colors.grey[200]!),
+                          side: BorderSide(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white.withOpacity(0.1)
+                                : Colors.grey[200]!,
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +236,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(
                               child: Container(
                                 decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20),
+                                  ),
                                   image: DecorationImage(
                                     image: AssetImage('assets/image/image.png'),
                                     fit: BoxFit.cover,
@@ -192,9 +251,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(animal.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                  Text(
+                                    animal.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                   const SizedBox(height: 4),
-                                  Text('\$${animal.price}', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 14)),
+                                  Text(
+                                    '\$${animal.price}',
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -209,7 +281,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         } else if (state is AnimalError) {
-          return SliverToBoxAdapter(child: ErrorStateWidget(message: state.message, onRetry: _fetch));
+          return SliverToBoxAdapter(
+            child: ErrorStateWidget(message: state.message, onRetry: _fetch),
+          );
         }
         return const SliverToBoxAdapter(child: SizedBox.shrink());
       },

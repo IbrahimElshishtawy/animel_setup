@@ -42,7 +42,7 @@ class _MapScreenState extends State<MapScreen> {
     final animalBloc = context.read<AnimalBloc>();
     final adoptionBloc = context.read<AdoptionBloc>();
 
-<<<<<<< Updated upstream
+
     for (var animal in saleAnimals) {
       if (animal.latitude != 0 && animal.longitude != 0) {
         markers.add(
@@ -73,7 +73,7 @@ class _MapScreenState extends State<MapScreen> {
           ),
         );
       }
-=======
+
     if (animalBloc.state is AnimalInitial || animalBloc.state is AnimalError) {
       animalBloc.add(FetchAnimals());
     }
@@ -83,7 +83,7 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     await _loadCurrentLocation();
-  }
+  }}
 
   Future<void> _loadCurrentLocation() async {
     try {

@@ -1,7 +1,8 @@
+import 'package:animel_core/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen_genl10n/app_localizations.dart';
+
 import '../logic/animal_bloc.dart';
 import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../../core/widgets/loading_widget.dart';
@@ -33,10 +34,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.rareAnimalsForSale),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.rareAnimalsForSale), centerTitle: true),
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
       body: Column(
         children: [
@@ -47,7 +45,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
               decoration: InputDecoration(
                 hintText: l10n.search,
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
               onChanged: (value) => _fetch(),
             ),
@@ -66,29 +66,37 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                   }
                   return GridView.builder(
                     padding: const EdgeInsets.all(16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.7,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.7,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
                     itemCount: state.animals.length,
                     itemBuilder: (context, index) {
                       final animal = state.animals[index];
                       return GestureDetector(
-                        onTap: () => context.push('/animal-details', extra: animal),
+                        onTap: () =>
+                            context.push('/animal-details', extra: animal),
                         child: Card(
                           elevation: 4,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
                                 child: Container(
                                   decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(15),
+                                    ),
                                     image: DecorationImage(
-                                      image: AssetImage('assets/image/image.png'),
+                                      image: AssetImage(
+                                        'assets/image/image.png',
+                                      ),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -99,11 +107,30 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(animal.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                    Text(
+                                      animal.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
                                     const SizedBox(height: 4),
-                                    Text(animal.breed, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                                    Text(
+                                      animal.breed,
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 12,
+                                      ),
+                                    ),
                                     const SizedBox(height: 8),
-                                    Text('\$${animal.price}', style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 16)),
+                                    Text(
+                                      '\$${animal.price}',
+                                      style: const TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -114,7 +141,10 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                     },
                   );
                 } else if (state is AnimalError) {
-                  return ErrorStateWidget(message: state.message, onRetry: _fetch);
+                  return ErrorStateWidget(
+                    message: state.message,
+                    onRetry: _fetch,
+                  );
                 }
                 return const Center(child: Text('Start exploring!'));
               },
