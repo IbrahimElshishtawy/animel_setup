@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import { Document, Schema, Types, model } from 'mongoose';
 
 export interface IAnimal extends Document {
   name: string;
@@ -14,26 +14,31 @@ export interface IAnimal extends Document {
   description: string;
   imageUrls: string[];
   isForAdoption: boolean;
-  ownerId: string;
+  ownerId: Types.ObjectId;
   healthStatus: string;
 }
 
-const AnimalSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  type: { type: String, required: true },
-  breed: { type: String, required: true },
-  age: { type: String, required: true },
-  gender: { type: String, required: true },
-  size: { type: String, required: true },
-  price: { type: Number, required: true },
-  location: { type: String, required: true },
-  latitude: { type: Number, required: true },
-  longitude: { type: Number, required: true },
-  description: { type: String, required: true },
-  imageUrls: { type: [String], required: true },
-  isForAdoption: { type: Boolean, required: true },
-  ownerId: { type: String, required: true },
-  healthStatus: { type: String, required: true },
-}, { timestamps: true });
+const animalSchema = new Schema<IAnimal>(
+  {
+    name: { type: String, required: true, trim: true },
+    type: { type: String, required: true, trim: true },
+    breed: { type: String, required: true, trim: true },
+    age: { type: String, required: true, trim: true },
+    gender: { type: String, required: true, trim: true },
+    size: { type: String, required: true, trim: true },
+    price: { type: Number, required: true, min: 0 },
+    location: { type: String, required: true, trim: true },
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
+    description: { type: String, required: true, trim: true },
+    imageUrls: { type: [String], required: true, default: [] },
+    isForAdoption: { type: Boolean, required: true, default: false },
+    ownerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    healthStatus: { type: String, required: true, trim: true },
+  },
+  { timestamps: true },
+);
 
-export default mongoose.model<IAnimal>('Animal', AnimalSchema);
+const Animal = model<IAnimal>('Animal', animalSchema);
+
+export default Animal;

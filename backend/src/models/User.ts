@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { Document, Schema, model } from 'mongoose';
 
 export interface IUser extends Document {
   name: string;
@@ -8,26 +8,43 @@ export interface IUser extends Document {
   phoneNumber: string;
   profileImageUrl?: string;
   location?: string;
+  language: 'en' | 'ar';
+  bio?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   comparePassword: (password: string) => Promise<boolean>;
 }
 
-const UserSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  phoneNumber: { type: String, required: true },
-  profileImageUrl: { type: String },
-  location: { type: String },
-}, { timestamps: true });
+const userSchema = new Schema<IUser>(
+  {
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    password: { type: String, required: true, minlength: 6 },
+    phoneNumber: { type: String, required: true, trim: true },
+    profileImageUrl: { type: String, trim: true },
+    location: { type: String, trim: true },
+    language: {
+      type: String,
+      enum: ['en', 'ar'],
+      default: 'en',
+    },
+    bio: { type: String, trim: true, maxlength: 280 },
+  },
+  { timestamps: true },
+);
 
-UserSchema.pre<IUser>('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre('save', async function saveHook() {
+  if (!this.isModified('password')) {
+    return;
+  }
+
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
-UserSchema.methods.comparePassword = function (password: string) {
+userSchema.methods.comparePassword = function comparePassword(password: string) {
   return bcrypt.compare(password, this.password);
 };
 
-export default mongoose.model<IUser>('User', UserSchema);
+const User = model<IUser>('User', userSchema);
+
+export default User;
