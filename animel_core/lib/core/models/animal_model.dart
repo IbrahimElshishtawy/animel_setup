@@ -10,6 +10,8 @@ class Animal extends Equatable {
   final String size;
   final double price;
   final String location;
+  final double latitude;
+  final double longitude;
   final String description;
   final List<String> imageUrls;
   final bool isForAdoption;
@@ -26,6 +28,8 @@ class Animal extends Equatable {
     required this.size,
     required this.price,
     required this.location,
+    required this.latitude,
+    required this.longitude,
     required this.description,
     required this.imageUrls,
     required this.isForAdoption,
@@ -44,6 +48,8 @@ class Animal extends Equatable {
       size: json['size'] ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       location: json['location'] ?? '',
+      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
       description: json['description'] ?? '',
       imageUrls: List<String>.from(json['imageUrls'] ?? []),
       isForAdoption: json['isForAdoption'] ?? false,
@@ -63,6 +69,8 @@ class Animal extends Equatable {
         size,
         price,
         location,
+        latitude,
+        longitude,
         description,
         imageUrls,
         isForAdoption,

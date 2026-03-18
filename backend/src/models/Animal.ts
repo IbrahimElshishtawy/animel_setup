@@ -9,6 +9,8 @@ export interface IAnimal extends Document {
   size: string;
   price: number;
   location: string;
+  latitude: number;
+  longitude: number;
   description: string;
   imageUrls: string[];
   isForAdoption: boolean;
@@ -25,6 +27,8 @@ const AnimalSchema: Schema = new Schema({
   size: { type: String, required: true },
   price: { type: Number, required: true },
   location: { type: String, required: true },
+  latitude: { type: Number, required: true },
+  longitude: { type: Number, required: true },
   description: { type: String, required: true },
   imageUrls: { type: [String], required: true },
   isForAdoption: { type: Boolean, required: true },

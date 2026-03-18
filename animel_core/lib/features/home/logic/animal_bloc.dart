@@ -12,9 +12,17 @@ abstract class AnimalEvent extends Equatable {
 
 class FetchAnimals extends AnimalEvent {
   final String? query;
-  const FetchAnimals({this.query});
+  final String? type;
+  const FetchAnimals({this.query, this.type});
   @override
-  List<Object> get props => [query ?? ''];
+  List<Object> get props => [query ?? '', type ?? ''];
+}
+
+class CreateAnimalRequested extends AnimalEvent {
+  final Map<String, dynamic> data;
+  const CreateAnimalRequested(this.data);
+  @override
+  List<Object> get props => [data];
 }
 
 // States
@@ -50,33 +58,22 @@ class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
         final animals = await _repository.getAnimals(
           isForAdoption: false,
           query: event.query,
+          type: event.type,
         );
-
-        if (animals.isEmpty && event.query == null) {
-          // Fallback to mock if empty (just for demo purposes)
-          emit(const AnimalLoaded([
-             Animal(
-              id: '1',
-              name: 'Snowy (Mock)',
-              type: 'Cat',
-              breed: 'Persian',
-              age: '2 years',
-              gender: 'Female',
-              size: 'Small',
-              price: 500,
-              location: 'New York',
-              description: 'A beautiful and calm white Persian cat.',
-              imageUrls: ['assets/image/image.png'],
-              isForAdoption: false,
-              ownerId: 'owner1',
-              healthStatus: 'Vaccinated',
-            ),
-          ]));
-        } else {
-          emit(AnimalLoaded(animals));
-        }
+        emit(AnimalLoaded(animals));
       } catch (e) {
         emit(const AnimalError('Failed to fetch animals'));
+      }
+    });
+
+    on<CreateAnimalRequested>((event, emit) async {
+      try {
+        final animal = await _repository.createAnimal(event.data);
+        if (animal != null) {
+          add(const FetchAnimals());
+        }
+      } catch (e) {
+        // Handle error
       }
     });
   }

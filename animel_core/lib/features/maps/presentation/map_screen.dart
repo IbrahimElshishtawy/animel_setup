@@ -24,33 +24,35 @@ class _MapScreenState extends State<MapScreen> {
     Set<Marker> markers = {};
 
     for (var animal in saleAnimals) {
-      // In a real app, we'd have lat/lng in the model.
-      // For now, we mock slightly different positions around NY.
-      markers.add(
-        Marker(
-          markerId: MarkerId('sale_${animal.id}'),
-          position: LatLng(40.7128 + (int.parse(animal.id) * 0.01), -74.0060),
-          infoWindow: InfoWindow(
-            title: animal.name,
-            snippet: '${animal.breed} - \$${animal.price}',
+      if (animal.latitude != 0 && animal.longitude != 0) {
+        markers.add(
+          Marker(
+            markerId: MarkerId('sale_${animal.id}'),
+            position: LatLng(animal.latitude, animal.longitude),
+            infoWindow: InfoWindow(
+              title: animal.name,
+              snippet: '${animal.breed} - \$${animal.price}',
+            ),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-        ),
-      );
+        );
+      }
     }
 
     for (var animal in adoptionAnimals) {
-      markers.add(
-        Marker(
-          markerId: MarkerId('adopt_${animal.id}'),
-          position: LatLng(40.7128, -74.0060 + (int.parse(animal.id) * 0.01)),
-          infoWindow: InfoWindow(
-            title: animal.name,
-            snippet: '${animal.breed} - For Adoption',
+      if (animal.latitude != 0 && animal.longitude != 0) {
+        markers.add(
+          Marker(
+            markerId: MarkerId('adopt_${animal.id}'),
+            position: LatLng(animal.latitude, animal.longitude),
+            infoWindow: InfoWindow(
+              title: animal.name,
+              snippet: '${animal.breed} - For Adoption',
+            ),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        ),
-      );
+        );
+      }
     }
 
     return markers;
@@ -62,41 +64,31 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: const Text('Nearby Animals'),
       ),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<AnimalBloc, AnimalState>(
-            listener: (context, state) {},
-          ),
-          BlocListener<AdoptionBloc, AdoptionState>(
-            listener: (context, state) {},
-          ),
-        ],
-        child: BlocBuilder<AnimalBloc, AnimalState>(
-          builder: (context, animalState) {
-            return BlocBuilder<AdoptionBloc, AdoptionState>(
-              builder: (context, adoptionState) {
-                List<Animal> saleAnimals = [];
-                List<Animal> adoptionAnimals = [];
+      body: BlocBuilder<AnimalBloc, AnimalState>(
+        builder: (context, animalState) {
+          return BlocBuilder<AdoptionBloc, AdoptionState>(
+            builder: (context, adoptionState) {
+              List<Animal> saleAnimals = [];
+              List<Animal> adoptionAnimals = [];
 
-                if (animalState is AnimalLoaded) {
-                  saleAnimals = animalState.animals;
-                }
-                if (adoptionState is AdoptionLoaded) {
-                  adoptionAnimals = adoptionState.animals;
-                }
+              if (animalState is AnimalLoaded) {
+                saleAnimals = animalState.animals;
+              }
+              if (adoptionState is AdoptionLoaded) {
+                adoptionAnimals = adoptionState.animals;
+              }
 
-                return GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: _center,
-                    zoom: 11.0,
-                  ),
-                  markers: _createMarkers(saleAnimals, adoptionAnimals),
-                );
-              },
-            );
-          },
-        ),
+              return GoogleMap(
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(
+                  target: _center,
+                  zoom: 11.0,
+                ),
+                markers: _createMarkers(saleAnimals, adoptionAnimals),
+              );
+            },
+          );
+        },
       ),
     );
   }
