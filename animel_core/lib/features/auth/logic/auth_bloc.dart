@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/models/user_journey.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/repositories/auth_repository.dart';
+import '../../../core/services/storage_service.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -42,6 +44,15 @@ class ProfileUpdated extends AuthEvent {
 
 class ProfileRefreshRequested extends AuthEvent {}
 
+class JourneyUpdated extends AuthEvent {
+  final UserJourney journey;
+
+  const JourneyUpdated(this.journey);
+
+  @override
+  List<Object?> get props => [journey];
+}
+
 class LogoutRequested extends AuthEvent {}
 
 abstract class AuthState extends Equatable {
@@ -57,12 +68,19 @@ class AuthLoading extends AuthState {}
 
 class Authenticated extends AuthState {
   final UserProfile user;
+  final UserJourney? journey;
+  final bool hasCompletedJourney;
   final String? message;
 
-  const Authenticated(this.user, {this.message});
+  const Authenticated(
+    this.user, {
+    this.journey,
+    this.hasCompletedJourney = false,
+    this.message,
+  });
 
   @override
-  List<Object?> get props => [user, message];
+  List<Object?> get props => [user, journey, hasCompletedJourney, message];
 }
 
 class Unauthenticated extends AuthState {}
@@ -78,6 +96,7 @@ class AuthFailure extends AuthState {
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository = AuthRepository();
+  final StorageService _storageService = StorageService();
 
   AuthBloc() : super(AuthInitial()) {
     on<AppStarted>(_onAppStarted);
@@ -85,14 +104,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterRequested>(_onRegisterRequested);
     on<ProfileUpdated>(_onProfileUpdated);
     on<ProfileRefreshRequested>(_onProfileRefreshRequested);
+    on<JourneyUpdated>(_onJourneyUpdated);
     on<LogoutRequested>(_onLogoutRequested);
+  }
+
+  Future<Authenticated> _buildAuthenticatedState(
+    UserProfile user, {
+    String? message,
+  }) async {
+    final storedJourney = await _storageService.getUserJourney(user.id);
+    final journey = UserJourneyX.fromStorage(storedJourney);
+    return Authenticated(
+      user,
+      journey: journey,
+      hasCompletedJourney: journey != null,
+      message: message,
+    );
   }
 
   Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     final user = await _authRepository.getCurrentUser();
     if (user != null) {
-      emit(Authenticated(user));
+      emit(await _buildAuthenticatedState(user));
     } else {
       emit(Unauthenticated());
     }
@@ -105,7 +139,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final user = await _authRepository.login(event.email, event.password);
-      emit(Authenticated(user));
+      emit(await _buildAuthenticatedState(user));
     } catch (error) {
       emit(AuthFailure(error.toString().replaceFirst('ApiException: ', '')));
       emit(Unauthenticated());
@@ -119,7 +153,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final user = await _authRepository.register(event.userData);
-      emit(Authenticated(user));
+      emit(await _buildAuthenticatedState(user));
     } catch (error) {
       emit(AuthFailure(error.toString().replaceFirst('ApiException: ', '')));
       emit(Unauthenticated());
@@ -136,10 +170,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final updatedUser = await _authRepository.updateProfile(event.data);
-      emit(Authenticated(updatedUser, message: 'Profile updated successfully'));
+      emit(
+        await _buildAuthenticatedState(
+          updatedUser,
+          message: 'Profile updated successfully',
+        ),
+      );
     } catch (error) {
       emit(AuthFailure(error.toString().replaceFirst('ApiException: ', '')));
-      emit(Authenticated(currentState.user));
+      emit(
+        Authenticated(
+          currentState.user,
+          journey: currentState.journey,
+          hasCompletedJourney: currentState.hasCompletedJourney,
+        ),
+      );
     }
   }
 
@@ -153,13 +198,39 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final user = await _authRepository.getCurrentUser();
       if (user != null) {
-        emit(Authenticated(user));
+        emit(await _buildAuthenticatedState(user));
       } else {
         emit(Unauthenticated());
       }
     } catch (_) {
-      emit(Authenticated(currentState.user));
+      emit(
+        Authenticated(
+          currentState.user,
+          journey: currentState.journey,
+          hasCompletedJourney: currentState.hasCompletedJourney,
+        ),
+      );
     }
+  }
+
+  Future<void> _onJourneyUpdated(
+    JourneyUpdated event,
+    Emitter<AuthState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! Authenticated) return;
+
+    await _storageService.saveUserJourney(
+      currentState.user.id,
+      event.journey.storageValue,
+    );
+    emit(
+      Authenticated(
+        currentState.user,
+        journey: event.journey,
+        hasCompletedJourney: true,
+      ),
+    );
   }
 
   Future<void> _onLogoutRequested(

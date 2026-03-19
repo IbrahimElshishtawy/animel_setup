@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -20,14 +21,19 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   static const LatLng _fallbackCenter = LatLng(30.0444, 31.2357);
+  static const MethodChannel _mapsConfigChannel = MethodChannel(
+    'animel_core/maps_config',
+  );
 
   GoogleMapController? _mapController;
   LatLng _currentCenter = _fallbackCenter;
   _MapFilter _activeFilter = _MapFilter.all;
   bool _isLoadingLocation = true;
   bool _hasLocationPermission = false;
+  bool _hasValidMapsApiKey = true;
   bool _isResultsPanelVisible = false;
   String _areaLabel = 'Cairo community area';
+  String? _mapsConfigurationHint;
   String? _selectedPointId;
 
   @override
@@ -46,7 +52,36 @@ class _MapScreenState extends State<MapScreen> {
     if (adoptionBloc.state.animals.isEmpty && !adoptionBloc.state.isLoading) {
       adoptionBloc.add(FetchAdoptionAnimals());
     }
+    await _loadMapsConfiguration();
     await _loadCurrentLocation();
+  }
+
+  Future<void> _loadMapsConfiguration() async {
+    try {
+      final config = await _mapsConfigChannel.invokeMapMethod<String, dynamic>(
+        'getMapsConfiguration',
+      );
+      if (!mounted || config == null) return;
+
+      final isConfigured = config['isConfigured'] == true;
+      final packageName = config['packageName'] as String?;
+      setState(() {
+        _hasValidMapsApiKey = isConfigured;
+        _mapsConfigurationHint = isConfigured
+            ? null
+            : 'Google Maps is not configured for ${packageName ?? 'this app'}. '
+                  'Add MAPS_API_KEY to android/local.properties, then restart.';
+      });
+    } on MissingPluginException {
+      // Keep the map enabled on platforms without the Android channel.
+    } on PlatformException {
+      if (!mounted) return;
+      setState(() {
+        _hasValidMapsApiKey = false;
+        _mapsConfigurationHint =
+            'Unable to verify Google Maps setup on Android right now.';
+      });
+    }
   }
 
   Future<void> _loadCurrentLocation() async {
@@ -326,9 +361,11 @@ class _MapScreenState extends State<MapScreen> {
               return _MapLayout(
                 currentCenter: _currentCenter,
                 hasLocationPermission: _hasLocationPermission,
+                hasValidMapsApiKey: _hasValidMapsApiKey,
                 markers: _buildMarkers(visiblePoints),
                 areaLabel: _areaLabel,
                 isLoadingLocation: _isLoadingLocation,
+                mapsConfigurationHint: _mapsConfigurationHint,
                 saleCount: saleAnimals.length,
                 adoptionCount: adoptionAnimals.length,
                 peopleCount: peoplePoints.length,
@@ -364,9 +401,11 @@ class _MapLayout extends StatelessWidget {
   const _MapLayout({
     required this.currentCenter,
     required this.hasLocationPermission,
+    required this.hasValidMapsApiKey,
     required this.markers,
     required this.areaLabel,
     required this.isLoadingLocation,
+    required this.mapsConfigurationHint,
     required this.saleCount,
     required this.adoptionCount,
     required this.peopleCount,
@@ -385,9 +424,11 @@ class _MapLayout extends StatelessWidget {
 
   final LatLng currentCenter;
   final bool hasLocationPermission;
+  final bool hasValidMapsApiKey;
   final Set<Marker> markers;
   final String areaLabel;
   final bool isLoadingLocation;
+  final String? mapsConfigurationHint;
   final int saleCount;
   final int adoptionCount;
   final int peopleCount;
@@ -418,20 +459,23 @@ class _MapLayout extends StatelessWidget {
 
     return Stack(
       children: [
-        GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: currentCenter,
-            zoom: 12.4,
-          ),
-          myLocationEnabled: hasLocationPermission,
-          myLocationButtonEnabled: false,
-          mapToolbarEnabled: false,
-          zoomControlsEnabled: false,
-          compassEnabled: false,
-          onTap: (_) => onMapTap(),
-          onMapCreated: onMapCreated,
-          markers: markers,
-        ),
+        if (hasValidMapsApiKey)
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: currentCenter,
+              zoom: 12.4,
+            ),
+            myLocationEnabled: hasLocationPermission,
+            myLocationButtonEnabled: false,
+            mapToolbarEnabled: false,
+            zoomControlsEnabled: false,
+            compassEnabled: false,
+            onTap: (_) => onMapTap(),
+            onMapCreated: onMapCreated,
+            markers: markers,
+          )
+        else
+          _MapUnavailableView(message: mapsConfigurationHint),
         IgnorePointer(
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -750,6 +794,101 @@ class _MapTopCard extends StatelessWidget {
   }
 }
 
+class _MapUnavailableView extends StatelessWidget {
+  const _MapUnavailableView({required this.message});
+
+  final String? message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFE7ECE5), Color(0xFFF5F2EA)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 360),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.94),
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(color: scheme.outlineVariant),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 30,
+                    offset: const Offset(0, 18),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: scheme.primary.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Icon(
+                      Icons.map_outlined,
+                      color: scheme.primary,
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    'Map unavailable',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    message ??
+                        'Google Maps is not configured for this Android build yet.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      height: 1.45,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F6F0),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Text(
+                      'Add MAPS_API_KEY to android/local.properties and enable Maps SDK for Android in Google Cloud.',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                        height: 1.45,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ExpandedPanel extends StatelessWidget {
   const _ExpandedPanel({
     super.key,
@@ -853,107 +992,131 @@ class _ExpandedPanel extends StatelessWidget {
                             width: isSelected ? 1.4 : 1,
                           ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final compact = constraints.maxHeight < 130;
+                            final spacing = compact ? 6.0 : 8.0;
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 34,
+                                      height: 34,
+                                      decoration: BoxDecoration(
+                                        color: point.accent.withOpacity(0.12),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Icon(
+                                        point.icon,
+                                        color: point.accent,
+                                        size: 18,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            point.title,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: theme.textTheme.titleSmall
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            point.distanceLabel,
+                                            style: theme.textTheme.labelSmall
+                                                ?.copyWith(
+                                                  color:
+                                                      scheme.onSurfaceVariant,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: spacing),
                                 Container(
-                                  width: 34,
-                                  height: 34,
-                                  decoration: BoxDecoration(
-                                    color: point.accent.withOpacity(0.12),
-                                    borderRadius: BorderRadius.circular(12),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: compact ? 3 : 4,
                                   ),
-                                  child: Icon(
-                                    point.icon,
-                                    color: point.accent,
-                                    size: 18,
+                                  decoration: BoxDecoration(
+                                    color: point.accent.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: Text(
+                                    point.badgeLabel,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: point.accent,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        point.title,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: theme.textTheme.titleSmall
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w800,
-                                            ),
+                                if (!compact) ...[
+                                  SizedBox(height: spacing),
+                                  Expanded(
+                                    child: Text(
+                                      point.subtitle,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: scheme.onSurfaceVariant,
+                                            height: 1.45,
+                                          ),
+                                    ),
+                                  ),
+                                ] else
+                                  const Spacer(),
+                                SizedBox(height: spacing),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () => onOpenPoint(point),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: point.accent,
+                                      minimumSize: Size.fromHeight(
+                                        compact ? 30 : 34,
                                       ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        point.distanceLabel,
-                                        style: theme.textTheme.labelSmall
-                                            ?.copyWith(
-                                              color: scheme.onSurfaceVariant,
-                                            ),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: compact ? 6 : 8,
                                       ),
-                                    ],
+                                      visualDensity: compact
+                                          ? VisualDensity.compact
+                                          : VisualDensity.standard,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      point.actionLabel,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.labelMedium
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
                                   ),
                                 ),
                               ],
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: point.accent.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                point.badgeLabel,
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: point.accent,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Expanded(
-                              child: Text(
-                                point.subtitle,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: scheme.onSurfaceVariant,
-                                  height: 1.45,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () => onOpenPoint(point),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: point.accent,
-                                  minimumSize: const Size.fromHeight(34),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                ),
-                                child: Text(
-                                  point.actionLabel,
-                                  style: theme.textTheme.labelMedium?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
                       ),
                     );

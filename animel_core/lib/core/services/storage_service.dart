@@ -6,6 +6,8 @@ class StorageService {
   static const String _tokenKey = 'auth_token';
   static const String _userIdKey = 'user_id';
 
+  String _journeyKey(String userId) => 'user_journey_$userId';
+
   Future<void> saveToken(String token) async {
     await _storage.write(key: _tokenKey, value: token);
   }
@@ -26,6 +28,16 @@ class StorageService {
   Future<String?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_userIdKey);
+  }
+
+  Future<void> saveUserJourney(String userId, String journey) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_journeyKey(userId), journey);
+  }
+
+  Future<String?> getUserJourney(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_journeyKey(userId));
   }
 
   Future<void> clearAll() async {

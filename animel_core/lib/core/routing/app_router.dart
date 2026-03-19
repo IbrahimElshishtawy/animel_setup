@@ -24,6 +24,7 @@ import '../../features/onboarding/presentation/choose_language_screen.dart';
 import '../../features/onboarding/presentation/permissions_info_screen.dart';
 import '../../features/profile/presentation/add_pet_step1_screen.dart';
 import '../../features/profile/presentation/edit_account_screen.dart';
+import '../../features/profile/presentation/journey_setup_screen.dart';
 import '../../features/profile/presentation/my_account_screen.dart';
 import '../../features/profile/presentation/my_pets_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
@@ -53,6 +54,12 @@ class AppRouter {
 
       if (authState is Unauthenticated) {
         return isPublicRoute ? null : '/welcome-auth';
+      }
+
+      if (authState is Authenticated &&
+          !authState.hasCompletedJourney &&
+          location != '/profile/journey') {
+        return '/profile/journey';
       }
 
       if (authState is Authenticated && isPublicRoute) {
@@ -164,6 +171,10 @@ class AppRouter {
       _route(
         path: '/profile/account/edit',
         builder: (context, state) => const EditAccountScreen(),
+      ),
+      _route(
+        path: '/profile/journey',
+        builder: (context, state) => const JourneySetupScreen(),
       ),
       _route(
         path: '/profile/pets',

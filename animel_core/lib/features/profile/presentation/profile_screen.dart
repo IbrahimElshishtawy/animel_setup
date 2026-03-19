@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/logic/locale_bloc.dart';
+import '../../../core/models/user_journey.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/theme/logic/theme_bloc.dart';
 import '../../../core/widgets/bottom_nav_bar.dart';
@@ -42,6 +43,7 @@ class ProfileScreen extends StatelessWidget {
               final localeCode =
                   context.watch<LocaleBloc>().state.locale?.languageCode ??
                   'en';
+              final journey = authState.journey;
 
               return ListView(
                 padding: AppSpacing.screenPadding,
@@ -111,24 +113,63 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.14),
-                                  borderRadius: BorderRadius.circular(
-                                    AppRadius.pill,
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.14),
+                                      borderRadius: BorderRadius.circular(
+                                        AppRadius.pill,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      user.location ?? 'Location not set',
+                                      style:
+                                          theme.textTheme.labelSmall?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
                                   ),
-                                ),
-                                child: Text(
-                                  user.location ?? 'Location not set',
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
+                                  if (journey != null)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.14),
+                                        borderRadius: BorderRadius.circular(
+                                          AppRadius.pill,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            journey.icon,
+                                            size: 14,
+                                            color: Colors.white,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            journey.title,
+                                            style: theme.textTheme.labelSmall
+                                                ?.copyWith(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                ],
                               ),
                             ],
                           ),
@@ -145,6 +186,14 @@ class ProfileScreen extends StatelessWidget {
                         title: 'Edit profile',
                         subtitle: 'Update your personal details and bio',
                         onTap: () => context.push('/profile/account/edit'),
+                      ),
+                      _SettingsTile(
+                        icon: journey?.icon ?? Icons.explore_outlined,
+                        title: 'Your journey',
+                        subtitle:
+                            journey?.profileSummary ??
+                            'Choose whether you own, buy, or adopt pets',
+                        onTap: () => context.push('/profile/journey'),
                       ),
                       _SettingsTile(
                         icon: Icons.pets_outlined,
