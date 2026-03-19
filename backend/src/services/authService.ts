@@ -17,6 +17,7 @@ export const sanitizeUser = (user: IUser) => ({
   name: user.name,
   email: user.email,
   phoneNumber: user.phoneNumber,
+  journey: user.journey,
   profileImageUrl: user.profileImageUrl,
   location: user.location,
   language: user.language,

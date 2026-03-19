@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'user_journey.dart';
 
 class UserProfile extends Equatable {
   final String id;
   final String name;
   final String email;
   final String phoneNumber;
+  final UserJourney? journey;
   final String? profileImageUrl;
   final String? location;
   final String language;
@@ -15,6 +17,7 @@ class UserProfile extends Equatable {
     required this.name,
     required this.email,
     required this.phoneNumber,
+    this.journey,
     this.profileImageUrl,
     this.location,
     this.language = 'en',
@@ -27,6 +30,7 @@ class UserProfile extends Equatable {
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       phoneNumber: json['phoneNumber'] ?? '',
+      journey: UserJourneyX.fromStorage(json['journey']?.toString()),
       profileImageUrl: json['profileImageUrl'],
       location: json['location'],
       language: json['language'] ?? 'en',
@@ -39,6 +43,7 @@ class UserProfile extends Equatable {
       'name': name,
       'email': email,
       'phoneNumber': phoneNumber,
+      'journey': journey?.storageValue,
       'profileImageUrl': profileImageUrl,
       'location': location,
       'language': language,
@@ -50,6 +55,7 @@ class UserProfile extends Equatable {
     String? name,
     String? email,
     String? phoneNumber,
+    UserJourney? journey,
     String? profileImageUrl,
     String? location,
     String? language,
@@ -60,6 +66,7 @@ class UserProfile extends Equatable {
       name: name ?? this.name,
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      journey: journey ?? this.journey,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       location: location ?? this.location,
       language: language ?? this.language,
@@ -73,6 +80,7 @@ class UserProfile extends Equatable {
         name,
         email,
         phoneNumber,
+        journey,
         profileImageUrl,
         location,
         language,

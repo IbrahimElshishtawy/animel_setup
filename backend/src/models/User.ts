@@ -6,6 +6,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   phoneNumber: string;
+  journey?: 'pet_owner' | 'buyer' | 'adopter';
   profileImageUrl?: string;
   location?: string;
   language: 'en' | 'ar';
@@ -21,6 +22,10 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6 },
     phoneNumber: { type: String, required: true, trim: true },
+    journey: {
+      type: String,
+      enum: ['pet_owner', 'buyer', 'adopter'],
+    },
     profileImageUrl: { type: String, trim: true },
     location: { type: String, trim: true },
     language: {

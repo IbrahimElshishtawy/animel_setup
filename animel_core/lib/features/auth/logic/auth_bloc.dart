@@ -113,7 +113,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     String? message,
   }) async {
     final storedJourney = await _storageService.getUserJourney(user.id);
-    final journey = UserJourneyX.fromStorage(storedJourney);
+    final journey = user.journey ?? UserJourneyX.fromStorage(storedJourney);
+    if (journey != null) {
+      await _storageService.saveUserJourney(user.id, journey.storageValue);
+    }
     return Authenticated(
       user,
       journey: journey,
@@ -220,17 +223,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final currentState = state;
     if (currentState is! Authenticated) return;
 
-    await _storageService.saveUserJourney(
-      currentState.user.id,
-      event.journey.storageValue,
-    );
-    emit(
-      Authenticated(
-        currentState.user,
-        journey: event.journey,
-        hasCompletedJourney: true,
-      ),
-    );
+    emit(AuthLoading());
+    try {
+      final updatedUser = await _authRepository.updateProfile({
+        'journey': event.journey.storageValue,
+      });
+      await _storageService.saveUserJourney(
+        currentState.user.id,
+        event.journey.storageValue,
+      );
+      emit(await _buildAuthenticatedState(updatedUser));
+    } catch (error) {
+      emit(AuthFailure(error.toString().replaceFirst('ApiException: ', '')));
+      emit(
+        Authenticated(
+          currentState.user,
+          journey: currentState.journey,
+          hasCompletedJourney: currentState.hasCompletedJourney,
+        ),
+      );
+    }
   }
 
   Future<void> _onLogoutRequested(

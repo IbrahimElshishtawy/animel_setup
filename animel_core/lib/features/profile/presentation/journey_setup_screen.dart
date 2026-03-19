@@ -46,6 +46,17 @@ class _JourneySetupScreenState extends State<JourneySetupScreen> {
 
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
+        if (state is AuthFailure) {
+          final messenger = ScaffoldMessenger.of(context);
+          messenger
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text(state.message)));
+          if (_pendingRoute != null && mounted) {
+            setState(() => _pendingRoute = null);
+          }
+          return;
+        }
+
         if (state is! Authenticated) return;
         final route = _pendingRoute;
         if (route == null) return;

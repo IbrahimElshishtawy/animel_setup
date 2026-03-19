@@ -5,7 +5,17 @@ import { ApiError } from '../utils/ApiError';
 import { asyncHandler } from '../utils/asyncHandler';
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-  const { name, email, password, phoneNumber, language, location, bio, profileImageUrl } =
+  const {
+    name,
+    email,
+    password,
+    phoneNumber,
+    journey,
+    language,
+    location,
+    bio,
+    profileImageUrl,
+  } =
     req.body;
 
   const existingUser = await User.findOne({ email: String(email).toLowerCase() });
@@ -18,6 +28,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     email,
     password,
     phoneNumber,
+    journey,
     language: language || 'en',
     location,
     bio,
@@ -66,6 +77,7 @@ export const updateProfile = asyncHandler(async (req: Request, res: Response) =>
   const updatableFields = [
     'name',
     'phoneNumber',
+    'journey',
     'profileImageUrl',
     'location',
     'language',
