@@ -2,186 +2,204 @@ import 'package:animel_core/features/auth/presentation/welcome_auth_screen.dart'
 import 'package:animel_core/features/home/presentation/animal_detail_screen.dart';
 import 'package:animel_core/features/profile/presentation/contact_screen.dart';
 import 'package:animel_core/features/profile/presentation/profile_language_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-// ONBOARDING
-import '../../features/splash/presentation/splash_screen.dart';
-import '../../features/onboarding/presentation/choose_language_screen.dart';
-import '../../features/onboarding/presentation/permissions_info_screen.dart';
-
-// AUTH
+import '../../core/models/animal_model.dart';
+import '../../core/models/product_model.dart';
+import '../../features/adoption/presentation/adoption_detail_screen.dart';
+import '../../features/adoption/presentation/adoption_list_screen.dart';
+import '../../features/auth/logic/auth_bloc.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/presentation/verify_email_screen.dart';
-import '../../features/auth/logic/auth_bloc.dart';
-
-// HOME & OTHERS
-import '../../features/home/presentation/home_screen.dart';
-import '../../features/home/presentation/animal_list_screen.dart';
-import '../../features/search/presentation/search_screen.dart';
-import '../../features/report/presentation/report_step1_screen.dart';
-import '../../features/adoption/presentation/adoption_list_screen.dart';
-import '../../features/adoption/presentation/adoption_detail_screen.dart';
-import '../../features/shop/presentation/shop_screen.dart';
-import '../../features/shop/presentation/product_detail_screen.dart';
-import '../../features/maps/presentation/map_screen.dart';
-import '../../features/chat/presentation/chat_list_screen.dart';
 import '../../features/chat/presentation/chat_detail_screen.dart';
+import '../../features/chat/presentation/chat_list_screen.dart';
 import '../../features/donation/presentation/donation_screen.dart';
-import '../../features/profile/presentation/profile_screen.dart';
-import '../../features/profile/presentation/my_account_screen.dart';
-import '../../features/profile/presentation/edit_account_screen.dart';
-import '../../features/profile/presentation/my_pets_screen.dart';
+import '../../features/home/presentation/animal_list_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
+import '../../features/maps/presentation/map_screen.dart';
+import '../../features/onboarding/presentation/choose_language_screen.dart';
+import '../../features/onboarding/presentation/permissions_info_screen.dart';
 import '../../features/profile/presentation/add_pet_step1_screen.dart';
-
-import '../../core/models/animal_model.dart';
-import '../../core/models/product_model.dart';
+import '../../features/profile/presentation/edit_account_screen.dart';
+import '../../features/profile/presentation/my_account_screen.dart';
+import '../../features/profile/presentation/my_pets_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/report/presentation/report_step1_screen.dart';
+import '../../features/search/presentation/search_screen.dart';
+import '../../features/shop/presentation/product_detail_screen.dart';
+import '../../features/shop/presentation/shop_screen.dart';
+import '../../features/splash/presentation/splash_screen.dart';
 
 class AppRouter {
+  static const _publicRoutes = {
+    '/splash',
+    '/choose-language',
+    '/permissions-info',
+    '/welcome-auth',
+    '/login',
+    '/register',
+    '/verify-email',
+  };
+
   static final GoRouter router = GoRouter(
-    initialLocation: "/splash",
+    initialLocation: '/splash',
     redirect: (context, state) {
       final authState = context.read<AuthBloc>().state;
-      final isLoggingIn = state.matchedLocation == '/login' ||
-                          state.matchedLocation == '/register' ||
-                          state.matchedLocation == '/welcome-auth' ||
-                          state.matchedLocation == '/splash';
+      final location = state.matchedLocation;
+      final isPublicRoute = _publicRoutes.contains(location);
 
       if (authState is Unauthenticated) {
-        return isLoggingIn ? null : '/welcome-auth';
+        return isPublicRoute ? null : '/welcome-auth';
       }
 
-      if (authState is Authenticated) {
-        if (isLoggingIn) return '/home';
+      if (authState is Authenticated && isPublicRoute) {
+        return '/home';
       }
 
       return null;
     },
     routes: [
-      // ONBOARDING
-      GoRoute(
-        path: "/splash",
-        builder: (context, state) => const SplashScreen(),
-      ),
-      GoRoute(
-        path: "/choose-language",
+      _route(path: '/splash', builder: (context, state) => const SplashScreen()),
+      _route(
+        path: '/choose-language',
         builder: (context, state) => const ChooseLanguageScreen(),
       ),
-      GoRoute(
-        path: "/permissions-info",
+      _route(
+        path: '/permissions-info',
         builder: (context, state) => const PermissionsInfoScreen(),
       ),
-      GoRoute(
-        path: "/welcome-auth",
+      _route(
+        path: '/welcome-auth',
         builder: (context, state) => const WelcomeAuthScreen(),
       ),
-
-      // AUTH
-      GoRoute(path: "/login", builder: (context, state) => const LoginScreen()),
-      GoRoute(
-        path: "/register",
+      _route(path: '/login', builder: (context, state) => const LoginScreen()),
+      _route(
+        path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
-      GoRoute(
-        path: "/verify-email",
+      _route(
+        path: '/verify-email',
         builder: (context, state) => const VerifyEmailScreen(),
       ),
-
-      // MAIN
-      GoRoute(path: "/home", builder: (context, state) => const HomeScreen()),
-      GoRoute(
-        path: "/animal-list",
+      _route(path: '/home', builder: (context, state) => const HomeScreen()),
+      _route(
+        path: '/animal-list',
         builder: (context, state) => const AnimalListScreen(),
       ),
-      GoRoute(
-        path: "/animal-details",
+      _route(
+        path: '/animal-details',
         builder: (context, state) {
           final animal = state.extra as Animal;
           return AnimalDetailScreen(animal: animal);
         },
       ),
-      GoRoute(
-        path: "/search",
+      _route(
+        path: '/search',
         builder: (context, state) => const SearchScreen(),
       ),
-      GoRoute(
-        path: "/report",
+      _route(
+        path: '/report',
         builder: (context, state) => const ReportStep1Screen(),
       ),
-      GoRoute(
-        path: "/profile/language",
+      _route(
+        path: '/profile/language',
         builder: (context, state) => const ProfileLanguageScreen(),
       ),
-      GoRoute(
-        path: "/profile/contact",
+      _route(
+        path: '/profile/contact',
         builder: (context, state) => const ContactScreen(),
       ),
-
-      GoRoute(
-        path: "/adopt",
+      _route(
+        path: '/adopt',
         builder: (context, state) => const AdoptionListScreen(),
       ),
-      GoRoute(
-        path: "/adoption-details",
+      _route(
+        path: '/adoption-details',
         builder: (context, state) {
           final animal = state.extra as Animal;
           return AdoptionDetailScreen(animal: animal);
         },
       ),
-      GoRoute(
-        path: "/shop",
-        builder: (context, state) => const ShopScreen(),
-      ),
-      GoRoute(
-        path: "/product-details",
+      _route(path: '/shop', builder: (context, state) => const ShopScreen()),
+      _route(
+        path: '/product-details',
         builder: (context, state) {
           final product = state.extra as Product;
           return ProductDetailScreen(product: product);
         },
       ),
-      GoRoute(
-        path: "/map",
-        builder: (context, state) => const MapScreen(),
-      ),
-      GoRoute(
-        path: "/chat",
-        builder: (context, state) => const ChatListScreen(),
-      ),
-      GoRoute(
-        path: "/chat-detail",
+      _route(path: '/map', builder: (context, state) => const MapScreen()),
+      _route(path: '/chat', builder: (context, state) => const ChatListScreen()),
+      _route(
+        path: '/chat-detail',
         builder: (context, state) {
-          final extras = state.extra as Map<String, dynamic>;
+          final extras = state.extra as Map<String, dynamic>? ?? const {};
           return ChatDetailScreen(
-            userName: extras['userName'] as String,
-            userId: extras['userId'] as String,
+            userName: extras['userName'] as String? ?? 'Animal Connect',
+            userId: extras['userId'] as String? ?? '',
           );
         },
       ),
-      GoRoute(
-        path: "/donation",
+      _route(
+        path: '/donation',
         builder: (context, state) => const DonationScreen(),
       ),
-      GoRoute(
-        path: "/profile",
+      _route(
+        path: '/profile',
         builder: (context, state) => const ProfileScreen(),
       ),
-      GoRoute(
-        path: "/profile/account",
+      _route(
+        path: '/profile/account',
         builder: (context, state) => const MyAccountScreen(),
       ),
-      GoRoute(
-        path: "/profile/account/edit",
+      _route(
+        path: '/profile/account/edit',
         builder: (context, state) => const EditAccountScreen(),
       ),
-      GoRoute(
-        path: "/profile/pets",
+      _route(
+        path: '/profile/pets',
         builder: (context, state) => const MyPetsScreen(),
       ),
-      GoRoute(
-        path: "/profile/pets/add-step1",
+      _route(
+        path: '/profile/pets/add-step1',
         builder: (context, state) => const AddPetStep2Screen(),
       ),
     ],
   );
+
+  static GoRoute _route({
+    required String path,
+    required Widget Function(BuildContext, GoRouterState) builder,
+  }) {
+    return GoRoute(
+      path: path,
+      pageBuilder: (context, state) => CustomTransitionPage<void>(
+        key: state.pageKey,
+        transitionDuration: const Duration(milliseconds: 320),
+        reverseTransitionDuration: const Duration(milliseconds: 220),
+        child: builder(context, state),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          final curved = CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+            reverseCurve: Curves.easeInCubic,
+          );
+
+          return FadeTransition(
+            opacity: curved,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0.04, 0.02),
+                end: Offset.zero,
+              ).animate(curved),
+              child: child,
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

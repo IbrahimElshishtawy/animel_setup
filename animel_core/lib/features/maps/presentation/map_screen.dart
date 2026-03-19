@@ -280,7 +280,13 @@ class _MapScreenState extends State<MapScreen> {
 
   void _openPoint(_MapPoint point) {
     if (point.kind == _MapPointKind.person && point.person != null) {
-      context.push('/chat-detail', extra: point.person!.name);
+      context.push(
+        '/chat-detail',
+        extra: {
+          'userName': point.person!.name,
+          'userId': point.person!.id,
+        },
+      );
       return;
     }
     if (point.kind == _MapPointKind.adoption && point.animal != null) {

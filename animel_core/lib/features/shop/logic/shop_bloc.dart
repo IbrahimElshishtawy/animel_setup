@@ -153,7 +153,11 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
   ) async {
     try {
       final categories = await _repository.getCategories();
-      emit(state.copyWith(categories: categories));
+      final resolvedCategories = [
+        'All',
+        ...categories.where((category) => category != 'All'),
+      ];
+      emit(state.copyWith(categories: resolvedCategories));
     } catch (_) {
       // Keep default categories if category endpoint fails.
     }

@@ -1,166 +1,123 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/app_media.dart';
+
 class WelcomeAuthScreen extends StatelessWidget {
   const WelcomeAuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const lightPurple = Color(0xFFF6ECF3);
-    const purple = Color(0xFF4B1A45);
-    const orange = Color(0xFFE27D60);
-
-    final baseTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
-      fontWeight: FontWeight.w700,
-      fontSize: 18,
-      height: 1.4,
-    );
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: lightPurple,
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 430),
-            child: Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 24,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 28,
-                      child: Image.asset(
-                        'assets/image/image.png',
-                        fit: BoxFit.contain,
-                      ),
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              scheme.primary.withOpacity(0.12),
+              theme.scaffoldBackgroundColor,
+              scheme.secondary.withOpacity(0.14),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 460),
+              child: ListView(
+                padding: AppSpacing.screenPadding,
+                children: [
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(28),
+                    decoration: BoxDecoration(
+                      color: theme.cardColor.withOpacity(0.96),
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
+                      border: Border.all(color: scheme.outlineVariant),
+                      boxShadow: AppShadows.soft(scheme.primary, opacity: 0.12),
                     ),
-                    const SizedBox(height: 200),
-                    Center(
-                      child: RichText(
-                        textAlign: TextAlign.left,
-                        text: TextSpan(
-                          style: baseTextStyle,
-                          children: [
-                            const TextSpan(text: 'Because '),
-                            TextSpan(
-                              text: 'Every Paw Deserves\n',
-                              style: baseTextStyle?.copyWith(color: purple),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const AppMedia(height: 68, width: 68),
+                        const SizedBox(height: 18),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: scheme.primary.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(AppRadius.pill),
+                          ),
+                          child: Text(
+                            'Animal Connect',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: scheme.primary,
+                              fontWeight: FontWeight.w800,
                             ),
-                            TextSpan(
-                              text: 'To Find Its Way Home — ',
-                              style: baseTextStyle?.copyWith(color: orange),
-                            ),
-                            TextSpan(
-                              text:
-                                  '\nYour All-In-One App For Animal\nCare, Rescue, And Adoption',
-                              style: baseTextStyle?.copyWith(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Care, discovery, rescue, and adoption in one polished app.',
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Explore premium listings, nearby adoptions, trusted helpers, and a calmer messaging experience built for real pet communities.',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: const [
+                            _FeaturePill(label: 'Marketplace'),
+                            _FeaturePill(label: 'Adoption'),
+                            _FeaturePill(label: 'Community map'),
+                            _FeaturePill(label: 'Live chat'),
                           ],
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(height: 120),
-                    Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 26,
-                            height: 4,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(999),
-                              gradient: const LinearGradient(
-                                colors: [purple, orange],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => context.go('/login'),
+                      child: const Text('Login'),
                     ),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: purple,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
-                        onPressed: () => context.go('/login'),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () => context.go('/register'),
+                      child: const Text('Create account'),
                     ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: purple,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
-                        onPressed: () => context.go('/register'),
-                        child: const Text(
-                          'Sign up',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                  ),
+                  const SizedBox(height: 18),
+                  Center(
+                    child: Text(
+                      'Google sign-in can be connected here when your auth provider is ready.',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: _GoogleButton(
-                        onTap: () {
-                          // Google sign in
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -170,55 +127,27 @@ class WelcomeAuthScreen extends StatelessWidget {
   }
 }
 
-class _GoogleButton extends StatelessWidget {
-  final VoidCallback onTap;
+class _FeaturePill extends StatelessWidget {
+  const _FeaturePill({required this.label});
 
-  const _GoogleButton({required this.onTap});
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    const purple = Color(0xFF4B1A45);
-    const orange = Color(0xFFE27D60);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(18),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            gradient: const LinearGradient(
-              colors: [purple, orange],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-          ),
-          padding: const EdgeInsets.all(1),
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(17),
-            ),
-            child: RichText(
-              text: const TextSpan(
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-                children: [
-                  TextSpan(text: 'Sign in with '),
-                  TextSpan(
-                    text: 'Google',
-                    style: TextStyle(color: orange),
-                  ),
-                ],
-              ),
-            ),
-          ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+      ),
+      child: Text(
+        label,
+        style: theme.textTheme.labelMedium?.copyWith(
+          color: scheme.onSurfaceVariant,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
