@@ -8,8 +8,8 @@ mongoose.set('strictQuery', true);
 const startServer = async () => {
   await connectDatabase();
 
-  app.listen(env.port, () => {
-    console.log(`Animal Connect backend listening on port ${env.port}`);
+  app.listen(env.port, env.host, () => {
+    console.log(`Animal Connect backend listening on http://${env.host}:${env.port}`);
   });
 };
 
