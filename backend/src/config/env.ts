@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const ensureString = (value: string | undefined, fallback = '') => value?.trim() || fallback;
 
 const defaultMongoUri = 'mongodb://127.0.0.1:27017/animal-connect';

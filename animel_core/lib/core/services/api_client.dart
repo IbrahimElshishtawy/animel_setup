@@ -20,26 +20,30 @@ class ApiClient {
   final StorageService _storageService = StorageService();
 
   ApiClient()
-      : _dio = Dio(BaseOptions(
+    : _dio = Dio(
+        BaseOptions(
           baseUrl: baseUrl,
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
-        )) {
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final token = await _storageService.getToken();
-        if (token != null) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        return handler.next(options);
-      },
-      onError: (e, handler) async {
-        if (e.response?.statusCode == 401) {
-          await _storageService.clearAll();
-        }
-        return handler.next(e);
-      },
-    ));
+        ),
+      ) {
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await _storageService.getToken();
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
+        onError: (e, handler) async {
+          if (e.response?.statusCode == 401) {
+            await _storageService.clearAll();
+          }
+          return handler.next(e);
+        },
+      ),
+    );
   }
 
   Dio get dio => _dio;
