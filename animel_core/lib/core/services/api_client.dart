@@ -1,19 +1,45 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+
 import 'storage_service.dart';
 
 class ApiClient {
+  static const String _apiBaseUrlFromEnv = String.fromEnvironment(
+    'API_BASE_URL',
+  );
+
+  // Default LAN address for running the backend on this machine and testing
+  // from a real mobile device on the same Wi-Fi network.
+  static const String _mobileLanBaseUrl = 'http://192.168.1.3:5000/api';
+  static const String _androidEmulatorBaseUrl = 'http://10.0.2.2:5000/api';
+  static const String _desktopBaseUrl = 'http://localhost:5000/api';
+
   static String get baseUrl {
+    if (_apiBaseUrlFromEnv.isNotEmpty) {
+      return _normalizeBaseUrl(_apiBaseUrlFromEnv);
+    }
+
     if (kIsWeb) {
-      return 'http://localhost:5000/api';
+      return _desktopBaseUrl;
     }
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return 'http://10.0.2.2:5000/api';
+      case TargetPlatform.iOS:
+        return _mobileLanBaseUrl;
       default:
-        return 'http://localhost:5000/api';
+        return _desktopBaseUrl;
     }
+  }
+
+  static String get mobileLanBaseUrl => _mobileLanBaseUrl;
+
+  static String get androidEmulatorBaseUrl => _androidEmulatorBaseUrl;
+
+  static String _normalizeBaseUrl(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return trimmed;
+    return trimmed.endsWith('/api') ? trimmed : '$trimmed/api';
   }
 
   final Dio _dio;
@@ -23,15 +49,17 @@ class ApiClient {
     : _dio = Dio(
         BaseOptions(
           baseUrl: baseUrl,
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
+          connectTimeout: const Duration(seconds: 20),
+          receiveTimeout: const Duration(seconds: 20),
+          sendTimeout: const Duration(seconds: 20),
+          headers: const {'Accept': 'application/json'},
         ),
       ) {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await _storageService.getToken();
-          if (token != null) {
+          if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
           return handler.next(options);

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_tokens.dart';
@@ -13,7 +15,7 @@ class ContactScreen extends StatelessWidget {
       (
         Icons.location_on_outlined,
         'Location',
-        '5 Abbas El Akkad Street, Nasr City, Cairo, Egypt'
+        '5 Abbas El Akkad Street, Nasr City, Cairo, Egypt',
       ),
       (Icons.phone_outlined, 'Phone', '+20 155459381'),
       (Icons.email_outlined, 'Email', 'support@animalconnect.app'),

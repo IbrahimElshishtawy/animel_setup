@@ -52,6 +52,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -74,7 +76,31 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/image/image.png 
+    - assets/image/image.png
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/image/image.png
+  min_sdk_android: 21
+  adaptive_icon_background: "#F4F6F2"
+  adaptive_icon_foreground: assets/image/image.png
+  adaptive_icon_monochrome: assets/image/image.png
+  remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#F4F6F2"
+  image: assets/image/image.png
+  color_dark: "#091111"
+  image_dark: assets/image/image.png
+  android_12:
+    color: "#F4F6F2"
+    image: assets/image/image.png
+    icon_background_color: "#F4F6F2"
+    color_dark: "#091111"
+    image_dark: assets/image/image.png
+    icon_background_color_dark: "#091111"
+  web: false
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

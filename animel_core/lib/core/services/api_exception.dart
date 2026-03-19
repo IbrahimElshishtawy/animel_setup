@@ -13,13 +13,16 @@ class ApiException implements Exception {
       }
 
       if (error.type == DioExceptionType.connectionTimeout ||
+          error.type == DioExceptionType.sendTimeout ||
           error.type == DioExceptionType.receiveTimeout) {
-        return const ApiException('Connection timed out. Please try again.');
+        return const ApiException(
+          'Connection timed out. Make sure your mobile and backend are on the same network, then try again.',
+        );
       }
 
       if (error.type == DioExceptionType.connectionError) {
         return const ApiException(
-          'Unable to reach the server. Check the API host and try again.',
+          'Unable to reach the server. Check the backend host/IP and confirm the server is running.',
         );
       }
     }
