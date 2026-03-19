@@ -10,8 +10,8 @@ class ApiClient {
 
   // Default LAN address for running the backend on this machine and testing
   // from a real mobile device on the same Wi-Fi network.
-  static const String _mobileLanBaseUrl = 'http://192.168.1.3:5000/api';
-  static const String _androidEmulatorBaseUrl = 'http://10.0.2.2:5000/api';
+  // static const String _mobileLanBaseUrl = 'http://192.168.1.3:5000/api';
+  // static const String _androidEmulatorBaseUrl = 'http://10.0.2.2:5000/api';
   static const String _desktopBaseUrl = 'http://localhost:5000/api';
 
   static String get baseUrl {
@@ -26,15 +26,15 @@ class ApiClient {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
       case TargetPlatform.iOS:
-        return _mobileLanBaseUrl;
+        return _desktopBaseUrl;
       default:
         return _desktopBaseUrl;
     }
   }
 
-  static String get mobileLanBaseUrl => _mobileLanBaseUrl;
+  static String get mobileLanBaseUrl => _desktopBaseUrl;
 
-  static String get androidEmulatorBaseUrl => _androidEmulatorBaseUrl;
+  static String get androidEmulatorBaseUrl => _desktopBaseUrl;
 
   static String _normalizeBaseUrl(String value) {
     final trimmed = value.trim();
