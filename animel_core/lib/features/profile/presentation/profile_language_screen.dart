@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +25,7 @@ class ProfileLanguageScreen extends StatelessWidget {
           ),
           _LanguagePreference(
             code: 'ar',
-            title: 'العربية',
+            title: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629',
             subtitle: 'Arabic interface with right-to-left support',
           ),
         ];

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -147,10 +149,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 else
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                    sliver: SliverList.separated(
-                      itemCount: state.conversations.length,
-                      itemBuilder: (context, index) {
-                        final conversation = state.conversations[index];
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        if (index.isOdd) {
+                          return const SizedBox(height: 12);
+                        }
+
+                        final conversation = state.conversations[index ~/ 2];
                         final participant = _resolveOtherParticipant(
                           conversation,
                           currentUserId,
@@ -159,8 +164,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           conversation: conversation,
                           participant: participant,
                         );
-                      },
-                      separatorBuilder: (_, _) => const SizedBox(height: 12),
+                      }, childCount: (state.conversations.length * 2) - 1),
                     ),
                   ),
               ],

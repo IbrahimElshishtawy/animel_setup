@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -41,8 +43,8 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
       ),
       _LanguageOption(
         code: 'ar',
-        title: 'العربية',
-        subtitle: 'واجهة عربية كاملة وتجربة مريحة للقراءة',
+        title: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629',
+        subtitle: 'Full Arabic interface with comfortable reading flow',
         label: 'AR',
       ),
     ];
@@ -63,123 +65,114 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
         child: SafeArea(
           child: SingleChildScrollView(
             padding: AppSpacing.screenPadding,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight:
-                    MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).padding.top -
-                    32,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 8),
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(22),
-                      decoration: BoxDecoration(
-                        color: theme.cardColor,
-                        borderRadius: BorderRadius.circular(AppRadius.lg),
-                        border: Border.all(color: scheme.outlineVariant),
-                        boxShadow: AppShadows.soft(Colors.black),
-                      ),
-                      child: const AppMedia(height: 82, width: 82),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(22),
                     decoration: BoxDecoration(
+                      color: theme.cardColor,
                       borderRadius: BorderRadius.circular(AppRadius.lg),
-                      gradient: LinearGradient(
-                        colors: [
-                          scheme.primary,
-                          Color.alphaBlend(
-                            scheme.secondary.withOpacity(0.28),
-                            scheme.primary,
-                          ),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: AppShadows.soft(scheme.primary, opacity: 0.22),
+                      border: Border.all(color: scheme.outlineVariant),
+                      boxShadow: AppShadows.soft(Colors.black),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.14),
-                            borderRadius: BorderRadius.circular(AppRadius.pill),
-                          ),
-                          child: Text(
-                            'Welcome to Animal Connect',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Choose the language that feels most natural before we personalise your experience.',
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'You can change this later from settings whenever you want.',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.white.withOpacity(0.82),
-                          ),
+                    child: const AppMedia(height: 82, width: 82),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                    gradient: LinearGradient(
+                      colors: [
+                        scheme.primary,
+                        Color.alphaBlend(
+                          scheme.secondary.withOpacity(0.28),
+                          scheme.primary,
                         ),
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    boxShadow: AppShadows.soft(scheme.primary, opacity: 0.22),
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Select language',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Built-in support is ready for both English and Arabic.',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  ...options.map(
-                    (option) => Padding(
-                      padding: const EdgeInsets.only(bottom: 14),
-                      child: _LanguageCard(
-                        option: option,
-                        isSelected: option.code == _selectedLanguageCode,
-                        onTap: () {
-                          setState(() => _selectedLanguageCode = option.code);
-                        },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.14),
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                        ),
+                        child: Text(
+                          'Welcome to Animal Connect',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Choose the language that feels most natural before we personalise your experience.',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'You can change this later from settings whenever you want.',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white.withOpacity(0.82),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Select language',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Built-in support is ready for both English and Arabic.',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 18),
+                ...options.map(
+                  (option) => Padding(
+                    padding: const EdgeInsets.only(bottom: 14),
+                    child: _LanguageCard(
+                      option: option,
+                      isSelected: option.code == _selectedLanguageCode,
+                      onTap: () {
+                        setState(() => _selectedLanguageCode = option.code);
+                      },
                     ),
                   ),
-                  const Spacer(),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _continue,
-                      child: const Text('Continue'),
-                    ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _continue,
+                    child: const Text('Continue'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

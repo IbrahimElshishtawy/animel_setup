@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -200,11 +202,16 @@ class _AdoptionListScreenState extends State<AdoptionListScreen> {
                 else
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                    sliver: SliverList.separated(
-                      itemCount: state.animals.length,
-                      itemBuilder: (context, index) =>
-                          _AdoptionListCard(animal: state.animals[index]),
-                      separatorBuilder: (_, _) => const SizedBox(height: 14),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        if (index.isOdd) {
+                          return const SizedBox(height: 14);
+                        }
+
+                        return _AdoptionListCard(
+                          animal: state.animals[index ~/ 2],
+                        );
+                      }, childCount: (state.animals.length * 2) - 1),
                     ),
                   ),
               ],

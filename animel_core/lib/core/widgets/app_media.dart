@@ -40,7 +40,7 @@ class AppMedia extends StatelessWidget {
                       Image.asset(fallbackAsset, fit: fit),
                 )
               : Image.asset(fallbackAsset, fit: fit),
-          if (child != null) child!,
+          ?child,
         ],
       ),
     );

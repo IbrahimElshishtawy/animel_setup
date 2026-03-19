@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -177,6 +179,12 @@ class ProfileScreen extends StatelessWidget {
                   _SettingsSection(
                     title: 'Support',
                     children: [
+                      _SettingsTile(
+                        icon: Icons.chat_bubble_outline_rounded,
+                        title: 'Messages',
+                        subtitle: 'Open your conversations and active threads',
+                        onTap: () => context.push('/chat'),
+                      ),
                       _SettingsTile(
                         icon: Icons.mail_outline_rounded,
                         title: 'Contact us',
