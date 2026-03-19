@@ -2,6 +2,27 @@
 
 import 'package:flutter/material.dart';
 
+class AppPalette {
+  static const Color ink = Color(0xFF191823);
+  static const Color plum = Color(0xFF4B1A45);
+  static const Color plumDeep = Color(0xFF2A1E3F);
+  static const Color magenta = Color(0xFF8B2E6F);
+  static const Color sunset = Color(0xFFE59A5A);
+  static const Color blush = Color(0xFFF6ECF3);
+  static const Color shell = Color(0xFFF7F2F7);
+  static const Color surface = Color(0xFFFFFBFD);
+  static const Color border = Color(0xFFE3D5E6);
+  static const Color muted = Color(0xFF7E6A80);
+  static const Color text = Color(0xFF2A2030);
+  static const Color indigo = Color(0xFF4C5D97);
+  static const Color darkSurface = Color(0xFF211C2B);
+  static const Color darkBorder = Color(0xFF342A3B);
+  static const Color darkMuted = Color(0xFFA99AAE);
+  static const Color darkText = Color(0xFFF8F2FA);
+
+  static const List<Color> brandGradient = [plumDeep, magenta, sunset];
+}
+
 class AppSpacing {
   static const double xs = 6;
   static const double sm = 10;

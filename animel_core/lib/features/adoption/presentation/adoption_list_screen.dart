@@ -90,17 +90,17 @@ class _AdoptionListScreenState extends State<AdoptionListScreen> {
                             borderRadius: BorderRadius.circular(AppRadius.lg),
                             gradient: LinearGradient(
                               colors: [
-                                const Color(0xFF55A57F),
+                                AppPalette.magenta,
                                 Color.alphaBlend(
                                   scheme.secondary.withOpacity(0.26),
-                                  const Color(0xFF55A57F),
+                                  AppPalette.magenta,
                                 ),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             boxShadow: AppShadows.soft(
-                              const Color(0xFF55A57F),
+                              AppPalette.magenta,
                               opacity: 0.18,
                             ),
                           ),
@@ -269,13 +269,13 @@ class _AdoptionListCard extends StatelessWidget {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF55A57F).withOpacity(0.1),
+                          color: AppPalette.magenta.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(AppRadius.pill),
                         ),
                         child: Text(
                           'Adoption',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: const Color(0xFF55A57F),
+                            color: AppPalette.magenta,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -289,7 +289,7 @@ class _AdoptionListCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${animal.breed} • ${animal.age}',
+                        '${animal.breed} - ${animal.age}',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: scheme.onSurfaceVariant,
                         ),

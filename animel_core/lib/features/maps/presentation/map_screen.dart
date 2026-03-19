@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/models/animal_model.dart';
+import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../adoption/logic/adoption_bloc.dart';
 import '../../home/logic/animal_bloc.dart';
@@ -179,7 +180,7 @@ class _MapScreenState extends State<MapScreen> {
         subtitle: '${animal.breed} - ${animal.location}',
         distanceLabel: '${1.2 + (index * 0.6)} km away',
         position: _shift(_currentCenter, offset.dx, offset.dy),
-        accent: const Color(0xFFE39A53),
+        accent: AppPalette.sunset,
         animal: animal,
       );
     });
@@ -202,7 +203,7 @@ class _MapScreenState extends State<MapScreen> {
         subtitle: '${animal.breed} - Ready for adoption',
         distanceLabel: '${0.9 + (index * 0.7)} km away',
         position: _shift(_currentCenter, offset.dx, offset.dy),
-        accent: const Color(0xFF55A57F),
+        accent: AppPalette.magenta,
         animal: animal,
       );
     });
@@ -215,7 +216,7 @@ class _MapScreenState extends State<MapScreen> {
         'Mona Ali',
         'Adoption coordinator',
         'Same district',
-        const Color(0xFF4F88B9),
+        AppPalette.indigo,
         const Offset(0.003, -0.005),
       ),
       _NearbyPerson(
@@ -223,7 +224,7 @@ class _MapScreenState extends State<MapScreen> {
         'Omar Hassan',
         'Pet transporter',
         '1.1 km away',
-        const Color(0xFF6B7EAA),
+        const Color(0xFF755C95),
         const Offset(-0.004, 0.003),
       ),
       _NearbyPerson(
@@ -231,7 +232,7 @@ class _MapScreenState extends State<MapScreen> {
         'Sara Nabil',
         'Local rescuer',
         'Same area',
-        const Color(0xFFD07A57),
+        AppPalette.sunset,
         const Offset(0.007, 0.001),
       ),
       _NearbyPerson(
@@ -239,7 +240,7 @@ class _MapScreenState extends State<MapScreen> {
         'Dr. Karim',
         'Vet support',
         '1.8 km away',
-        const Color(0xFF2E7D75),
+        AppPalette.plum,
         const Offset(-0.007, -0.007),
       ),
     ];
@@ -333,7 +334,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F4EF),
+      backgroundColor: AppPalette.shell,
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
       body: BlocBuilder<AnimalBloc, AnimalState>(
         builder: (context, animalState) {
@@ -481,8 +482,8 @@ class _MapLayout extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFFF4F4EF).withOpacity(0.86),
-                  const Color(0xFFF4F4EF).withOpacity(0),
+                  AppPalette.shell.withOpacity(0.86),
+                  AppPalette.shell.withOpacity(0),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -807,7 +808,7 @@ class _MapUnavailableView extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFE7ECE5), Color(0xFFF5F2EA)],
+          colors: [AppPalette.blush, const Color(0xFFF8EFE7)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -868,7 +869,7 @@ class _MapUnavailableView extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF5F6F0),
+                      color: const Color(0xFFF7EEF4),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: Text(

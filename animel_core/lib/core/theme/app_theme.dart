@@ -7,32 +7,32 @@ import 'app_tokens.dart';
 class AppTheme {
   static ThemeData get lightTheme => _buildTheme(
     brightness: Brightness.light,
-    seedColor: const Color(0xFF1B6F67),
-    primaryColor: const Color(0xFF1B6F67),
-    secondaryColor: const Color(0xFFE6A04B),
-    tertiaryColor: const Color(0xFF6B84C7),
-    scaffoldColor: const Color(0xFFF4F6F2),
-    surfaceColor: const Color(0xFFFFFEFB),
-    surfaceTintColor: const Color(0xFFE9F1EE),
-    inputFillColor: const Color(0xFFF0F3EF),
-    borderColor: const Color(0xFFD9E2DB),
-    textColor: const Color(0xFF16302D),
-    mutedTextColor: const Color(0xFF657A76),
+    seedColor: AppPalette.plum,
+    primaryColor: AppPalette.plum,
+    secondaryColor: AppPalette.sunset,
+    tertiaryColor: AppPalette.indigo,
+    scaffoldColor: AppPalette.shell,
+    surfaceColor: AppPalette.surface,
+    surfaceTintColor: AppPalette.blush,
+    inputFillColor: const Color(0xFFF7EFF6),
+    borderColor: AppPalette.border,
+    textColor: AppPalette.text,
+    mutedTextColor: AppPalette.muted,
   );
 
   static ThemeData get darkTheme => _buildTheme(
     brightness: Brightness.dark,
-    seedColor: const Color(0xFF72D1C8),
-    primaryColor: const Color(0xFF72D1C8),
-    secondaryColor: const Color(0xFFF2BA77),
-    tertiaryColor: const Color(0xFF9AAEFF),
-    scaffoldColor: const Color(0xFF091111),
-    surfaceColor: const Color(0xFF101A1A),
-    surfaceTintColor: const Color(0xFF142220),
-    inputFillColor: const Color(0xFF162323),
-    borderColor: const Color(0xFF233433),
-    textColor: const Color(0xFFF4F7F5),
-    mutedTextColor: const Color(0xFF98AEAA),
+    seedColor: AppPalette.magenta,
+    primaryColor: AppPalette.magenta,
+    secondaryColor: AppPalette.sunset,
+    tertiaryColor: const Color(0xFF8A95D0),
+    scaffoldColor: AppPalette.ink,
+    surfaceColor: AppPalette.darkSurface,
+    surfaceTintColor: const Color(0xFF261F31),
+    inputFillColor: const Color(0xFF2A2232),
+    borderColor: AppPalette.darkBorder,
+    textColor: AppPalette.darkText,
+    mutedTextColor: AppPalette.darkMuted,
   );
 
   static ThemeData _buildTheme({
@@ -274,7 +274,7 @@ class AppTheme {
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) return primaryColor;
           return brightness == Brightness.dark
-              ? const Color(0xFFB7C7C4)
+              ? const Color(0xFFD8C7D9)
               : Colors.white;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {

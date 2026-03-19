@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../core/models/animal_model.dart';
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/widgets/bottom_nav_bar.dart';
 import '../../../../core/widgets/error_state_widget.dart';
 import '../../../../core/widgets/fade_in_animation.dart';
@@ -85,28 +86,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: 'Buy pets',
                             subtitle: 'New arrivals and healthy companions',
                             icon: MdiIcons.paw,
-                            color: const Color(0xFFE2954C),
+                            color: AppPalette.sunset,
                             route: '/animal-list',
                           ),
                           _ServiceItem(
                             title: 'Adopt',
                             subtitle: 'Meet adoption-ready animals nearby',
                             icon: MdiIcons.heartOutline,
-                            color: const Color(0xFF53A47E),
+                            color: AppPalette.magenta,
                             route: '/adopt',
                           ),
                           _ServiceItem(
                             title: 'Supplies',
                             subtitle: 'Food, toys, and everyday essentials',
                             icon: MdiIcons.shoppingOutline,
-                            color: const Color(0xFF4B88B9),
+                            color: AppPalette.indigo,
                             route: '/shop',
                           ),
                           _ServiceItem(
                             title: 'Community map',
                             subtitle: 'Explore nearby pets and helpers',
                             icon: MdiIcons.mapMarkerOutline,
-                            color: const Color(0xFF2E7D75),
+                            color: AppPalette.plumDeep,
                             route: '/map',
                           ),
                         ],

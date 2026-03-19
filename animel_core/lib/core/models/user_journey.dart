@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_tokens.dart';
 
 enum UserJourney { petOwner, buyer, adopter }
 
@@ -93,11 +94,11 @@ extension UserJourneyX on UserJourney {
   Color get accent {
     switch (this) {
       case UserJourney.petOwner:
-        return const Color(0xFF2E7D75);
+        return AppPalette.plum;
       case UserJourney.buyer:
-        return const Color(0xFFE29A4A);
+        return AppPalette.sunset;
       case UserJourney.adopter:
-        return const Color(0xFF4F88B9);
+        return AppPalette.indigo;
     }
   }
 

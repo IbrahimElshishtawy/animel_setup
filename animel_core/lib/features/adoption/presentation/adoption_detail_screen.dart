@@ -69,13 +69,13 @@ class AdoptionDetailScreen extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF55A57F).withOpacity(0.12),
+                        color: AppPalette.magenta.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                       child: Text(
                         'Adoption profile',
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: const Color(0xFF55A57F),
+                          color: AppPalette.magenta,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -108,12 +108,12 @@ class AdoptionDetailScreen extends StatelessWidget {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF55A57F).withOpacity(0.12),
+                              color: AppPalette.magenta.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: const Icon(
                               Icons.health_and_safety_outlined,
-                              color: Color(0xFF55A57F),
+                              color: AppPalette.magenta,
                             ),
                           ),
                           const SizedBox(width: 12),

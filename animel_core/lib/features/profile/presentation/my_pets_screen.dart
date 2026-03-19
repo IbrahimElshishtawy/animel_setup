@@ -185,8 +185,8 @@ class _PetCard extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final accent = animal.isForAdoption
-        ? const Color(0xFF4F88B9)
-        : const Color(0xFF2E7D75);
+        ? AppPalette.indigo
+        : AppPalette.plum;
 
     return Container(
       padding: const EdgeInsets.all(18),
