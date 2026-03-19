@@ -24,7 +24,10 @@ class AnimalDetailScreen extends StatelessWidget {
             pinned: true,
             expandedHeight: 320,
             actions: [
-              IconButton(icon: const Icon(Icons.share_outlined), onPressed: () {}),
+              IconButton(
+                icon: const Icon(Icons.share_outlined),
+                onPressed: () {},
+              ),
               IconButton(
                 icon: const Icon(Icons.favorite_border_rounded),
                 onPressed: () {},
@@ -192,12 +195,12 @@ class AnimalDetailScreen extends StatelessWidget {
                       onPressed: animal.ownerId.isEmpty
                           ? null
                           : () => context.push(
-                                '/chat-detail',
-                                extra: {
-                                  'userName': animal.owner?.name ?? animal.name,
-                                  'userId': animal.ownerId,
-                                },
-                              ),
+                              '/chat-detail',
+                              extra: {
+                                'userName': animal.owner?.name ?? animal.name,
+                                'userId': animal.ownerId,
+                              },
+                            ),
                       icon: const Icon(Icons.chat_bubble_outline_rounded),
                       label: Text(
                         animal.isForAdoption

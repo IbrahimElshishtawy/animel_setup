@@ -282,10 +282,7 @@ class _MapScreenState extends State<MapScreen> {
     if (point.kind == _MapPointKind.person && point.person != null) {
       context.push(
         '/chat-detail',
-        extra: {
-          'userName': point.person!.name,
-          'userId': point.person!.id,
-        },
+        extra: {'userName': point.person!.name, 'userId': point.person!.id},
       );
       return;
     }

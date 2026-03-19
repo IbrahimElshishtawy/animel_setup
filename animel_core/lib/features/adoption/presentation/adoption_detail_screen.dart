@@ -24,7 +24,9 @@ class AdoptionDetailScreen extends StatelessWidget {
       listener: (context, state) {
         final message = state.errorMessage ?? state.successMessage;
         if (message == null) return;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
         context.read<AdoptionBloc>().add(ClearAdoptionMessage());
       },
       child: Scaffold(

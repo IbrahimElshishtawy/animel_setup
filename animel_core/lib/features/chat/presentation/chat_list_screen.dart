@@ -180,7 +180,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
         return participant;
       }
     }
-    return conversation.participants.isEmpty ? null : conversation.participants.first;
+    return conversation.participants.isEmpty
+        ? null
+        : conversation.participants.first;
   }
 }
 
@@ -205,12 +207,12 @@ class _ConversationTile extends StatelessWidget {
         onTap: participant == null
             ? null
             : () => context.push(
-                  '/chat-detail',
-                  extra: {
-                    'userName': participant!.name,
-                    'userId': participant!.id,
-                  },
-                ),
+                '/chat-detail',
+                extra: {
+                  'userName': participant!.name,
+                  'userId': participant!.id,
+                },
+              ),
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: Ink(
           padding: const EdgeInsets.all(16),
@@ -262,7 +264,9 @@ class _ConversationTile extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                lastTimestamp == null ? '' : DateFormat('h:mm a').format(lastTimestamp),
+                lastTimestamp == null
+                    ? ''
+                    : DateFormat('h:mm a').format(lastTimestamp),
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: scheme.onSurfaceVariant,
                 ),

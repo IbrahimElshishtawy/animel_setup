@@ -95,20 +95,22 @@ class ShopState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isCartLoading: isCartLoading ?? this.isCartLoading,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
-      successMessage: clearSuccess ? null : successMessage ?? this.successMessage,
+      successMessage: clearSuccess
+          ? null
+          : successMessage ?? this.successMessage,
     );
   }
 
   @override
   List<Object?> get props => [
-        products,
-        categories,
-        cart,
-        isLoading,
-        isCartLoading,
-        errorMessage,
-        successMessage,
-      ];
+    products,
+    categories,
+    cart,
+    isLoading,
+    isCartLoading,
+    errorMessage,
+    successMessage,
+  ];
 }
 
 class ShopBloc extends Bloc<ShopEvent, ShopState> {
@@ -122,7 +124,8 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     on<UpdateCartItemRequested>(_onUpdateCartItemRequested);
     on<RemoveCartItemRequested>(_onRemoveCartItemRequested);
     on<ClearShopMessage>(
-      (event, emit) => emit(state.copyWith(clearError: true, clearSuccess: true)),
+      (event, emit) =>
+          emit(state.copyWith(clearError: true, clearSuccess: true)),
     );
   }
 
@@ -164,7 +167,9 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
   }
 
   Future<void> _onFetchCart(FetchCart event, Emitter<ShopState> emit) async {
-    emit(state.copyWith(isCartLoading: true, clearError: true, clearSuccess: true));
+    emit(
+      state.copyWith(isCartLoading: true, clearError: true, clearSuccess: true),
+    );
     try {
       final cart = await _repository.getCart();
       emit(state.copyWith(cart: cart, isCartLoading: false));
@@ -182,7 +187,9 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     AddToCartRequested event,
     Emitter<ShopState> emit,
   ) async {
-    emit(state.copyWith(isCartLoading: true, clearError: true, clearSuccess: true));
+    emit(
+      state.copyWith(isCartLoading: true, clearError: true, clearSuccess: true),
+    );
     try {
       final cart = await _repository.addToCart(
         event.productId,
@@ -209,9 +216,14 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     UpdateCartItemRequested event,
     Emitter<ShopState> emit,
   ) async {
-    emit(state.copyWith(isCartLoading: true, clearError: true, clearSuccess: true));
+    emit(
+      state.copyWith(isCartLoading: true, clearError: true, clearSuccess: true),
+    );
     try {
-      final cart = await _repository.updateCartItem(event.productId, event.quantity);
+      final cart = await _repository.updateCartItem(
+        event.productId,
+        event.quantity,
+      );
       emit(state.copyWith(cart: cart, isCartLoading: false));
     } catch (error) {
       emit(
@@ -227,7 +239,9 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     RemoveCartItemRequested event,
     Emitter<ShopState> emit,
   ) async {
-    emit(state.copyWith(isCartLoading: true, clearError: true, clearSuccess: true));
+    emit(
+      state.copyWith(isCartLoading: true, clearError: true, clearSuccess: true),
+    );
     try {
       final cart = await _repository.removeCartItem(event.productId);
       emit(state.copyWith(cart: cart, isCartLoading: false));

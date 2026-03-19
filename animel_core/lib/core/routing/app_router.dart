@@ -62,7 +62,10 @@ class AppRouter {
       return null;
     },
     routes: [
-      _route(path: '/splash', builder: (context, state) => const SplashScreen()),
+      _route(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       _route(
         path: '/choose-language',
         builder: (context, state) => const ChooseLanguageScreen(),
@@ -132,7 +135,10 @@ class AppRouter {
         },
       ),
       _route(path: '/map', builder: (context, state) => const MapScreen()),
-      _route(path: '/chat', builder: (context, state) => const ChatListScreen()),
+      _route(
+        path: '/chat',
+        builder: (context, state) => const ChatListScreen(),
+      ),
       _route(
         path: '/chat-detail',
         builder: (context, state) {

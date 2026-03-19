@@ -23,9 +23,7 @@ class AppMedia extends StatelessWidget {
   final String fallbackAsset;
 
   bool get _hasNetworkImage =>
-      imageUrl != null &&
-      imageUrl!.isNotEmpty &&
-      imageUrl!.startsWith('http');
+      imageUrl != null && imageUrl!.isNotEmpty && imageUrl!.startsWith('http');
 
   @override
   Widget build(BuildContext context) {

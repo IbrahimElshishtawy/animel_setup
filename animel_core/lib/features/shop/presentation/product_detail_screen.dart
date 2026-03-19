@@ -24,7 +24,9 @@ class ProductDetailScreen extends StatelessWidget {
       listener: (context, state) {
         final message = state.errorMessage ?? state.successMessage;
         if (message == null) return;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
         context.read<ShopBloc>().add(ClearShopMessage());
       },
       child: Scaffold(

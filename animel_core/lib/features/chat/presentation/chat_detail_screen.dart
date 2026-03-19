@@ -108,14 +108,17 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   return ErrorStateWidget(
                     message: state.errorMessage!,
                     onRetry: () {
-                      context.read<ChatBloc>().add(FetchMessages(widget.userId));
+                      context.read<ChatBloc>().add(
+                        FetchMessages(widget.userId),
+                      );
                     },
                   );
                 }
                 if (state.messages.isEmpty) {
                   return const EmptyStateWidget(
                     title: 'No messages yet',
-                    message: 'Start with a friendly introduction to open the conversation.',
+                    message:
+                        'Start with a friendly introduction to open the conversation.',
                     icon: Icons.chat_bubble_outline_rounded,
                   );
                 }
@@ -138,9 +141,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 18),
             decoration: BoxDecoration(
               color: theme.scaffoldBackgroundColor,
-              border: Border(
-                top: BorderSide(color: scheme.outlineVariant),
-              ),
+              border: Border(top: BorderSide(color: scheme.outlineVariant)),
             ),
             child: SafeArea(
               top: false,

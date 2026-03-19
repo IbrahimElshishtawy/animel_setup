@@ -202,9 +202,8 @@ class _AdoptionListScreenState extends State<AdoptionListScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                     sliver: SliverList.separated(
                       itemCount: state.animals.length,
-                      itemBuilder: (context, index) => _AdoptionListCard(
-                        animal: state.animals[index],
-                      ),
+                      itemBuilder: (context, index) =>
+                          _AdoptionListCard(animal: state.animals[index]),
                       separatorBuilder: (_, _) => const SizedBox(height: 14),
                     ),
                   ),

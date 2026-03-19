@@ -69,9 +69,9 @@ class _ShopScreenState extends State<ShopScreen> {
               previous.successMessage != current.successMessage &&
               current.successMessage != null,
           listener: (context, state) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successMessage!)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
             context.read<ShopBloc>().add(ClearShopMessage());
           },
           builder: (context, state) {
@@ -201,8 +201,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                 const SizedBox(width: 8),
                             itemBuilder: (context, index) {
                               final category = categories[index];
-                              final isSelected =
-                                  _selectedCategory == category;
+                              final isSelected = _selectedCategory == category;
                               return ChoiceChip(
                                 label: Text(category),
                                 selected: isSelected,
@@ -262,9 +261,8 @@ class _ShopScreenState extends State<ShopScreen> {
                                 mainAxisSpacing: 16,
                               ),
                           delegate: SliverChildBuilderDelegate(
-                            (context, index) => _ProductCard(
-                              product: state.products[index],
-                            ),
+                            (context, index) =>
+                                _ProductCard(product: state.products[index]),
                             childCount: state.products.length,
                           ),
                         );

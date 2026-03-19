@@ -50,14 +50,11 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     final storedMode = preferences.getString(_preferenceKey);
 
     emit(
-      ThemeState(
-        switch (storedMode) {
-          'dark' => ThemeMode.dark,
-          'system' => ThemeMode.system,
-          _ => ThemeMode.light,
-        },
-        isLoaded: true,
-      ),
+      ThemeState(switch (storedMode) {
+        'dark' => ThemeMode.dark,
+        'system' => ThemeMode.system,
+        _ => ThemeMode.light,
+      }, isLoaded: true),
     );
   }
 
@@ -82,13 +79,10 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
   Future<void> _persistThemeMode(ThemeMode themeMode) async {
     final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(
-      _preferenceKey,
-      switch (themeMode) {
-        ThemeMode.dark => 'dark',
-        ThemeMode.system => 'system',
-        ThemeMode.light => 'light',
-      },
-    );
+    await preferences.setString(_preferenceKey, switch (themeMode) {
+      ThemeMode.dark => 'dark',
+      ThemeMode.system => 'system',
+      ThemeMode.light => 'light',
+    });
   }
 }

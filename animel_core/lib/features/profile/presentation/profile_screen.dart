@@ -35,10 +35,11 @@ class ProfileScreen extends StatelessWidget {
               final user = authState.user;
               final theme = Theme.of(context);
               final scheme = theme.colorScheme;
-              final isDark = context.watch<ThemeBloc>().state.themeMode ==
-                  ThemeMode.dark;
+              final isDark =
+                  context.watch<ThemeBloc>().state.themeMode == ThemeMode.dark;
               final localeCode =
-                  context.watch<LocaleBloc>().state.locale?.languageCode ?? 'en';
+                  context.watch<LocaleBloc>().state.locale?.languageCode ??
+                  'en';
 
               return ListView(
                 padding: AppSpacing.screenPadding,
@@ -167,9 +168,7 @@ class ProfileScreen extends StatelessWidget {
                       _SettingsTile(
                         icon: Icons.language_rounded,
                         title: 'Language',
-                        subtitle: localeCode == 'ar'
-                            ? 'Arabic'
-                            : 'English',
+                        subtitle: localeCode == 'ar' ? 'Arabic' : 'English',
                         onTap: () => context.push('/profile/language'),
                       ),
                     ],

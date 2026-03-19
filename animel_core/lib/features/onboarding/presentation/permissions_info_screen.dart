@@ -19,17 +19,17 @@ class PermissionsInfoScreen extends StatelessWidget {
       (
         Icons.location_on_outlined,
         'Location access',
-        'Helps surface nearby pets, adopters, and trusted helpers around your area.'
+        'Helps surface nearby pets, adopters, and trusted helpers around your area.',
       ),
       (
         Icons.notifications_none_rounded,
         'Notifications',
-        'Keeps you informed about adoption requests, messages, and urgent rescue updates.'
+        'Keeps you informed about adoption requests, messages, and urgent rescue updates.',
       ),
       (
         Icons.chat_bubble_outline_rounded,
         'Messaging',
-        'Makes seller, adopter, and helper conversations feel fast and reliable from day one.'
+        'Makes seller, adopter, and helper conversations feel fast and reliable from day one.',
       ),
     ];
 

@@ -225,9 +225,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                 mainAxisSpacing: 16,
                               ),
                           delegate: SliverChildBuilderDelegate(
-                            (context, index) => _AnimalGridCard(
-                              animal: state.animals[index],
-                            ),
+                            (context, index) =>
+                                _AnimalGridCard(animal: state.animals[index]),
                             childCount: state.animals.length,
                           ),
                         );
