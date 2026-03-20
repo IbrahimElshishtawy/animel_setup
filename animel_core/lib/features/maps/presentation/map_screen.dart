@@ -808,7 +808,7 @@ class _MapUnavailableView extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppPalette.blush, const Color(0xFFF8EFE7)],
+          colors: [AppPalette.blush, Color(0xFFF8EFE7)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
