@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +18,21 @@ class ChooseLanguageScreen extends StatefulWidget {
 }
 
 class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
+  static const List<_LanguageOption> _options = [
+    _LanguageOption(
+      code: 'en',
+      title: 'English',
+      subtitle: 'Clean and familiar interface copy',
+      label: 'EN',
+    ),
+    _LanguageOption(
+      code: 'ar',
+      title: 'العربية',
+      subtitle: 'Full Arabic interface with comfortable reading flow',
+      label: 'AR',
+    ),
+  ];
+
   late String _selectedLanguageCode;
 
   @override
@@ -25,7 +42,7 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
     _selectedLanguageCode = locale?.languageCode ?? 'en';
   }
 
-  void _continue() {
+  void _onContinue() {
     context.read<LocaleBloc>().add(SetLocalePreference(_selectedLanguageCode));
     context.go('/permissions-info');
   }
@@ -34,148 +51,119 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final options = const [
-      _LanguageOption(
-        code: 'en',
-        title: 'English',
-        subtitle: 'Clean and familiar interface copy',
-        label: 'EN',
-      ),
-      _LanguageOption(
-        code: 'ar',
-        title: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629',
-        subtitle: 'Full Arabic interface with comfortable reading flow',
-        label: 'AR',
-      ),
-    ];
 
     return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              scheme.primary.withOpacity(0.08),
-              theme.scaffoldBackgroundColor,
-              scheme.secondary.withOpacity(0.1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: AppSpacing.screenPadding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 8),
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(22),
-                    decoration: BoxDecoration(
-                      color: theme.cardColor,
-                      borderRadius: BorderRadius.circular(AppRadius.lg),
-                      border: Border.all(color: scheme.outlineVariant),
-                      boxShadow: AppShadows.soft(Colors.black),
-                    ),
-                    child: const AppMedia(height: 82, width: 82),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
-                    gradient: LinearGradient(
-                      colors: [
-                        scheme.primary,
-                        Color.alphaBlend(
-                          scheme.secondary.withOpacity(0.28),
-                          scheme.primary,
-                        ),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: AppShadows.soft(scheme.primary, opacity: 0.22),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.14),
-                          borderRadius: BorderRadius.circular(AppRadius.pill),
-                        ),
-                        child: Text(
-                          'Welcome to Animal Connect',
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Choose the language that feels most natural before we personalise your experience.',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'You can change this later from settings whenever you want.',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.82),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Select language',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Built-in support is ready for both English and Arabic.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                ...options.map(
-                  (option) => Padding(
-                    padding: const EdgeInsets.only(bottom: 14),
-                    child: _LanguageCard(
-                      option: option,
-                      isSelected: option.code == _selectedLanguageCode,
-                      onTap: () {
-                        setState(() => _selectedLanguageCode = option.code);
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _continue,
-                    child: const Text('Continue'),
-                  ),
-                ),
-              ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  scheme.primary.withOpacity(0.22),
+                  theme.scaffoldBackgroundColor,
+                  scheme.secondary.withOpacity(0.16),
+                ],
+              ),
             ),
           ),
-        ),
+
+          Positioned(
+            top: -60,
+            left: -40,
+            child: _BlurCircle(
+              size: 180,
+              color: scheme.primary.withOpacity(0.16),
+            ),
+          ),
+
+          Positioned(
+            bottom: -70,
+            right: -30,
+            child: _BlurCircle(
+              size: 200,
+              color: scheme.secondary.withOpacity(0.14),
+            ),
+          ),
+
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: AppSpacing.screenPadding,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 8),
+
+                    Center(
+                      child: _GlassContainer(
+                        padding: const EdgeInsets.all(24),
+                        borderRadius: AppRadius.sm,
+                        child: const AppMedia(height: 84, width: 84),
+                      ),
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    Text(
+                      'Select language',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.4,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      'Choose your preferred language to continue with a smooth and comfortable experience.',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                        height: 1.45,
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    ..._options.map(
+                      (option) => Padding(
+                        padding: const EdgeInsets.only(bottom: 14),
+                        child: _LanguageCard(
+                          option: option,
+                          isSelected: option.code == _selectedLanguageCode,
+                          onTap: () {
+                            if (_selectedLanguageCode == option.code) return;
+                            setState(() => _selectedLanguageCode = option.code);
+                          },
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _onContinue,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppRadius.lg),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text('Continue'),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -201,87 +189,201 @@ class _LanguageCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         child: AnimatedContainer(
           duration: AppMotion.medium,
           curve: AppMotion.emphasized,
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(AppRadius.md),
-            border: Border.all(
-              color: isSelected ? scheme.primary : scheme.outlineVariant,
-              width: isSelected ? 1.4 : 1,
-            ),
-            boxShadow: isSelected
-                ? AppShadows.soft(scheme.primary, opacity: 0.14)
-                : AppShadows.soft(Colors.black, opacity: 0.04),
-          ),
-          child: Row(
-            children: [
-              AnimatedContainer(
-                duration: AppMotion.medium,
-                width: 48,
-                height: 48,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: isSelected
-                      ? scheme.primary.withOpacity(0.12)
-                      : scheme.surfaceContainerHighest.withOpacity(0.75),
-                ),
-                child: Center(
-                  child: Text(
-                    option.label,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: isSelected
-                          ? scheme.primary
-                          : scheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                  color: theme.cardColor.withOpacity(isSelected ? 0.22 : 0.12),
+                  border: Border.all(
+                    color: isSelected
+                        ? scheme.primary.withOpacity(0.75)
+                        : Colors.white.withOpacity(0.16),
+                    width: isSelected ? 1.4 : 1,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isSelected
+                          ? scheme.primary.withOpacity(0.16)
+                          : Colors.black.withOpacity(0.05),
+                      blurRadius: isSelected ? 22 : 12,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Text(
-                      option.title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
+                    AnimatedContainer(
+                      duration: AppMotion.medium,
+                      curve: AppMotion.emphasized,
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: isSelected
+                              ? [
+                                  scheme.primary.withOpacity(0.22),
+                                  scheme.secondary.withOpacity(0.16),
+                                ]
+                              : [
+                                  Colors.white.withOpacity(0.10),
+                                  Colors.white.withOpacity(0.04),
+                                ],
+                        ),
+                        border: Border.all(
+                          color: isSelected
+                              ? scheme.primary.withOpacity(0.35)
+                              : Colors.white.withOpacity(0.10),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          option.label,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: isSelected
+                                ? scheme.primary
+                                : scheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      option.subtitle,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                    const SizedBox(width: 14),
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            option.title,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            option.subtitle,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    AnimatedContainer(
+                      duration: AppMotion.medium,
+                      curve: AppMotion.emphasized,
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isSelected
+                            ? scheme.primary
+                            : Colors.white.withOpacity(0.10),
+                        border: Border.all(
+                          color: isSelected
+                              ? scheme.primary
+                              : scheme.outlineVariant.withOpacity(0.5),
+                        ),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: scheme.primary.withOpacity(0.24),
+                                  blurRadius: 14,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: Icon(
+                        isSelected
+                            ? Icons.check_rounded
+                            : Icons.circle_outlined,
+                        size: 16,
+                        color: isSelected
+                            ? Colors.white
+                            : scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              AnimatedContainer(
-                duration: AppMotion.medium,
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected
-                      ? scheme.primary
-                      : scheme.surfaceContainerHighest,
-                ),
-                child: Icon(
-                  isSelected ? Icons.check_rounded : Icons.circle_outlined,
-                  size: 16,
-                  color: isSelected ? Colors.white : scheme.onSurfaceVariant,
-                ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GlassContainer extends StatelessWidget {
+  const _GlassContainer({
+    required this.child,
+    required this.padding,
+    required this.borderRadius,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: Container(
+          padding: padding,
+          decoration: BoxDecoration(
+            color: theme.cardColor.withOpacity(0.14),
+            borderRadius: BorderRadius.circular(borderRadius),
+            border: Border.all(color: Colors.white.withOpacity(0.14)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
+          child: child,
         ),
+      ),
+    );
+  }
+}
+
+class _BlurCircle extends StatelessWidget {
+  const _BlurCircle({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
       ),
     );
   }
