@@ -87,7 +87,7 @@ class AuthScreenFrame extends StatelessWidget {
                               ),
                             ),
 
-                            const SizedBox(height: 26),
+                            const SizedBox(height: 16),
 
                             Center(
                               child: Text(
@@ -107,11 +107,11 @@ class AuthScreenFrame extends StatelessWidget {
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: scheme.onSurfaceVariant,
                                 height: 1,
-                                fontSize: 16.2,
+                                fontSize: 12,
                               ),
                             ),
 
-                            const SizedBox(height: 22),
+                            const SizedBox(height: 12),
 
                             _GlassContainer(
                               width: double.infinity,
@@ -125,7 +125,7 @@ class AuthScreenFrame extends StatelessWidget {
                               Center(child: footer!),
                             ],
 
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 14),
                           ],
                         ),
                       ),

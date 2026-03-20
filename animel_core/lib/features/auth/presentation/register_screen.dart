@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,6 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
+
   bool _obscurePassword = true;
 
   @override
@@ -40,9 +42,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'name': _nameController.text.trim(),
         'email': _emailController.text.trim(),
         'password': _passwordController.text.trim(),
-        'phoneNumber': _phoneController.text.trim(),
+        'phoneNumber': _normalizeEgyptianPhone(_phoneController.text),
       }),
     );
+  }
+
+  String _normalizeEgyptianPhone(String value) {
+    final text = value.trim().replaceAll(' ', '');
+
+    if (text.startsWith('+20')) {
+      return '0${text.substring(3)}';
+    }
+
+    if (text.startsWith('20') && text.length == 12) {
+      return '0${text.substring(2)}';
+    }
+
+    return text;
   }
 
   @override
@@ -81,7 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 AppTextField(
                   label: 'Email',
                   controller: _emailController,
-                  hint: 'name@example.com',
+                  hint: 'Enter your Email',
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   autofillHints: const [AutofillHints.email],
@@ -92,12 +108,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 AppTextField(
                   label: 'Phone number',
                   controller: _phoneController,
-                  hint: 'Enter your phone number',
+                  hint: '01xxxxxxxxx',
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
                   autofillHints: const [AutofillHints.telephoneNumber],
                   prefixIcon: const Icon(Icons.phone_outlined),
-                  validator: _validatePhone,
+                  validator: _validateEgyptianPhone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
+                    LengthLimitingTextInputFormatter(13),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 AppTextField(
@@ -118,8 +138,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           : Icons.visibility_outlined,
                     ),
                   ),
-                  validator: _validatePassword,
+                  validator: _validateStrongPassword,
                   onSubmitted: (_) => _submit(),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Password must contain at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    height: 1.4,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 BlocBuilder<AuthBloc, AuthState>(
@@ -154,22 +182,59 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _validateEmail(String? value) {
     final text = value?.trim() ?? '';
     if (text.isEmpty) return 'Email is required';
+
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
     if (!emailRegex.hasMatch(text)) return 'Enter a valid email';
+
     return null;
   }
 
-  String? _validatePhone(String? value) {
-    final text = value?.trim() ?? '';
-    if (text.isEmpty) return 'Phone number is required';
-    if (text.length < 8) return 'Enter a valid phone number';
+  String? _validateEgyptianPhone(String? value) {
+    final raw = value?.trim() ?? '';
+    if (raw.isEmpty) return 'Phone number is required';
+
+    final phone = raw.replaceAll(' ', '');
+
+    final egyptPhoneRegex = RegExp(r'^(?:\+20|20|0)?1[0125][0-9]{8}$');
+
+    if (!egyptPhoneRegex.hasMatch(phone)) {
+      return 'Enter a valid Egyptian mobile number';
+    }
+
+    final normalized = _normalizeEgyptianPhone(phone);
+
+    if (normalized.length != 11 || !normalized.startsWith('01')) {
+      return 'Enter a valid Egyptian mobile number';
+    }
+
     return null;
   }
 
-  String? _validatePassword(String? value) {
+  String? _validateStrongPassword(String? value) {
     final text = value?.trim() ?? '';
     if (text.isEmpty) return 'Password is required';
-    if (text.length < 6) return 'Password must be at least 6 characters';
+    if (text.length < 8) return 'Password must be at least 8 characters';
+
+    final hasUppercase = RegExp(r'[A-Z]').hasMatch(text);
+    final hasLowercase = RegExp(r'[a-z]').hasMatch(text);
+    final hasDigit = RegExp(r'[0-9]').hasMatch(text);
+    final hasSpecialChar = RegExp(
+      r'[!@#$%^&*(),.?":{}|<>_\-\\/\[\]=+~`]',
+    ).hasMatch(text);
+
+    if (!hasUppercase) {
+      return 'Password must include at least one uppercase letter';
+    }
+    if (!hasLowercase) {
+      return 'Password must include at least one lowercase letter';
+    }
+    if (!hasDigit) {
+      return 'Password must include at least one number';
+    }
+    if (!hasSpecialChar) {
+      return 'Password must include at least one special character';
+    }
+
     return null;
   }
 }

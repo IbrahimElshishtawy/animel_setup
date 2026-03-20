@@ -1,4 +1,7 @@
+// ignore_for_file: implementation_imports
+
 import 'package:flutter/material.dart';
+import 'package:flutter/src/services/text_formatter.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({
@@ -15,6 +18,7 @@ class AppTextField extends StatelessWidget {
     this.textInputAction,
     this.autofillHints,
     this.onSubmitted,
+    this.inputFormatters,
   });
 
   final String label;
@@ -29,7 +33,7 @@ class AppTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final Iterable<String>? autofillHints;
   final ValueChanged<String>? onSubmitted;
-
+  final List<TextInputFormatter>? inputFormatters;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
