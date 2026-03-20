@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 AppTextField(
                   label: 'Email',
                   controller: _emailController,
-                  hint: 'name@example.com',
+                  hint: 'Enter your Email',
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   autofillHints: const [AutofillHints.email],
