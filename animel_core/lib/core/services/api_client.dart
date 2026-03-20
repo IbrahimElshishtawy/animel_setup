@@ -12,9 +12,9 @@ class ApiClient {
 
   // Default LAN address for running the backend on this machine and testing
   // from a real mobile device on the same Wi-Fi network.
-  // static const String _mobileLanBaseUrl = 'http://192.168.1.3:6000/api';
+  // static const String _mobileLanBaseUrl = 'http://10.226.79.203:6000/api';
   // static const String _androidEmulatorBaseUrl = 'http://10.0.2.2:6000/api';
-  static const String _BaseUrl = 'http://192.168.1.3:6000/api';
+  static const String _BaseUrl = 'http://10.226.79.203:6000/api';
 
   static String get baseUrl {
     if (_apiBaseUrlFromEnv.isNotEmpty) {

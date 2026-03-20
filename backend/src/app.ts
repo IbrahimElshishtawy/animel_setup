@@ -1,4 +1,5 @@
 import cors from 'cors';
+import path from 'path';
 import dotenv from 'dotenv';
 import express from 'express';
 import animalRoutes from './routes/animalRoutes';
@@ -9,7 +10,7 @@ import userRoutes from './routes/userRoutes';
 import { errorHandler } from './middlewares/errorMiddleware';
 import { notFoundHandler } from './middlewares/notFoundMiddleware';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 
