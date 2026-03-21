@@ -15,7 +15,7 @@ class ApiClient {
   // static const String _mobileLanBaseUrl = 'http://192.168.1.3:5000/api';
   // static const String _androidEmulatorBaseUrl = 'http://10.0.2.2:5000/api';
   static const String _BaseUrl =
-      'https://neymar-flauntiest-delisa.ngrok-free.dev';
+      'https://neymar-flauntiest-delisa.ngrok-free.dev/';
 
   static String get baseUrl {
     if (_apiBaseUrlFromEnv.isNotEmpty) {
@@ -23,15 +23,15 @@ class ApiClient {
     }
 
     if (kIsWeb) {
-      return _BaseUrl;
+      return _normalizeBaseUrl(_BaseUrl);
     }
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
       case TargetPlatform.iOS:
-        return _BaseUrl;
+        return _normalizeBaseUrl(_BaseUrl);
       default:
-        return _BaseUrl;
+        return _normalizeBaseUrl(_BaseUrl);
     }
   }
 
@@ -40,7 +40,7 @@ class ApiClient {
   static String get androidEmulatorBaseUrl => _BaseUrl;
 
   static String _normalizeBaseUrl(String value) {
-    final trimmed = value.trim();
+    final trimmed = value.trim().replaceFirst(RegExp(r'/+$'), '');
     if (trimmed.isEmpty) return trimmed;
     return trimmed.endsWith('/api') ? trimmed : '$trimmed/api';
   }

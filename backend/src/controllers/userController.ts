@@ -4,6 +4,22 @@ import { generateToken, sanitizeUser } from '../services/authService';
 import { ApiError } from '../utils/ApiError';
 import { asyncHandler } from '../utils/asyncHandler';
 
+const normalizeLocation = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s,]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const locationKeywords = (value: string) => {
+  const tokens = normalizeLocation(value)
+    .split(/[\s,]+/)
+    .map((token) => token.trim())
+    .filter((token) => token.length >= 3);
+
+  return Array.from(new Set(tokens)).slice(0, 6);
+};
+
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const {
     name,
@@ -114,4 +130,70 @@ export const searchUsers = asyncHandler(async (req: Request, res: Response) => {
   const users = await User.find(filter).sort({ createdAt: -1 }).limit(20);
 
   res.status(200).json(users.map((user) => sanitizeUser(user)));
+});
+
+export const getNearbyUsers = asyncHandler(async (req: Request, res: Response) => {
+  const currentUser = await User.findById(req.user?.id);
+  if (!currentUser) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  const requestedJourney = String(req.query.journey || '').trim();
+  const journey =
+    requestedJourney === 'pet_owner' ||
+    requestedJourney === 'buyer' ||
+    requestedJourney === 'adopter'
+      ? requestedJourney
+      : undefined;
+
+  const targetLocation = String(currentUser.location || '').trim();
+  const normalizedTargetLocation = normalizeLocation(targetLocation);
+  const keywords = locationKeywords(targetLocation);
+
+  const candidates = await User.find({
+    _id: { $ne: currentUser._id },
+    location: { $exists: true, $ne: '' },
+    ...(journey ? { journey } : {}),
+  })
+    .sort({ createdAt: -1 })
+    .limit(normalizedTargetLocation ? 40 : 16);
+
+  const scoredUsers = candidates
+    .map((user) => {
+      const normalizedCandidateLocation = normalizeLocation(user.location || '');
+      let score = 0;
+
+      if (normalizedTargetLocation && normalizedCandidateLocation) {
+        if (normalizedCandidateLocation === normalizedTargetLocation) {
+          score += 6;
+        }
+
+        if (
+          normalizedCandidateLocation.includes(normalizedTargetLocation) ||
+          normalizedTargetLocation.includes(normalizedCandidateLocation)
+        ) {
+          score += 4;
+        }
+
+        for (const keyword of keywords) {
+          if (normalizedCandidateLocation.includes(keyword)) {
+            score += 1;
+          }
+        }
+      }
+
+      return { user, score };
+    })
+    .filter(({ score }) => normalizedTargetLocation ? score > 0 : true)
+    .sort((left, right) => right.score - left.score);
+
+  const nearbyUsers = (
+    scoredUsers.length > 0 ? scoredUsers.map(({ user }) => user) : candidates
+  ).slice(0, 16);
+
+  res.status(200).json({
+    basedOnLocation: targetLocation || null,
+    count: nearbyUsers.length,
+    users: nearbyUsers.map((user) => sanitizeUser(user)),
+  });
 });

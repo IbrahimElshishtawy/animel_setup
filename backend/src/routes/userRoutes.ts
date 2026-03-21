@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  getNearbyUsers,
   getProfile,
   login,
   logout,
@@ -63,6 +64,7 @@ router.post(
 router.post('/logout', authMiddleware, logout);
 router.get('/profile', authMiddleware, getProfile);
 router.put('/profile', authMiddleware, updateProfile);
+router.get('/nearby', authMiddleware, getNearbyUsers);
 router.get('/search', authMiddleware, searchUsers);
 
 export default router;

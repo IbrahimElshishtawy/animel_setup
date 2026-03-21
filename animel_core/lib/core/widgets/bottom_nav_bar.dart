@@ -93,9 +93,9 @@ class AppBottomNavBar extends StatelessWidget {
                   label: "Shop",
                 ),
                 const BottomNavigationBarItem(
-                  icon: Icon(Icons.map_outlined),
-                  activeIcon: Icon(Icons.map_rounded),
-                  label: "Map",
+                  icon: Icon(Icons.people_outline_rounded),
+                  activeIcon: Icon(Icons.people_alt_rounded),
+                  label: "Nearby",
                 ),
                 const BottomNavigationBarItem(
                   icon: Icon(Icons.pets_outlined),

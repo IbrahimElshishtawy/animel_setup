@@ -104,9 +104,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             route: '/shop',
                           ),
                           _ServiceItem(
-                            title: 'Community map',
-                            subtitle: 'Explore nearby pets and helpers',
-                            icon: MdiIcons.mapMarkerOutline,
+                            title: 'Nearby people',
+                            subtitle: 'Find adopters, buyers, and helpers nearby',
+                            icon: MdiIcons.accountGroupOutline,
                             color: AppPalette.plumDeep,
                             route: '/map',
                           ),
@@ -238,7 +238,7 @@ class _HomeHeroCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Browse new pets, jump to the community map, and keep the interface light and modern.',
+            'Browse new pets, jump to nearby community results, and keep the interface light and modern.',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: Colors.white.withOpacity(0.84),
               height: 1.45,
@@ -252,7 +252,7 @@ class _HomeHeroCard extends StatelessWidget {
               ),
               SizedBox(width: 10),
               Expanded(
-                child: _HeroStat(value: 'Near', label: 'Map-first search'),
+                child: _HeroStat(value: 'Near', label: 'People nearby'),
               ),
             ],
           ),
@@ -280,8 +280,8 @@ class _HomeHeroCard extends StatelessWidget {
                     side: BorderSide(color: Colors.white.withOpacity(0.26)),
                     minimumSize: const Size.fromHeight(42),
                   ),
-                  icon: const Icon(Icons.map_outlined, size: 17),
-                  label: const Text('Open map'),
+                  icon: const Icon(Icons.people_outline_rounded, size: 17),
+                  label: const Text('Open nearby'),
                 ),
               ),
             ],
