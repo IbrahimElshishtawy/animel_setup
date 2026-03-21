@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
+import '../../../core/widgets/glass_panel.dart';
 import '../data/home_content.dart';
 
 class ProductCard extends StatelessWidget {
@@ -24,44 +25,53 @@ class ProductCard extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Ink(
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: scheme.outlineVariant.withOpacity(0.8)),
-            boxShadow: AppShadows.soft(Colors.black, opacity: 0.05),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
+    return ScaleTap(
+      onTap: onTap,
+      scaleDown: 0.97,
+      child: GlassPanel(
+        padding: EdgeInsets.zero,
+        borderRadius: BorderRadius.circular(26),
+        blurSigma: 20,
+        shadowColor: scheme.primary,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(26),
+              ),
+              child: AspectRatio(
+                aspectRatio: 1.06,
                 child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    Positioned.fill(
-                      child: AppMedia(
-                        imageUrl: data.product.imageUrl,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(24),
+                    AppMedia(
+                      imageUrl: data.product.imageUrl,
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.2),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
                       ),
                     ),
                     Positioned(
                       left: 12,
                       top: 12,
-                      child: Container(
+                      child: GlassPanel(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 6,
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.92),
-                          borderRadius: BorderRadius.circular(AppRadius.pill),
-                        ),
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
+                        blurSigma: 14,
+                        shadowOpacity: 0,
                         child: Text(
                           data.accentLabel,
                           style: theme.textTheme.labelSmall?.copyWith(
@@ -74,7 +84,9 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Padding(
+            ),
+            Expanded(
+              child: Padding(
                 padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +127,7 @@ class ProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const Spacer(),
                     Row(
                       children: [
                         Expanded(
@@ -127,24 +139,41 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        FilledButton.tonal(
-                          onPressed: onAddToCart,
-                          style: FilledButton.styleFrom(
-                            minimumSize: const Size(0, 40),
+                        ScaleTap(
+                          onTap: onAddToCart,
+                          scaleDown: 0.92,
+                          child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 14,
                               vertical: 10,
                             ),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  scheme.primary.withOpacity(0.12),
+                                  scheme.secondary.withOpacity(0.12),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              'Add',
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                color: scheme.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
-                          child: const Text('Add'),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

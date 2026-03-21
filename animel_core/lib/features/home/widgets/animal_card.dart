@@ -6,13 +6,23 @@ import 'package:intl/intl.dart';
 import '../../../core/models/animal_model.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
+import '../../../core/widgets/glass_panel.dart';
 
 class AnimalCard extends StatelessWidget {
-  AnimalCard({super.key, required this.animal, this.onTap, this.heroTag});
+  AnimalCard({
+    super.key,
+    required this.animal,
+    this.onTap,
+    this.heroTag,
+    this.width,
+    this.showTrustLabel = true,
+  });
 
   final Animal animal;
   final VoidCallback? onTap;
   final String? heroTag;
+  final double? width;
+  final bool showTrustLabel;
 
   final NumberFormat _currency = NumberFormat.currency(
     symbol: '\$',
@@ -21,12 +31,12 @@ class AnimalCard extends StatelessWidget {
 
   String get _badgeLabel {
     if (animal.isForAdoption) {
-      return 'Adoption';
+      return 'Adopt';
     }
-    if (animal.price >= 5000) {
-      return 'Rare';
+    if (animal.price >= 1500) {
+      return 'Featured';
     }
-    return 'For Sale';
+    return 'For sale';
   }
 
   @override
@@ -36,68 +46,58 @@ class AnimalCard extends StatelessWidget {
     final imageUrl = animal.imageUrls.isEmpty ? null : animal.imageUrls.first;
 
     return SizedBox(
-      width: 252,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
+      width: width,
+      child: ScaleTap(
+        onTap: onTap,
+        scaleDown: 0.97,
+        child: GlassPanel(
           borderRadius: BorderRadius.circular(28),
-          child: Ink(
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: scheme.outlineVariant.withOpacity(0.78),
-              ),
-              boxShadow: AppShadows.soft(Colors.black, opacity: 0.06),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
+          padding: EdgeInsets.zero,
+          blurSigma: 20,
+          shadowColor: scheme.primary,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
+                child: AspectRatio(
+                  aspectRatio: 1.04,
                   child: Stack(
+                    fit: StackFit.expand,
                     children: [
-                      Positioned.fill(
-                        child: AppMedia(
-                          imageUrl: imageUrl,
-                          heroTag: heroTag,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(28),
-                          ),
-                        ),
+                      AppMedia(
+                        imageUrl: imageUrl,
+                        heroTag: heroTag,
+                        borderRadius: BorderRadius.zero,
                       ),
-                      Positioned.fill(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(28),
-                            ),
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.18),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.black.withOpacity(0.06),
+                              Colors.black.withOpacity(0.32),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
                           ),
                         ),
                       ),
                       Positioned(
                         left: 14,
                         top: 14,
-                        child: Container(
+                        child: GlassPanel(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 6,
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.94),
-                            borderRadius: BorderRadius.circular(AppRadius.pill),
-                          ),
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                          blurSigma: 14,
+                          shadowOpacity: 0,
                           child: Text(
                             _badgeLabel,
-                            style: theme.textTheme.labelSmall?.copyWith(
+                            style: theme.textTheme.labelMedium?.copyWith(
                               color: scheme.primary,
                               fontWeight: FontWeight.w800,
                             ),
@@ -111,12 +111,15 @@ class AnimalCard extends StatelessWidget {
                           width: 38,
                           height: 38,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.92),
+                            color: Colors.white.withOpacity(0.22),
                             borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.24),
+                            ),
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.favorite_border_rounded,
-                            color: scheme.primary,
+                            color: Colors.white,
                             size: 20,
                           ),
                         ),
@@ -124,14 +127,35 @@ class AnimalCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (showTrustLabel)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: scheme.secondary.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(AppRadius.pill),
+                          ),
+                          child: Text(
+                            'Trusted seller',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: scheme.secondary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      if (showTrustLabel) const SizedBox(height: 10),
                       Text(
                         animal.name,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w800,
@@ -139,18 +163,18 @@ class AnimalCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        '${animal.type} / ${animal.breed}',
+                        '${animal.breed} • ${animal.age}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: scheme.onSurfaceVariant,
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      const Spacer(),
                       Row(
                         children: [
                           Icon(
-                            Icons.place_outlined,
+                            Icons.place_rounded,
                             size: 16,
                             color: scheme.onSurfaceVariant,
                           ),
@@ -167,13 +191,13 @@ class AnimalCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 12),
                       Row(
                         children: [
                           Expanded(
                             child: Text(
                               animal.isForAdoption
-                                  ? 'Free'
+                                  ? 'Adopt'
                                   : _currency.format(animal.price),
                               style: theme.textTheme.titleLarge?.copyWith(
                                 color: scheme.primary,
@@ -184,17 +208,17 @@ class AnimalCard extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,
-                              vertical: 6,
+                              vertical: 7,
                             ),
                             decoration: BoxDecoration(
-                              color: scheme.secondary.withOpacity(0.12),
+                              color: scheme.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: Text(
-                              animal.age,
+                              animal.gender,
                               style: theme.textTheme.labelMedium?.copyWith(
-                                color: scheme.secondary,
-                                fontWeight: FontWeight.w800,
+                                color: scheme.primary,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
@@ -203,8 +227,8 @@ class AnimalCard extends StatelessWidget {
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

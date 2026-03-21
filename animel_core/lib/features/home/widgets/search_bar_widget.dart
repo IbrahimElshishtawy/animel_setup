@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/glass_panel.dart';
 
 class SearchBarWidget extends StatelessWidget {
