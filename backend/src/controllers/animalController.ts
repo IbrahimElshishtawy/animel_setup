@@ -4,6 +4,15 @@ import Animal from '../models/Animal';
 import { ApiError } from '../utils/ApiError';
 import { asyncHandler } from '../utils/asyncHandler';
 
+const sanitizeImageUrls = (value: unknown) =>
+  Array.isArray(value)
+    ? value
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0)
+        .slice(0, 4)
+    : [];
+
 const buildAnimalFilter = (req: Request) => {
   const { isForAdoption, query, type, ownerId, gender, size, minPrice, maxPrice } =
     req.query;
@@ -81,6 +90,7 @@ export const getMyAnimals = asyncHandler(async (req: Request, res: Response) => 
 export const createAnimal = asyncHandler(async (req: Request, res: Response) => {
   const animal = await Animal.create({
     ...req.body,
+    imageUrls: sanitizeImageUrls(req.body.imageUrls),
     ownerId: req.user?.id,
     isForAdoption: Boolean(req.body.isForAdoption),
     price: Number(req.body.price || 0),
@@ -125,7 +135,8 @@ export const updateAnimal = asyncHandler(async (req: Request, res: Response) => 
 
   for (const field of fields) {
     if (req.body?.[field] !== undefined) {
-      (animal as unknown as Record<string, unknown>)[field] = req.body[field];
+      (animal as unknown as Record<string, unknown>)[field] =
+        field === 'imageUrls' ? sanitizeImageUrls(req.body[field]) : req.body[field];
     }
   }
 

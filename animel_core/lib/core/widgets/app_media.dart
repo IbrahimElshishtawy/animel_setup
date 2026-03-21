@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class AppMedia extends StatelessWidget {
@@ -24,9 +27,27 @@ class AppMedia extends StatelessWidget {
 
   bool get _hasNetworkImage =>
       imageUrl != null && imageUrl!.isNotEmpty && imageUrl!.startsWith('http');
+  bool get _hasBase64Image =>
+      imageUrl != null &&
+      imageUrl!.isNotEmpty &&
+      imageUrl!.startsWith('data:image/');
+
+  Uint8List? get _decodedBase64Image {
+    if (!_hasBase64Image) return null;
+
+    try {
+      final commaIndex = imageUrl!.indexOf(',');
+      if (commaIndex == -1) return null;
+      return base64Decode(imageUrl!.substring(commaIndex + 1));
+    } catch (_) {
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final decodedBase64Image = _decodedBase64Image;
+
     Widget image = ClipRRect(
       borderRadius: borderRadius,
       child: Stack(
@@ -38,6 +59,12 @@ class AppMedia extends StatelessWidget {
                   fit: fit,
                   errorBuilder: (_, _, _) =>
                       Image.asset(fallbackAsset, fit: fit),
+                )
+              : decodedBase64Image != null
+              ? Image.memory(
+                  decodedBase64Image,
+                  fit: fit,
+                  errorBuilder: (_, _, _) => Image.asset(fallbackAsset, fit: fit),
                 )
               : Image.asset(fallbackAsset, fit: fit),
           ?child,

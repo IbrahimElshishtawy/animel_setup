@@ -50,7 +50,16 @@ router.post(
     { field: 'latitude', required: true, message: 'Latitude is required' },
     { field: 'longitude', required: true, message: 'Longitude is required' },
     { field: 'description', required: true, type: 'string', minLength: 10, message: 'Description is required' },
-    { field: 'imageUrls', required: true, type: 'array', message: 'At least one image URL is required' },
+    {
+      field: 'imageUrls',
+      required: true,
+      type: 'array',
+      validator: (value) =>
+        Array.isArray(value) &&
+        value.length <= 4 &&
+        value.every((item) => typeof item === 'string' && item.trim().length > 0),
+      message: 'Animal images must be 1 to 4 non-empty image strings',
+    },
     { field: 'healthStatus', required: true, type: 'string', minLength: 2, message: 'Health status is required' },
   ]),
   createAnimal,

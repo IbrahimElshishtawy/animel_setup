@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:animel_core/core/widgets/app_media.dart';
 import 'package:animel_core/features/profile/widgets/add_photos_box.dart';
 import 'package:animel_core/features/profile/widgets/choice_chip_button.dart';
 import 'package:animel_core/features/profile/widgets/dropdown_field.dart';
@@ -6,6 +9,7 @@ import 'package:animel_core/features/profile/widgets/pet_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../home/logic/animal_bloc.dart';
 
@@ -27,7 +31,8 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
   final _favoritesController = TextEditingController();
   final _locationController = TextEditingController();
   final _priceController = TextEditingController();
-  final _imageUrlController = TextEditingController();
+  final ImagePicker _imagePicker = ImagePicker();
+  final List<String> _selectedImageUrls = [];
 
   String _selectedPetType = 'Cat';
   String _selectedGender = 'Male';
@@ -53,7 +58,6 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
     _favoritesController.dispose();
     _locationController.dispose();
     _priceController.dispose();
-    _imageUrlController.dispose();
     super.dispose();
   }
 
@@ -76,6 +80,9 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
     }
     if (_aboutController.text.trim().length < 10) {
       return 'Please add a short description with at least 10 characters';
+    }
+    if (_selectedImageUrls.isEmpty) {
+      return 'Please select at least one photo for the animal';
     }
     if (!_isForAdoption) {
       final price = double.tryParse(_priceController.text.trim());
@@ -131,6 +138,58 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
     return segments.where((segment) => segment.isNotEmpty).join(' | ');
   }
 
+  Future<void> _pickImages() async {
+    final remainingSlots = 4 - _selectedImageUrls.length;
+    if (remainingSlots <= 0) {
+      _showMessage('You can add up to 4 photos only');
+      return;
+    }
+
+    final pickedFiles = await _imagePicker.pickMultiImage(
+      imageQuality: 60,
+      maxWidth: 1280,
+      maxHeight: 1280,
+    );
+
+    if (pickedFiles.isEmpty) return;
+
+    final limitedFiles = pickedFiles.take(remainingSlots).toList();
+    final newImages = <String>[];
+
+    for (final file in limitedFiles) {
+      final bytes = await file.readAsBytes();
+      newImages.add(_buildDataUri(file, bytes));
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _selectedImageUrls.addAll(newImages);
+    });
+
+    if (pickedFiles.length > remainingSlots) {
+      _showMessage('Only the first $remainingSlots photos were added');
+    }
+  }
+
+  String _buildDataUri(XFile file, List<int> bytes) {
+    final extension = file.name.split('.').last.toLowerCase();
+    final mimeType = switch (extension) {
+      'png' => 'image/png',
+      'webp' => 'image/webp',
+      'gif' => 'image/gif',
+      _ => 'image/jpeg',
+    };
+
+    return 'data:$mimeType;base64,${base64Encode(bytes)}';
+  }
+
+  void _removeImageAt(int index) {
+    setState(() {
+      _selectedImageUrls.removeAt(index);
+    });
+  }
+
   void _submit() {
     FocusScope.of(context).unfocus();
     final validationMessage = _validateForm();
@@ -146,16 +205,12 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
       'age': _buildAgeLabel(),
       'gender': _selectedGender,
       'size': _selectedSize,
-      'price': _isForAdoption
-          ? 0
-          : double.parse(_priceController.text.trim()),
+      'price': _isForAdoption ? 0 : double.parse(_priceController.text.trim()),
       'location': _locationController.text.trim(),
       'latitude': _fallbackLatitude,
       'longitude': _fallbackLongitude,
       'description': _buildDescription(),
-      'imageUrls': _imageUrlController.text.trim().isEmpty
-          ? <String>[]
-          : <String>[_imageUrlController.text.trim()],
+      'imageUrls': List<String>.from(_selectedImageUrls),
       'isForAdoption': _isForAdoption,
       'healthStatus': _selectedHealthStatus,
     };
@@ -277,25 +332,29 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                           ChoiceChipButton(
                             label: 'Cat',
                             isSelected: _selectedPetType == 'Cat',
-                            onTap: () => setState(() => _selectedPetType = 'Cat'),
+                            onTap: () =>
+                                setState(() => _selectedPetType = 'Cat'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
                             label: 'Dog',
                             isSelected: _selectedPetType == 'Dog',
-                            onTap: () => setState(() => _selectedPetType = 'Dog'),
+                            onTap: () =>
+                                setState(() => _selectedPetType = 'Dog'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
                             label: 'Bird',
                             isSelected: _selectedPetType == 'Bird',
-                            onTap: () => setState(() => _selectedPetType = 'Bird'),
+                            onTap: () =>
+                                setState(() => _selectedPetType = 'Bird'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
                             label: 'Other',
                             isSelected: _selectedPetType == 'Other',
-                            onTap: () => setState(() => _selectedPetType = 'Other'),
+                            onTap: () =>
+                                setState(() => _selectedPetType = 'Other'),
                           ),
                         ],
                       ),
@@ -320,7 +379,13 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       DropdownField(
                         label: 'Color',
                         value: _selectedColor,
-                        items: const ['Brown', 'Black', 'White', 'Gray', 'Mixed'],
+                        items: const [
+                          'Brown',
+                          'Black',
+                          'White',
+                          'Gray',
+                          'Mixed',
+                        ],
                         onChanged: (val) {
                           if (val != null) {
                             setState(() => _selectedColor = val);
@@ -340,7 +405,8 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                           ChoiceChipButton(
                             label: 'Male',
                             isSelected: _selectedGender == 'Male',
-                            onTap: () => setState(() => _selectedGender = 'Male'),
+                            onTap: () =>
+                                setState(() => _selectedGender = 'Male'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
@@ -372,7 +438,8 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                           ChoiceChipButton(
                             label: 'Small',
                             isSelected: _selectedSize == 'Small',
-                            onTap: () => setState(() => _selectedSize = 'Small'),
+                            onTap: () =>
+                                setState(() => _selectedSize = 'Small'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
@@ -385,7 +452,8 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                           ChoiceChipButton(
                             label: 'Large',
                             isSelected: _selectedSize == 'Large',
-                            onTap: () => setState(() => _selectedSize = 'Large'),
+                            onTap: () =>
+                                setState(() => _selectedSize = 'Large'),
                           ),
                         ],
                       ),
@@ -439,26 +507,74 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                         maxLines: 3,
                       ),
                       const SizedBox(height: 12),
-                      PetTextField(
-                        label: 'Cover image URL (optional)',
-                        controller: _imageUrlController,
-                      ),
-                      const SizedBox(height: 16),
                       Text(
-                        'Add more photos',
+                        'Animal photos',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 8),
                       AddPhotosBox(
-                        onTap: () {
-                          _showMessage(
-                            'Image upload is not connected yet. You can paste one image URL for now.',
-                          );
-                        },
+                        onTap: _pickImages,
+                        photoCount: _selectedImageUrls.length,
                       ),
-                      const SizedBox(height: 24),
+                      if (_selectedImageUrls.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: List.generate(_selectedImageUrls.length, (
+                            index,
+                          ) {
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  width: 86,
+                                  height: 86,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: const Color(0xFFDAC4E4),
+                                    ),
+                                  ),
+                                  child: AppMedia(
+                                    imageUrl: _selectedImageUrls[index],
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: -8,
+                                  right: -8,
+                                  child: GestureDetector(
+                                    onTap: () => _removeImageAt(index),
+                                    child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF4B1A45),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.close,
+                                        size: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Choose up to 4 photos from your phone. The first photo will be used as the cover.',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.black54, height: 1.4),
+                        ),
+                      ],
+                      SizedBox(height: 24),
                       SizedBox(
                         width: double.infinity,
                         height: 48,

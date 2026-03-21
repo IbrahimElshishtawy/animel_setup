@@ -17,7 +17,9 @@ class AnimalDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final imageUrl = animal.imageUrls.isEmpty ? null : animal.imageUrls.first;
+    final imageUrls = animal.imageUrls.isEmpty
+        ? const <String>[]
+        : animal.imageUrls;
 
     return Scaffold(
       body: CustomScrollView(
@@ -37,22 +39,7 @@ class AnimalDetailScreen extends StatelessWidget {
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              background: AppMedia(
-                imageUrl: imageUrl,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.black.withOpacity(0.18),
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.34),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                ),
-              ),
+              background: _AnimalImageCarousel(imageUrls: imageUrls),
             ),
           ),
           SliverToBoxAdapter(
@@ -281,6 +268,80 @@ class AnimalDetailScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AnimalImageCarousel extends StatefulWidget {
+  const _AnimalImageCarousel({required this.imageUrls});
+
+  final List<String> imageUrls;
+
+  @override
+  State<_AnimalImageCarousel> createState() => _AnimalImageCarouselState();
+}
+
+class _AnimalImageCarouselState extends State<_AnimalImageCarousel> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final imageUrls = widget.imageUrls.isEmpty ? [null] : widget.imageUrls;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        PageView.builder(
+          itemCount: imageUrls.length,
+          onPageChanged: (index) {
+            if (_currentIndex != index) {
+              setState(() => _currentIndex = index);
+            }
+          },
+          itemBuilder: (context, index) {
+            return AppMedia(
+              imageUrl: imageUrls[index],
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(0.18),
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.34),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+        if (imageUrls.length > 1)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 18,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(imageUrls.length, (index) {
+                final isActive = index == _currentIndex;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: isActive ? 18 : 8,
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  decoration: BoxDecoration(
+                    color: isActive
+                        ? Colors.white
+                        : Colors.white.withOpacity(0.45),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                );
+              }),
+            ),
+          ),
+      ],
     );
   }
 }
