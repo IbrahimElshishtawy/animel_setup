@@ -4,6 +4,7 @@ import 'package:animel_core/features/report/widgets/report_photo_picker.dart';
 import 'package:animel_core/features/report/widgets/report_text_field.dart';
 import 'package:animel_core/features/report/widgets/report_type_toggle.dart';
 import 'package:flutter/material.dart';
+
 import '../../../../core/widgets/bottom_nav_bar.dart';
 
 class ReportStep1Screen extends StatefulWidget {
@@ -29,7 +30,20 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
   String _selectedCategory = 'Cat';
 
   @override
+  void initState() {
+    super.initState();
+    _addressController.addListener(_handleAddressChanged);
+  }
+
+  void _handleAddressChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   void dispose() {
+    _addressController.removeListener(_handleAddressChanged);
     _nameController.dispose();
     _colorController.dispose();
     _ageController.dispose();
@@ -74,7 +88,6 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                 children: [
                   ReportPhotoPicker(onTap: () {}),
                   const SizedBox(height: 16),
-
                   ReportTypeToggle(
                     selected: _selectedType,
                     onChanged: (value) {
@@ -82,16 +95,13 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                     },
                   ),
                   const SizedBox(height: 16),
-
                   ReportTextField(
                     label: 'Animal name *',
                     controller: _nameController,
                   ),
                   const SizedBox(height: 12),
-
                   ReportTextField(label: 'Color', controller: _colorController),
                   const SizedBox(height: 12),
-
                   ReportDropdownField(
                     label: 'Category',
                     value: _selectedCategory,
@@ -103,7 +113,6 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                     },
                   ),
                   const SizedBox(height: 12),
-
                   Row(
                     children: [
                       Expanded(
@@ -122,14 +131,12 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-
                   ReportTextField(
                     label: 'Description',
                     controller: _descriptionController,
                     maxLines: 4,
                   ),
                   const SizedBox(height: 12),
-
                   ReportTextField(
                     label: 'Reward (100\$, 100Eg)',
                     controller: _rewardController,
@@ -138,7 +145,6 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
                   Text(
                     'Last seen*',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -146,7 +152,6 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-
                   ReportTextField(
                     label: 'Date and time',
                     controller: _lastSeenDateController,
@@ -167,14 +172,11 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                     },
                   ),
                   const SizedBox(height: 12),
-
                   ReportTextField(
                     label: 'Enter address',
                     controller: _addressController,
                   ),
                   const SizedBox(height: 12),
-
-                  // لو عندك GoogleStaticMap في core/widgets
                   GoogleStaticMap(
                     address: _addressController.text.isEmpty
                         ? 'Cairo, Egypt'
@@ -183,21 +185,18 @@ class _ReportStep1ScreenState extends State<ReportStep1Screen> {
                     borderRadius: 16,
                   ),
                   const SizedBox(height: 16),
-
                   ReportTextField(
                     label: 'E-mail*',
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 12),
-
                   ReportTextField(
                     label: 'Phone number*',
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 20),
-
                   SizedBox(
                     height: 48,
                     width: double.infinity,

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/animal_model.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
+import '../widgets/google_static_map.dart';
 
 class AnimalDetailScreen extends StatelessWidget {
   const AnimalDetailScreen({super.key, required this.animal});
@@ -44,7 +45,7 @@ class AnimalDetailScreen extends StatelessWidget {
                       colors: [
                         Colors.black.withOpacity(0.18),
                         Colors.transparent,
-                        Colors.black.withOpacity(0.32),
+                        Colors.black.withOpacity(0.34),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -123,7 +124,7 @@ class AnimalDetailScreen extends StatelessWidget {
                   _DetailSection(
                     title: 'About ${animal.name}',
                     child: Text(
-                      animal.description.isEmpty
+                      animal.description.trim().isEmpty
                           ? 'This listing has not added a detailed description yet.'
                           : animal.description,
                       style: theme.textTheme.bodyLarge?.copyWith(
@@ -158,7 +159,9 @@ class AnimalDetailScreen extends StatelessWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              animal.healthStatus,
+                              animal.healthStatus.trim().isEmpty
+                                  ? 'No health notes added yet.'
+                                  : animal.healthStatus,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w700,
                               ),
@@ -171,23 +174,83 @@ class AnimalDetailScreen extends StatelessWidget {
                   const SizedBox(height: 18),
                   _DetailSection(
                     title: 'Location',
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.place_outlined,
-                          size: 18,
-                          color: scheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            animal.location,
-                            style: theme.textTheme.bodyMedium?.copyWith(
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.place_outlined,
+                              size: 18,
                               color: scheme.onSurfaceVariant,
                             ),
-                          ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                animal.location,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: scheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 12),
+                        GoogleStaticMap(address: animal.location),
                       ],
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  _DetailSection(
+                    title: 'Owner',
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                        border: Border.all(color: scheme.outlineVariant),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 46,
+                            height: 46,
+                            decoration: BoxDecoration(
+                              color: scheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Icon(
+                              Icons.person_outline_rounded,
+                              color: scheme.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  animal.owner?.name ??
+                                      (animal.isForAdoption
+                                          ? 'Caretaker'
+                                          : 'Seller'),
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  animal.owner?.email ??
+                                      'Open chat to continue with the owner.',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 28),
