@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
+import '../../../core/widgets/glass_panel.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({
     super.key,
     required this.userName,
     required this.subtitle,
+    required this.currentLocation,
+    required this.onLocationTap,
     required this.onProfileTap,
     required this.onNotificationTap,
     this.profileImageUrl,
@@ -17,16 +20,17 @@ class HomeHeader extends StatelessWidget {
 
   final String userName;
   final String subtitle;
+  final String currentLocation;
   final String? profileImageUrl;
+  final VoidCallback onLocationTap;
   final VoidCallback onProfileTap;
   final VoidCallback onNotificationTap;
 
   String get _greetingName {
     final trimmed = userName.trim();
     if (trimmed.isEmpty) {
-      return 'User';
+      return 'friend';
     }
-
     return trimmed.split(' ').first;
   }
 
@@ -35,134 +39,203 @@ class HomeHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: scheme.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                ),
-                child: Text(
-                  'Animal Connect',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: scheme.primary,
-                    fontWeight: FontWeight.w700,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GlassPanel(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                    shadowOpacity: 0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.shield_outlined,
+                          size: 14,
+                          color: scheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Animal Connect',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: scheme.primary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    'Discover your next\ncompanion, $_greetingName',
+                    style: theme.textTheme.headlineLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            ScaleTap(
+              onTap: onProfileTap,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  GlassPanel(
+                    padding: const EdgeInsets.all(4),
+                    borderRadius: BorderRadius.circular(26),
+                    shadowColor: scheme.primary,
+                    child: SizedBox(
+                      width: 62,
+                      height: 62,
+                      child: ClipOval(
+                        child: profileImageUrl == null || profileImageUrl!.isEmpty
+                            ? DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      scheme.primary.withOpacity(0.18),
+                                      scheme.secondary.withOpacity(0.12),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.person_rounded,
+                                  color: scheme.primary,
+                                  size: 28,
+                                ),
+                              )
+                            : AppMedia(imageUrl: profileImageUrl),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: -2,
+                    bottom: 2,
+                    child: Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF57C27E),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              child: ScaleTap(
+                onTap: onLocationTap,
+                child: GlassPanel(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  borderRadius: BorderRadius.circular(22),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: scheme.primary.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                          Icons.place_rounded,
+                          color: scheme.primary,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Nearby',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: scheme.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              currentLocation,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
-              Text(
-                'Hello, $_greetingName',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
+            ),
+            const SizedBox(width: 12),
+            ScaleTap(
+              onTap: onNotificationTap,
+              child: GlassPanel(
+                padding: const EdgeInsets.all(14),
+                borderRadius: BorderRadius.circular(22),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Icon(
+                      Icons.notifications_none_rounded,
+                      color: scheme.onSurface,
+                      size: 24,
+                    ),
+                    Positioned(
+                      right: -2,
+                      top: -2,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: scheme.secondary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 16),
-        _HeaderActionButton(
-          icon: Icons.notifications_none_rounded,
-          onTap: onNotificationTap,
-        ),
-        const SizedBox(width: 10),
-        GestureDetector(
-          onTap: onProfileTap,
-          child: Container(
-            width: 54,
-            height: 54,
-            padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  scheme.primary.withOpacity(0.95),
-                  scheme.secondary.withOpacity(0.95),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              shape: BoxShape.circle,
-              boxShadow: AppShadows.soft(scheme.primary, opacity: 0.16),
             ),
-            child: ClipOval(
-              child: DecoratedBox(
-                decoration: BoxDecoration(color: theme.cardColor),
-                child: profileImageUrl == null || profileImageUrl!.isEmpty
-                    ? Icon(
-                        Icons.person_rounded,
-                        color: scheme.primary,
-                        size: 26,
-                      )
-                    : AppMedia(imageUrl: profileImageUrl),
-              ),
-            ),
-          ),
+          ],
         ),
       ],
-    );
-  }
-}
-
-class _HeaderActionButton extends StatelessWidget {
-  const _HeaderActionButton({required this.icon, required this.onTap});
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: Ink(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: scheme.outlineVariant.withOpacity(0.8)),
-            boxShadow: AppShadows.soft(Colors.black, opacity: 0.05),
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Icon(icon, color: scheme.onSurface, size: 24),
-              Positioned(
-                top: 14,
-                right: 14,
-                child: Container(
-                  width: 9,
-                  height: 9,
-                  decoration: BoxDecoration(
-                    color: scheme.secondary,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

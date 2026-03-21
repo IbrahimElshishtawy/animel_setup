@@ -59,69 +59,91 @@ class NearbyAnimalData {
   final String typeLabel;
 }
 
+class NearbyServiceData {
+  const NearbyServiceData({
+    required this.title,
+    required this.subtitle,
+    required this.badge,
+    required this.rating,
+    required this.icon,
+    required this.accent,
+    required this.isOnline,
+  });
+
+  final String title;
+  final String subtitle;
+  final String badge;
+  final double rating;
+  final IconData icon;
+  final Color accent;
+  final bool isOnline;
+}
+
 class HomeContent {
   HomeContent._();
 
   static const List<HomeBannerData> banners = [
     HomeBannerData(
-      title: 'Rare companions, curated with care',
-      subtitle: 'Explore standout listings for exotic and premium animals.',
-      ctaLabel: 'Explore',
+      title: 'Trusted companions for every kind of home',
+      subtitle:
+          'Premium listings, careful adoption stories, and verified sellers in one calm marketplace.',
+      ctaLabel: 'Explore pets',
       route: '/animal-list',
       imageUrl:
-          'https://images.unsplash.com/photo-1548767797-d8c844163c4c?auto=format&fit=crop&w=1200&q=80',
-      gradientColors: [Color(0xFF1C3C54), Color(0xFF2D6A8B), Color(0xFF5BB5C6)],
+          'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1400&q=80',
+      gradientColors: [Color(0xFF123946), Color(0xFF2A7C7E), Color(0xFFE2B07C)],
     ),
     HomeBannerData(
-      title: 'Give a waiting friend a home',
+      title: 'Urgent adoption, handled with more care',
       subtitle:
-          'Meet adoption-ready animals and connect with trusted caretakers.',
-      ctaLabel: 'Adopt',
+          'Meet animals that need a home quickly and connect with people you can trust.',
+      ctaLabel: 'Adopt now',
       route: '/adopt',
       imageUrl:
-          'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80',
-      gradientColors: [Color(0xFF7B3E3E), Color(0xFFBA7A56), Color(0xFFE7B46E)],
+          'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1400&q=80',
+      gradientColors: [Color(0xFF3D5447), Color(0xFF5B8B73), Color(0xFFF0C18B)],
     ),
     HomeBannerData(
-      title: 'Premium food and essentials',
-      subtitle: 'Discover daily care, wellness, and enrichment for every pet.',
-      ctaLabel: 'Shop',
+      title: 'Food, accessories, and nearby helpers',
+      subtitle:
+          'Stock up on everyday supplies and discover groomers, walkers, and sitters around you.',
+      ctaLabel: 'View essentials',
       route: '/shop',
       imageUrl:
-          'https://images.unsplash.com/photo-1583512603806-077998240c7a?auto=format&fit=crop&w=1200&q=80',
-      gradientColors: [Color(0xFF2D3047), Color(0xFF4F5D95), Color(0xFF7A8CCB)],
+          'https://images.unsplash.com/photo-1583512603806-077998240c7a?auto=format&fit=crop&w=1400&q=80',
+      gradientColors: [Color(0xFF24324B), Color(0xFF5B7A8D), Color(0xFFD8B788)],
     ),
   ];
 
   static const List<HomeCategoryData> categories = [
     HomeCategoryData(
-      label: 'Animals',
+      label: 'Pets',
       icon: Icons.pets_rounded,
-      tint: Color(0xFFE9D8A6),
+      tint: Color(0xFFFFE2C2),
       route: '/animal-list',
     ),
     HomeCategoryData(
       label: 'Adoption',
       icon: Icons.favorite_rounded,
-      tint: Color(0xFFF4C7AB),
+      tint: Color(0xFFFFD8D3),
       route: '/adopt',
     ),
     HomeCategoryData(
       label: 'Food',
-      icon: Icons.dining_rounded,
-      tint: Color(0xFFCDE7BE),
+      icon: Icons.restaurant_rounded,
+      tint: Color(0xFFD6F0DE),
       route: '/shop',
     ),
     HomeCategoryData(
       label: 'Accessories',
       icon: Icons.shopping_bag_rounded,
-      tint: Color(0xFFD8D4F2),
+      tint: Color(0xFFDCEAF7),
       route: '/shop',
     ),
     HomeCategoryData(
-      label: 'Nearby',
-      icon: Icons.explore_rounded,
-      tint: Color(0xFFBEE4E8),
+      label: 'Services',
+      icon: Icons.room_service_rounded,
+      tint: Color(0xFFE6E1FB),
       route: '/map',
     ),
   ];
@@ -129,105 +151,109 @@ class HomeContent {
   static final List<Animal> featuredAnimals = [
     _animal(
       id: 'home-featured-1',
-      name: 'Astra',
-      type: 'Macaw',
-      breed: 'Blue-and-gold Macaw',
-      price: 4200,
-      location: 'Dubai Marina',
+      name: 'Golden Retriever Puppy',
+      type: 'Dog',
+      breed: 'Golden Retriever',
+      price: 1200,
+      location: 'New Cairo',
       description:
-          'A social and well-trained macaw with a vibrant personality and premium care routine.',
-      healthStatus: 'Vet checked and fully documented',
-      age: '2 years',
-      gender: 'Female',
+          'Playful, social, and already used to a family routine with vet records ready.',
+      healthStatus: 'Vaccinated and wellness checked',
+      age: '4 months',
+      gender: 'Male',
       size: 'Medium',
-      latitude: 25.080,
-      longitude: 55.140,
+      latitude: 30.020,
+      longitude: 31.490,
       imageUrls: const [
-        'https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=900&q=80',
       ],
       isForAdoption: false,
       ownerId: 'owner-featured-1',
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
     ),
     _animal(
       id: 'home-featured-2',
-      name: 'Nilo',
-      type: 'Fennec Fox',
-      breed: 'Desert Fennec',
-      price: 6800,
-      location: 'Abu Dhabi',
+      name: 'Scottish Fold Kitten',
+      type: 'Cat',
+      breed: 'Scottish Fold',
+      price: 950,
+      location: 'Maadi',
       description:
-          'Rare, elegant, and raised in a controlled environment with nutrition tracking.',
-      healthStatus: 'Microchipped and wellness monitored',
-      age: '1 year',
-      gender: 'Male',
-      size: 'Small',
-      latitude: 24.453,
-      longitude: 54.377,
-      imageUrls: const [
-        'https://images.unsplash.com/photo-1516934024742-b461fba47600?auto=format&fit=crop&w=900&q=80',
-      ],
-      isForAdoption: false,
-      ownerId: 'owner-featured-2',
-    ),
-    _animal(
-      id: 'home-featured-3',
-      name: 'Nova',
-      type: 'Savannah Cat',
-      breed: 'F1 Savannah',
-      price: 5300,
-      location: 'Riyadh',
-      description:
-          'A striking rare-breed companion known for intelligence, energy, and elegant markings.',
-      healthStatus: 'Vaccinated and indoor raised',
-      age: '8 months',
+          'Gentle indoor kitten with a calm temperament and full starter care kit.',
+      healthStatus: 'Dewormed and vaccinated',
+      age: '3 months',
       gender: 'Female',
-      size: 'Medium',
-      latitude: 24.713,
-      longitude: 46.675,
+      size: 'Small',
+      latitude: 29.960,
+      longitude: 31.255,
       imageUrls: const [
         'https://images.unsplash.com/photo-1511044568932-338cba0ad803?auto=format&fit=crop&w=900&q=80',
       ],
       isForAdoption: false,
+      ownerId: 'owner-featured-2',
+      createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+    ),
+    _animal(
+      id: 'home-featured-3',
+      name: 'Blue-and-Gold Macaw',
+      type: 'Bird',
+      breed: 'Macaw',
+      price: 1750,
+      location: 'Nasr City',
+      description:
+          'Smart, social bird with a monitored diet and training routine for indoor living.',
+      healthStatus: 'Microchipped and documented',
+      age: '1 year',
+      gender: 'Female',
+      size: 'Medium',
+      latitude: 30.060,
+      longitude: 31.340,
+      imageUrls: const [
+        'https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=900&q=80',
+      ],
+      isForAdoption: false,
       ownerId: 'owner-featured-3',
+      createdAt: DateTime.now().subtract(const Duration(hours: 8)),
     ),
     _animal(
       id: 'home-featured-4',
-      name: 'Kai',
-      type: 'Koi',
-      breed: 'Premium Japanese Koi',
-      price: 2900,
-      location: 'Doha',
+      name: 'Mini Lop Rabbit',
+      type: 'Rabbit',
+      breed: 'Mini Lop',
+      price: 0,
+      location: 'Zayed',
       description:
-          'A premium ornamental koi selected for color depth, movement, and balanced growth.',
-      healthStatus: 'Water-tested and transport ready',
-      age: '14 months',
+          'Sweet rabbit looking for a quiet adopter with indoor space and gentle care.',
+      healthStatus: 'Healthy and adoption ready',
+      age: '11 months',
       gender: 'Male',
       size: 'Small',
-      latitude: 25.285,
-      longitude: 51.531,
+      latitude: 30.050,
+      longitude: 30.980,
       imageUrls: const [
-        'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=900&q=80',
       ],
-      isForAdoption: false,
+      isForAdoption: true,
       ownerId: 'owner-featured-4',
+      createdAt: DateTime.now().subtract(const Duration(hours: 10)),
     ),
   ];
 
   static final List<NearbyAnimalData> nearbyAnimals = [
     NearbyAnimalData(
       animal: featuredAnimals[0],
-      distance: '1.4 km',
-      typeLabel: 'For Sale',
+      distance: '0.9 km',
+      typeLabel: 'For sale',
     ),
     NearbyAnimalData(
       animal: featuredAnimals[1],
-      distance: '2.1 km',
-      typeLabel: 'Rare',
+      distance: '1.6 km',
+      typeLabel: 'New listing',
     ),
     NearbyAnimalData(
-      animal: featuredAnimals[2],
-      distance: '3.8 km',
-      typeLabel: 'For Sale',
+      animal: featuredAnimals[3],
+      distance: '2.4 km',
+      typeLabel: 'Urgent adoption',
     ),
   ];
 
@@ -238,20 +264,21 @@ class HomeContent {
       type: 'Dog',
       breed: 'Golden Retriever',
       price: 0,
-      location: 'New Cairo',
+      location: 'Heliopolis',
       description:
-          'Gentle, playful, and great with children. Looking for a calm family home.',
+          'Gentle, playful, and great with children. He needs a family home within the week.',
       healthStatus: 'Vaccinated and socialized',
       age: '3 years',
       gender: 'Male',
       size: 'Large',
-      latitude: 30.010,
-      longitude: 31.490,
+      latitude: 30.091,
+      longitude: 31.330,
       imageUrls: const [
         'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=900&q=80',
       ],
       isForAdoption: true,
       ownerId: 'owner-adoption-1',
+      createdAt: DateTime.now().subtract(const Duration(hours: 6)),
     ),
     _animal(
       id: 'home-adoption-2',
@@ -259,41 +286,43 @@ class HomeContent {
       type: 'Cat',
       breed: 'British Shorthair',
       price: 0,
-      location: 'Maadi',
+      location: 'Dokki',
       description:
-          'Calm indoor cat with a soft temperament. Perfect for apartment living.',
+          'Calm indoor cat with a soft temperament and a complete health record ready to share.',
       healthStatus: 'Spayed and fully vaccinated',
       age: '18 months',
       gender: 'Female',
       size: 'Small',
-      latitude: 29.960,
-      longitude: 31.258,
+      latitude: 30.040,
+      longitude: 31.210,
       imageUrls: const [
         'https://images.unsplash.com/photo-1519052537078-e6302a4968d4?auto=format&fit=crop&w=900&q=80',
       ],
       isForAdoption: true,
       ownerId: 'owner-adoption-2',
+      createdAt: DateTime.now().subtract(const Duration(hours: 12)),
     ),
     _animal(
       id: 'home-adoption-3',
-      name: 'Pico',
-      type: 'Rabbit',
-      breed: 'Holland Lop',
+      name: 'Coco',
+      type: 'Dog',
+      breed: 'Mixed Breed',
       price: 0,
-      location: 'Zayed',
+      location: 'Sheikh Zayed',
       description:
-          'Sweet and curious with a gentle routine. Needs a quiet, attentive adopter.',
-      healthStatus: 'Healthy and monitored weekly',
-      age: '11 months',
-      gender: 'Male',
-      size: 'Small',
+          'A resilient rescue dog who is affectionate, house-trained, and ready for a calm space.',
+      healthStatus: 'Recovering well and monitored weekly',
+      age: '2 years',
+      gender: 'Female',
+      size: 'Medium',
       latitude: 30.030,
       longitude: 30.970,
       imageUrls: const [
-        'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?auto=format&fit=crop&w=900&q=80',
       ],
       isForAdoption: true,
       ownerId: 'owner-adoption-3',
+      createdAt: DateTime.now().subtract(const Duration(hours: 20)),
     ),
   ];
 
@@ -301,62 +330,92 @@ class HomeContent {
     HomeProductData(
       product: Product(
         id: 'home-product-1',
-        name: 'Organic Bird Nutrition Mix',
+        name: 'Grain-Free Daily Nutrition',
         category: 'Food',
         price: 28,
-        description: 'Premium seeds and nutrients for rare birds.',
+        description: 'Balanced dry food for young and adult dogs.',
         imageUrl:
             'https://images.unsplash.com/photo-1598137269392-7ccfd8e2ea2f?auto=format&fit=crop&w=900&q=80',
-        animalType: 'Birds',
+        animalType: 'Dogs',
         stock: 14,
       ),
       rating: 4.8,
-      accentLabel: 'Best Seller',
+      accentLabel: 'Best seller',
     ),
     HomeProductData(
       product: Product(
         id: 'home-product-2',
-        name: 'Desert Habitat Comfort Bed',
+        name: 'Cloud Soft Carrier',
         category: 'Accessories',
         price: 64,
-        description: 'Soft, durable bedding for small exotic companions.',
+        description: 'Breathable carrier with soft lining and secure support.',
         imageUrl:
             'https://images.unsplash.com/photo-1548767797-d8c844163c4c?auto=format&fit=crop&w=900&q=80',
-        animalType: 'Foxes',
+        animalType: 'Cats & small pets',
         stock: 9,
       ),
-      rating: 4.6,
-      accentLabel: 'Editor Pick',
+      rating: 4.7,
+      accentLabel: 'Editor pick',
     ),
     HomeProductData(
       product: Product(
         id: 'home-product-3',
-        name: 'Aquatic Balance Care Kit',
-        category: 'Wellness',
-        price: 39,
-        description: 'Water treatment essentials and koi health support.',
+        name: 'Interactive Enrichment Toy',
+        category: 'Accessories',
+        price: 22,
+        description: 'A premium toy that keeps pets engaged throughout the day.',
         imageUrl:
-            'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?auto=format&fit=crop&w=900&q=80',
-        animalType: 'Fish',
+            'https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=900&q=80',
+        animalType: 'Dogs & cats',
         stock: 23,
       ),
       rating: 4.9,
-      accentLabel: 'Top Rated',
+      accentLabel: 'Top rated',
     ),
     HomeProductData(
       product: Product(
         id: 'home-product-4',
-        name: 'Luxury Travel Carrier',
-        category: 'Accessories',
-        price: 89,
-        description: 'Premium carrier with soft lining and airflow panels.',
+        name: 'Natural Wellness Bowl Set',
+        category: 'Food',
+        price: 31,
+        description: 'A ceramic feeding set with a calm, modern finish.',
         imageUrl:
             'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80',
-        animalType: 'Cats & Small Pets',
+        animalType: 'All pets',
         stock: 6,
       ),
-      rating: 4.7,
+      rating: 4.6,
       accentLabel: 'New',
+    ),
+  ];
+
+  static const List<NearbyServiceData> serviceHelpers = [
+    NearbyServiceData(
+      title: 'Nour Pet Grooming',
+      subtitle: 'Mobile grooming and coat care',
+      badge: '12 min away',
+      rating: 4.9,
+      icon: Icons.content_cut_rounded,
+      accent: Color(0xFF7AA39E),
+      isOnline: true,
+    ),
+    NearbyServiceData(
+      title: 'Amina Pet Sitter',
+      subtitle: 'Trusted boarding and home visits',
+      badge: 'Available today',
+      rating: 4.8,
+      icon: Icons.home_work_outlined,
+      accent: Color(0xFFDAA46D),
+      isOnline: true,
+    ),
+    NearbyServiceData(
+      title: 'Happy Paws Walker',
+      subtitle: 'Morning and evening dog walks',
+      badge: '2.7 km',
+      rating: 4.7,
+      icon: Icons.directions_walk_rounded,
+      accent: Color(0xFF6E8D9D),
+      isOnline: false,
     ),
   ];
 
@@ -377,6 +436,7 @@ class HomeContent {
     required List<String> imageUrls,
     required bool isForAdoption,
     required String ownerId,
+    required DateTime createdAt,
   }) {
     return Animal(
       id: id,
@@ -395,7 +455,7 @@ class HomeContent {
       isForAdoption: isForAdoption,
       ownerId: ownerId,
       healthStatus: healthStatus,
-      createdAt: DateTime.now().subtract(const Duration(hours: 8)),
+      createdAt: createdAt,
     );
   }
 }

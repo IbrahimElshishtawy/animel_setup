@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/glass_panel.dart';
 
 class SearchBarWidget extends StatelessWidget {
   const SearchBarWidget({
@@ -18,58 +19,73 @@ class SearchBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Ink(
-          height: 62,
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: scheme.outlineVariant.withOpacity(isDark ? 0.5 : 0.85),
-            ),
-            boxShadow: AppShadows.soft(
-              Colors.black,
-              opacity: isDark ? 0.16 : 0.06,
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.search_rounded, color: scheme.onSurfaceVariant),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Search animals, food, supplies...',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-                ),
+    return ScaleTap(
+      onTap: onTap,
+      child: GlassPanel(
+        padding: const EdgeInsets.all(10),
+        borderRadius: BorderRadius.circular(28),
+        blurSigma: 22,
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: scheme.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(18),
               ),
-              Container(
-                width: 42,
-                height: 42,
+              child: Icon(Icons.search_rounded, color: scheme.primary),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Search pets, food, sitters...',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Marketplace listings, nearby helpers, and curated essentials',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            ScaleTap(
+              onTap: onFilterTap,
+              scaleDown: 0.92,
+              child: Container(
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: scheme.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: IconButton(
-                  onPressed: onFilterTap,
-                  icon: Icon(
-                    Icons.tune_rounded,
-                    color: scheme.primary,
-                    size: 20,
+                  gradient: LinearGradient(
+                    colors: [
+                      scheme.primary.withOpacity(0.14),
+                      scheme.secondary.withOpacity(0.14),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  splashRadius: 18,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Icon(
+                  Icons.tune_rounded,
+                  color: scheme.primary,
+                  size: 22,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

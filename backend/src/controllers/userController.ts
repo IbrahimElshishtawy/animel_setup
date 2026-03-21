@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import User from '../models/User';
+import User from '../models/user/User';
 import { generateToken, sanitizeUser } from '../services/authService';
 import { ApiError } from '../utils/ApiError';
 import { asyncHandler } from '../utils/asyncHandler';

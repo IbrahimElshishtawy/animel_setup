@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import Animal from '../models/Animal';
+import Animal from '../models/animal/Animal';
 import { defaultPlaces } from '../constants/defaultPlaces';
 import { asyncHandler } from '../utils/asyncHandler';
 

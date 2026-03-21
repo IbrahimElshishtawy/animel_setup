@@ -1,7 +1,7 @@
 import jwt, { type SignOptions } from 'jsonwebtoken';
 import { Types } from 'mongoose';
 import { env } from '../config/env';
-import type { IUser } from '../models/User';
+import type { IUser } from '../models/user/User';
 
 export const generateToken = (userId: Types.ObjectId | string) =>
   jwt.sign(

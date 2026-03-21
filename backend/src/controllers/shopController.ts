@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import Cart from '../models/Cart';
-import Product from '../models/Product';
+import Product from '../models/product/Product';
 import { ApiError } from '../utils/ApiError';
 import { asyncHandler } from '../utils/asyncHandler';
 

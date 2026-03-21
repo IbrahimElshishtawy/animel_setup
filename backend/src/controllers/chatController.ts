@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import Conversation from '../models/Conversation';
-import Message from '../models/Message';
-import User from '../models/User';
+import Message from '../models/massage/Message';
+import User from '../models/user/User';
 import { ensureConversation } from '../services/chatService';
 import { ApiError } from '../utils/ApiError';
 import { asyncHandler } from '../utils/asyncHandler';

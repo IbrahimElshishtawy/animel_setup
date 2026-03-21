@@ -3,24 +3,24 @@
 import 'package:flutter/material.dart';
 
 class AppPalette {
-  static const Color ink = Color(0xFF191823);
-  static const Color plum = Color(0xFF4B1A45);
-  static const Color plumDeep = Color(0xFF2A1E3F);
-  static const Color magenta = Color(0xFF8B2E6F);
-  static const Color sunset = Color(0xFFE59A5A);
-  static const Color blush = Color(0xFFF6ECF3);
-  static const Color shell = Color(0xFFF7F2F7);
-  static const Color surface = Color(0xFFFFFBFD);
-  static const Color border = Color(0xFFE3D5E6);
-  static const Color muted = Color(0xFF7E6A80);
-  static const Color text = Color(0xFF2A2030);
-  static const Color indigo = Color(0xFF4C5D97);
-  static const Color darkSurface = Color(0xFF211C2B);
-  static const Color darkBorder = Color(0xFF342A3B);
-  static const Color darkMuted = Color(0xFFA99AAE);
-  static const Color darkText = Color(0xFFF8F2FA);
+  static const Color ink = Color(0xFF09141A);
+  static const Color plum = Color(0xFF2A7C7E);
+  static const Color plumDeep = Color(0xFF133B46);
+  static const Color magenta = Color(0xFF5FA3A5);
+  static const Color sunset = Color(0xFFE2B07C);
+  static const Color blush = Color(0xFFF1F7F8);
+  static const Color shell = Color(0xFFF4F8FA);
+  static const Color surface = Color(0xFFFDFEFE);
+  static const Color border = Color(0xFFD5E2E7);
+  static const Color muted = Color(0xFF6B8087);
+  static const Color text = Color(0xFF173039);
+  static const Color indigo = Color(0xFF708B96);
+  static const Color darkSurface = Color(0xFF14222C);
+  static const Color darkBorder = Color(0xFF2A414C);
+  static const Color darkMuted = Color(0xFF9CB0B8);
+  static const Color darkText = Color(0xFFE8F2F4);
 
-  static const List<Color> brandGradient = [plumDeep, magenta, sunset];
+  static const List<Color> brandGradient = [plumDeep, plum, sunset];
 }
 
 class AppSpacing {
@@ -30,6 +30,7 @@ class AppSpacing {
   static const double lg = 20;
   static const double xl = 28;
   static const double xxl = 36;
+  static const double xxxl = 48;
 
   static const EdgeInsets screenPadding = EdgeInsets.symmetric(
     horizontal: lg,
@@ -41,6 +42,7 @@ class AppRadius {
   static const double sm = 16;
   static const double md = 22;
   static const double lg = 30;
+  static const double xl = 36;
   static const double pill = 999;
 }
 
@@ -56,8 +58,23 @@ class AppShadows {
     return [
       BoxShadow(
         color: color.withOpacity(opacity),
-        blurRadius: 28,
-        offset: const Offset(0, 16),
+        blurRadius: 32,
+        offset: const Offset(0, 18),
+      ),
+    ];
+  }
+
+  static List<BoxShadow> layered(Color color, {double opacity = 0.12}) {
+    return [
+      BoxShadow(
+        color: color.withOpacity(opacity),
+        blurRadius: 42,
+        offset: const Offset(0, 24),
+      ),
+      BoxShadow(
+        color: Colors.white.withOpacity(0.08),
+        blurRadius: 12,
+        offset: const Offset(0, -6),
       ),
     ];
   }

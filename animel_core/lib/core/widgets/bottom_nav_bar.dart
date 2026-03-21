@@ -2,35 +2,52 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+import '../theme/app_tokens.dart';
+import 'glass_panel.dart';
 
 class AppBottomNavBar extends StatelessWidget {
+  const AppBottomNavBar({super.key, required this.currentIndex});
+
   final int currentIndex;
 
-  const AppBottomNavBar({super.key, required this.currentIndex});
+  static const _items = <_NavItem>[
+    _NavItem(
+      label: 'Home',
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
+      route: '/home',
+    ),
+    _NavItem(
+      label: 'Explore',
+      icon: Icons.explore_outlined,
+      activeIcon: Icons.explore_rounded,
+      route: '/search',
+    ),
+    _NavItem(
+      label: 'Add',
+      icon: Icons.add_rounded,
+      activeIcon: Icons.add_rounded,
+      route: '/profile/pets/add-step1',
+      isCenterAction: true,
+    ),
+    _NavItem(
+      label: 'Messages',
+      icon: Icons.chat_bubble_outline_rounded,
+      activeIcon: Icons.chat_bubble_rounded,
+      route: '/chat',
+    ),
+    _NavItem(
+      label: 'Profile',
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person_rounded,
+      route: '/profile',
+    ),
+  ];
 
   void _onTap(BuildContext context, int index) {
     if (index == currentIndex) return;
-
-    switch (index) {
-      case 0:
-        context.go("/home");
-        break;
-      case 1:
-        context.go("/shop");
-        break;
-      case 2:
-        context.go("/map");
-        break;
-      case 3:
-        context.go("/adopt");
-        break;
-      case 4:
-        context.go("/profile");
-        break;
-      default:
-        context.go("/home");
-    }
+    context.go(_items[index].route);
   }
 
   @override
@@ -41,77 +58,121 @@ class AppBottomNavBar extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      minimum: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: scheme.outlineVariant.withOpacity(isDark ? 0.55 : 0.85),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.18 : 0.06),
-              blurRadius: 24,
-              offset: const Offset(0, 12),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: Theme(
-            data: theme.copyWith(
-              splashColor: scheme.primary.withOpacity(0.08),
-              highlightColor: Colors.transparent,
-            ),
-            child: BottomNavigationBar(
-              currentIndex: currentIndex,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              iconSize: 20,
-              selectedFontSize: 10.5,
-              unselectedFontSize: 10,
-              selectedItemColor: scheme.primary,
-              unselectedItemColor: scheme.onSurfaceVariant,
-              selectedLabelStyle: theme.textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.w700,
+      minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: GlassPanel(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        borderRadius: BorderRadius.circular(30),
+        blurSigma: 24,
+        shadowColor: scheme.primary,
+        shadowOpacity: isDark ? 0.22 : 0.1,
+        gradientColors: [
+          Colors.white.withOpacity(isDark ? 0.12 : 0.86),
+          Colors.white.withOpacity(isDark ? 0.06 : 0.56),
+        ],
+        child: Row(
+          children: List.generate(_items.length, (index) {
+            final item = _items[index];
+            final isSelected = index == currentIndex;
+
+            if (item.isCenterAction) {
+              return Expanded(
+                child: Center(
+                  child: ScaleTap(
+                    onTap: () => _onTap(context, index),
+                    scaleDown: 0.94,
+                    child: AnimatedContainer(
+                      duration: AppMotion.fast,
+                      curve: AppMotion.emphasized,
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            scheme.primary,
+                            Color.alphaBlend(
+                              scheme.secondary.withOpacity(0.28),
+                              scheme.primary,
+                            ),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: AppShadows.soft(
+                          scheme.primary,
+                          opacity: isDark ? 0.26 : 0.18,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            return Expanded(
+              child: ScaleTap(
+                onTap: () => _onTap(context, index),
+                child: AnimatedContainer(
+                  duration: AppMotion.fast,
+                  curve: AppMotion.emphasized,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: isSelected
+                        ? scheme.primary.withOpacity(isDark ? 0.16 : 0.1)
+                        : Colors.transparent,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        isSelected ? item.activeIcon : item.icon,
+                        size: 20,
+                        color: isSelected
+                            ? scheme.primary
+                            : scheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        item.label,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: isSelected
+                              ? scheme.primary
+                              : scheme.onSurfaceVariant,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              unselectedLabelStyle: theme.textTheme.labelMedium,
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
-              type: BottomNavigationBarType.fixed,
-              onTap: (i) => _onTap(context, i),
-              items: [
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined),
-                  activeIcon: Icon(Icons.home_rounded),
-                  label: "Home",
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(MdiIcons.storeOutline),
-                  activeIcon: Icon(MdiIcons.store),
-                  label: "Shop",
-                ),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.people_outline_rounded),
-                  activeIcon: Icon(Icons.people_alt_rounded),
-                  label: "Nearby",
-                ),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.pets_outlined),
-                  activeIcon: Icon(Icons.pets),
-                  label: "Adopt",
-                ),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.person_outline),
-                  activeIcon: Icon(Icons.person),
-                  label: "Profile",
-                ),
-              ],
-            ),
-          ),
+            );
+          }),
         ),
       ),
     );
   }
+}
+
+class _NavItem {
+  const _NavItem({
+    required this.label,
+    required this.icon,
+    required this.activeIcon,
+    required this.route,
+    this.isCenterAction = false,
+  });
+
+  final String label;
+  final IconData icon;
+  final IconData activeIcon;
+  final String route;
+  final bool isCenterAction;
 }
