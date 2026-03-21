@@ -8,12 +8,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
 
 class AnimalCard extends StatelessWidget {
-  AnimalCard({
-    super.key,
-    required this.animal,
-    this.onTap,
-    this.heroTag,
-  });
+  AnimalCard({super.key, required this.animal, this.onTap, this.heroTag});
 
   final Animal animal;
   final VoidCallback? onTap;
@@ -51,7 +46,9 @@ class AnimalCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(color: scheme.outlineVariant.withOpacity(0.78)),
+              border: Border.all(
+                color: scheme.outlineVariant.withOpacity(0.78),
+              ),
               boxShadow: AppShadows.soft(Colors.black, opacity: 0.06),
             ),
             child: Column(

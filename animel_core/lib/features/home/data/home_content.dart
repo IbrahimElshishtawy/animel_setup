@@ -74,7 +74,8 @@ class HomeContent {
     ),
     HomeBannerData(
       title: 'Give a waiting friend a home',
-      subtitle: 'Meet adoption-ready animals and connect with trusted caretakers.',
+      subtitle:
+          'Meet adoption-ready animals and connect with trusted caretakers.',
       ctaLabel: 'Adopt',
       route: '/adopt',
       imageUrl:

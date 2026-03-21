@@ -8,12 +8,7 @@ import '../../../core/widgets/app_media.dart';
 import '../data/home_content.dart';
 
 class ProductCard extends StatelessWidget {
-  ProductCard({
-    super.key,
-    required this.data,
-    this.onTap,
-    this.onAddToCart,
-  });
+  ProductCard({super.key, required this.data, this.onTap, this.onAddToCart});
 
   final HomeProductData data;
   final VoidCallback? onTap;
@@ -95,7 +90,11 @@ class ProductCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.star_rounded, size: 18, color: scheme.secondary),
+                        Icon(
+                          Icons.star_rounded,
+                          size: 18,
+                          color: scheme.secondary,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           data.rating.toStringAsFixed(1),

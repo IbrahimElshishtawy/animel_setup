@@ -278,10 +278,7 @@ class AnimalDetailScreen extends StatelessWidget {
 }
 
 class _AnimalImageCarousel extends StatefulWidget {
-  const _AnimalImageCarousel({
-    required this.imageUrls,
-    required this.heroTag,
-  });
+  const _AnimalImageCarousel({required this.imageUrls, required this.heroTag});
 
   final List<String> imageUrls;
   final String heroTag;

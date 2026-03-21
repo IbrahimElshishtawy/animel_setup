@@ -272,11 +272,12 @@ class _FeaturedAnimalsSection extends StatelessWidget {
           );
         }
 
-        final animals = (state.animals.isNotEmpty
-                ? state.animals
-                : HomeContent.featuredAnimals)
-            .take(6)
-            .toList();
+        final animals =
+            (state.animals.isNotEmpty
+                    ? state.animals
+                    : HomeContent.featuredAnimals)
+                .take(6)
+                .toList();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,7 +344,8 @@ class _ProductsSection extends StatelessWidget {
 
             return ProductCard(
               data: item,
-              onTap: () => context.push('/product-details', extra: item.product),
+              onTap: () =>
+                  context.push('/product-details', extra: item.product),
               onAddToCart: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('${item.product.name} added to cart')),
@@ -401,9 +403,7 @@ class _NearbyAnimalsSection extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 11,
-                    child: _MapPreviewCard(
-                      onTap: () => context.push('/map'),
-                    ),
+                    child: _MapPreviewCard(onTap: () => context.push('/map')),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -447,11 +447,12 @@ class _AdoptionSpotlightSection extends StatelessWidget {
           return const _AdoptionSectionSkeleton();
         }
 
-        final animals = (state.animals.isNotEmpty
-                ? state.animals
-                : HomeContent.adoptionSpotlights)
-            .take(3)
-            .toList();
+        final animals =
+            (state.animals.isNotEmpty
+                    ? state.animals
+                    : HomeContent.adoptionSpotlights)
+                .take(3)
+                .toList();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -477,7 +478,8 @@ class _AdoptionSpotlightSection extends StatelessWidget {
 
                   return _AdoptionSpotlightCard(
                     animal: animal,
-                    onTap: () => context.push('/adoption-details', extra: animal),
+                    onTap: () =>
+                        context.push('/adoption-details', extra: animal),
                   );
                 },
               ),
@@ -535,16 +537,8 @@ class _MapPreviewCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const Positioned(
-                left: 34,
-                top: 42,
-                child: _MapPinMarker(),
-              ),
-              const Positioned(
-                right: 30,
-                top: 62,
-                child: _MapPinMarker(),
-              ),
+              const Positioned(left: 34, top: 42, child: _MapPinMarker()),
+              const Positioned(right: 30, top: 62, child: _MapPinMarker()),
               Positioned(
                 left: 18,
                 right: 18,
@@ -636,10 +630,7 @@ class _MapLinesPainter extends CustomPainter {
 }
 
 class _NearbyAnimalCard extends StatelessWidget {
-  const _NearbyAnimalCard({
-    required this.data,
-    required this.onTap,
-  });
+  const _NearbyAnimalCard({required this.data, required this.onTap});
 
   final NearbyAnimalData data;
   final VoidCallback onTap;
@@ -663,7 +654,9 @@ class _NearbyAnimalCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: scheme.outlineVariant.withOpacity(0.78)),
+              border: Border.all(
+                color: scheme.outlineVariant.withOpacity(0.78),
+              ),
               boxShadow: AppShadows.soft(Colors.black, opacity: 0.04),
             ),
             child: Column(
@@ -695,7 +688,9 @@ class _NearbyAnimalCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.92),
-                              borderRadius: BorderRadius.circular(AppRadius.pill),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.pill,
+                              ),
                             ),
                             child: Text(
                               data.distance,
@@ -743,10 +738,7 @@ class _NearbyAnimalCard extends StatelessWidget {
 }
 
 class _AdoptionSpotlightCard extends StatelessWidget {
-  const _AdoptionSpotlightCard({
-    required this.animal,
-    required this.onTap,
-  });
+  const _AdoptionSpotlightCard({required this.animal, required this.onTap});
 
   final Animal animal;
   final VoidCallback onTap;
@@ -764,9 +756,9 @@ class _AdoptionSpotlightCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           gradient: LinearGradient(
             colors: [
-              const Color(0xFFFFE3D0).withOpacity(
-                theme.brightness == Brightness.dark ? 0.18 : 1,
-              ),
+              const Color(
+                0xFFFFE3D0,
+              ).withOpacity(theme.brightness == Brightness.dark ? 0.18 : 1),
               theme.cardColor,
             ],
             begin: Alignment.topCenter,
@@ -787,10 +779,8 @@ class _AdoptionSpotlightCard extends StatelessWidget {
                   imageUrl ?? '',
                   fit: BoxFit.cover,
                   width: double.infinity,
-                  errorBuilder: (_, _, _) => Image.asset(
-                    'assets/image/image.png',
-                    fit: BoxFit.cover,
-                  ),
+                  errorBuilder: (_, _, _) =>
+                      Image.asset('assets/image/image.png', fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -858,10 +848,7 @@ class _AdoptionSpotlightCard extends StatelessWidget {
 }
 
 class _AnimalSectionSkeleton extends StatelessWidget {
-  const _AnimalSectionSkeleton({
-    required this.title,
-    required this.subtitle,
-  });
+  const _AnimalSectionSkeleton({required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
@@ -952,30 +939,30 @@ class _AdoptionSectionSkeleton extends StatelessWidget {
                 child: Column(
                   children: const [
                     ShimmerBox(
-                      height: 168,
+                      height: 152,
                       borderRadius: BorderRadius.all(Radius.circular(22)),
                     ),
-                    SizedBox(height: 18),
+                    SizedBox(height: 16),
                     ShimmerBox(
                       height: 18,
                       width: 130,
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 8),
                     ShimmerBox(
                       height: 14,
                       width: 180,
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    SizedBox(height: 12),
+                    SizedBox(height: 10),
                     ShimmerBox(
                       height: 14,
                       width: 220,
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 14),
                     ShimmerBox(
-                      height: 44,
+                      height: 40,
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
                   ],

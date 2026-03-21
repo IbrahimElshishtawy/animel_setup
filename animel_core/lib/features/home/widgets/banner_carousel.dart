@@ -163,7 +163,7 @@ class _BannerCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(22),
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -189,6 +189,8 @@ class _BannerCard extends StatelessWidget {
                     constraints: const BoxConstraints(maxWidth: 250),
                     child: Text(
                       item.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.headlineSmall?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
@@ -200,18 +202,24 @@ class _BannerCard extends StatelessWidget {
                     constraints: const BoxConstraints(maxWidth: 270),
                     child: Text(
                       item.subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.white.withOpacity(0.86),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 14),
                   ElevatedButton(
                     onPressed: onActionTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: item.gradientColors.first,
-                      minimumSize: const Size(118, 46),
+                      minimumSize: const Size(112, 42),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 10,
+                      ),
                     ),
                     child: Text(item.ctaLabel),
                   ),
