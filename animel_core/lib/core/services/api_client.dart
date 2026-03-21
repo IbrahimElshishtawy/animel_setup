@@ -15,7 +15,7 @@ class ApiClient {
   // static const String _mobileLanBaseUrl = 'http://192.168.1.3:5000/api';
   // static const String _androidEmulatorBaseUrl = 'http://10.0.2.2:5000/api';
   static const String _BaseUrl =
-      'https://neymar-flauntiest-delisa.ngrok-free.dev/api';
+      'https://neymar-flauntiest-delisa.ngrok-free.dev';
 
   static String get baseUrl {
     if (_apiBaseUrlFromEnv.isNotEmpty) {
