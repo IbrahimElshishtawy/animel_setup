@@ -13,6 +13,8 @@ class AnimalDetailScreen extends StatelessWidget {
 
   final Animal animal;
 
+  String get _heroTag => 'animal-${animal.id}';
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -39,7 +41,10 @@ class AnimalDetailScreen extends StatelessWidget {
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              background: _AnimalImageCarousel(imageUrls: imageUrls),
+              background: _AnimalImageCarousel(
+                imageUrls: imageUrls,
+                heroTag: _heroTag,
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -85,7 +90,7 @@ class AnimalDetailScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              '${animal.breed} • ${animal.age} • ${animal.gender}',
+                              '${animal.breed} / ${animal.age} / ${animal.gender}',
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: scheme.onSurfaceVariant,
                               ),
@@ -273,9 +278,13 @@ class AnimalDetailScreen extends StatelessWidget {
 }
 
 class _AnimalImageCarousel extends StatefulWidget {
-  const _AnimalImageCarousel({required this.imageUrls});
+  const _AnimalImageCarousel({
+    required this.imageUrls,
+    required this.heroTag,
+  });
 
   final List<String> imageUrls;
+  final String heroTag;
 
   @override
   State<_AnimalImageCarousel> createState() => _AnimalImageCarouselState();
@@ -301,6 +310,7 @@ class _AnimalImageCarouselState extends State<_AnimalImageCarousel> {
           itemBuilder: (context, index) {
             return AppMedia(
               imageUrl: imageUrls[index],
+              heroTag: index == 0 ? widget.heroTag : null,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
