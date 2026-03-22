@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_copy.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
 import '../../../core/widgets/glass_panel.dart';
@@ -29,7 +30,7 @@ class HomeHeader extends StatelessWidget {
   String get _greetingName {
     final trimmed = userName.trim();
     if (trimmed.isEmpty) {
-      return 'friend';
+      return '';
     }
     return trimmed.split(' ').first;
   }
@@ -38,6 +39,10 @@ class HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final copy = context.copy;
+    final greetingName = _greetingName.isEmpty
+        ? copy.defaultUserName
+        : _greetingName;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +71,7 @@ class HomeHeader extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Animal Connect',
+                          copy.animalConnect,
                           style: theme.textTheme.labelLarge?.copyWith(
                             color: scheme.primary,
                             fontWeight: FontWeight.w700,
@@ -77,7 +82,7 @@ class HomeHeader extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
                   Text(
-                    'Discover your next\ncompanion, $_greetingName',
+                    copy.discoverCompanion(greetingName),
                     style: theme.textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -183,7 +188,7 @@ class HomeHeader extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Nearby',
+                              copy.nearby,
                               style: theme.textTheme.labelMedium?.copyWith(
                                 color: scheme.onSurfaceVariant,
                               ),

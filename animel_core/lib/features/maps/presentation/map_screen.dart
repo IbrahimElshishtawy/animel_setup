@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_copy.dart';
 import '../../../core/models/user_journey.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/repositories/user_repository.dart';
@@ -39,7 +40,7 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         _users = const [];
         _isLoading = false;
-        _errorMessage = 'Please sign in again to load nearby people.';
+        _errorMessage = context.copy.pleaseSignInAgainToLoadNearby;
       });
       return;
     }
@@ -86,6 +87,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
     final hasLocation = (user?.location ?? '').trim().isNotEmpty;
@@ -138,7 +140,7 @@ class _MapScreenState extends State<MapScreen> {
                         )
                       else
                         Text(
-                          'Nearby people',
+                          copy.nearbyPeople,
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(fontWeight: FontWeight.w800),
                         ),
@@ -186,6 +188,7 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
 
     return Container(
@@ -223,7 +226,7 @@ class _HeroCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Nearby community',
+                      copy.nearbyCommunity,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
@@ -232,8 +235,8 @@ class _HeroCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       location == null || location!.trim().isEmpty
-                          ? 'Set your location to discover people around you.'
-                          : 'Based on ${location!.trim()}',
+                          ? copy.setLocationToDiscover
+                          : copy.basedOn(location!.trim()),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.white.withOpacity(0.84),
                         height: 1.45,
@@ -246,7 +249,7 @@ class _HeroCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Find adopters, buyers, and pet owners close to your area without opening a map.',
+            copy.communityHeroText,
             style: theme.textTheme.headlineSmall?.copyWith(
               color: Colors.white,
               height: 1.18,
@@ -260,14 +263,14 @@ class _HeroCard extends StatelessWidget {
               _HeroPill(
                 icon: Icons.place_outlined,
                 label: location == null || location!.trim().isEmpty
-                    ? 'Location not set'
+                    ? copy.locationNotSet
                     : location!.trim(),
               ),
               _HeroPill(
                 icon: Icons.groups_rounded,
-                label: '$resultCount nearby results',
+                label: copy.nearbyResults(resultCount),
               ),
-              _HeroPill(icon: Icons.map, label: 'Map hidden'),
+              _HeroPill(icon: Icons.map, label: copy.mapHidden),
             ],
           ),
           const SizedBox(height: 16),
@@ -279,7 +282,7 @@ class _HeroCard extends StatelessWidget {
               minimumSize: const Size.fromHeight(44),
             ),
             icon: const Icon(Icons.edit_location_alt_outlined, size: 18),
-            label: const Text('Update my location'),
+            label: Text(copy.updateMyLocation),
           ),
         ],
       ),
@@ -366,7 +369,7 @@ class _FilterRow extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    filter.label,
+                    filter.label(context),
                     style: theme.textTheme.labelLarge?.copyWith(
                       color: isSelected ? Colors.white : scheme.onSurface,
                       fontWeight: FontWeight.w700,
@@ -389,6 +392,7 @@ class _NearbyUserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final journey = user.journey;
@@ -421,7 +425,7 @@ class _NearbyUserCard extends StatelessWidget {
                     ? null
                     : Text(
                         user.name.isEmpty
-                            ? 'A'
+                            ? copy.animalConnect.characters.first.toUpperCase()
                             : user.name.characters.first.toUpperCase(),
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: accent,
@@ -444,7 +448,7 @@ class _NearbyUserCard extends StatelessWidget {
                     Text(
                       user.location?.trim().isNotEmpty == true
                           ? user.location!.trim()
-                          : 'Location not available',
+                          : copy.locationNotAvailable,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: scheme.onSurfaceVariant,
                       ),
@@ -488,7 +492,7 @@ class _NearbyUserCard extends StatelessWidget {
                     user.bio?.trim().isNotEmpty == true
                         ? user.bio!.trim()
                         : journey?.profileSummary ??
-                              'Available nearby for pet-related community support.',
+                              copy.availableNearbySupport,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: scheme.onSurfaceVariant,
                       height: 1.45,
@@ -533,7 +537,7 @@ class _NearbyUserCard extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
-              label: const Text('Start chat'),
+              label: Text(copy.startChat),
             ),
           ),
         ],
@@ -592,6 +596,7 @@ class _MissingLocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
@@ -606,14 +611,14 @@ class _MissingLocationCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Set your location first',
+            copy.setLocationFirst,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Nearby users are matched using the location written in your profile, so add your area first and then come back here.',
+            copy.setLocationFirstMessage,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: scheme.onSurfaceVariant,
               height: 1.45,
@@ -623,7 +628,7 @@ class _MissingLocationCard extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: onEditLocation,
             icon: const Icon(Icons.edit_location_alt_outlined),
-            label: const Text('Open profile settings'),
+            label: Text(copy.openProfileSettings),
           ),
         ],
       ),
@@ -651,6 +656,7 @@ class _ErrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final scheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -664,7 +670,7 @@ class _ErrorCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Could not load nearby people',
+            copy.couldNotLoadNearby,
             style: Theme.of(
               context,
             ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
@@ -681,7 +687,7 @@ class _ErrorCard extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: onRetry,
             icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Try again'),
+            label: Text(copy.tryAgain),
           ),
         ],
       ),
@@ -697,6 +703,7 @@ class _EmptyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
@@ -711,7 +718,7 @@ class _EmptyCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'No nearby users yet',
+            copy.noNearbyUsers,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w800,
             ),
@@ -719,8 +726,8 @@ class _EmptyCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             filter == _PeopleFilter.all
-                ? 'No users with matching nearby locations appeared yet.'
-                : 'No users matched the selected filter near your area.',
+                ? copy.noNearbyUsersAllMessage
+                : copy.noNearbyUsersFilteredMessage,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: scheme.onSurfaceVariant,
               height: 1.45,
@@ -731,7 +738,7 @@ class _EmptyCard extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: onResetFilter,
               icon: const Icon(Icons.filter_alt_off_outlined),
-              label: const Text('Show all users'),
+              label: Text(copy.showAllUsers),
             ),
           ],
         ],
@@ -743,16 +750,17 @@ class _EmptyCard extends StatelessWidget {
 enum _PeopleFilter { all, petOwners, buyers, adopters }
 
 extension on _PeopleFilter {
-  String get label {
+  String label(BuildContext context) {
+    final copy = context.copy;
     switch (this) {
       case _PeopleFilter.all:
-        return 'All';
+        return copy.filterAll;
       case _PeopleFilter.petOwners:
-        return 'Owners';
+        return copy.filterOwners;
       case _PeopleFilter.buyers:
-        return 'Buyers';
+        return copy.filterBuyers;
       case _PeopleFilter.adopters:
-        return 'Adopters';
+        return copy.filterAdopters;
     }
   }
 

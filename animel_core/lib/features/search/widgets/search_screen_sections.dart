@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+// ignore_for_file: unnecessary_brace_in_string_interps, library_private_types_in_public_api, deprecated_member_use
 
 part of '../presentation/search_screen.dart';
 
@@ -233,6 +233,226 @@ class SearchFilterTabs extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class SearchExplorerCards extends StatelessWidget {
+  const SearchExplorerCards({
+    super.key,
+    required this.activeFilter,
+    required this.productsCount,
+    required this.animalsCount,
+    required this.helpersCount,
+    required this.onSelectFilter,
+  });
+
+  final _SearchFilter activeFilter;
+  final int productsCount;
+  final int animalsCount;
+  final int helpersCount;
+  final ValueChanged<_SearchFilter> onSelectFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = [
+      (
+        _SearchFilter.products,
+        context.copy.shopCollection,
+        context.copy.searchProductsLabel,
+        '${productsCount}',
+        Icons.inventory_2_outlined,
+      ),
+      (
+        _SearchFilter.listings,
+        context.copy.adoptionSpotlight,
+        context.copy.searchAnimalsLabel,
+        '${animalsCount}',
+        Icons.pets_rounded,
+      ),
+      (
+        _SearchFilter.helpers,
+        context.copy.nearbyServices,
+        context.copy.searchHelpersLabel,
+        '${helpersCount}',
+        Icons.support_agent_rounded,
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 720;
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: cards.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: compact ? 1 : 3,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: compact ? 2.8 : 1.08,
+          ),
+          itemBuilder: (context, index) {
+            final card = cards[index];
+            final isSelected = activeFilter == card.$1;
+
+            return SearchExplorerCard(
+              title: card.$2,
+              subtitle: card.$3,
+              value: card.$4,
+              icon: card.$5,
+              isSelected: isSelected,
+              onTap: () =>
+                  onSelectFilter(isSelected ? _SearchFilter.all : card.$1),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class SearchExplorerCard extends StatelessWidget {
+  const SearchExplorerCard({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final String value;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return ScaleTap(
+      onTap: onTap,
+      child: GlassPanel(
+        padding: const EdgeInsets.all(16),
+        borderRadius: BorderRadius.circular(26),
+        gradientColors: isSelected
+            ? [
+                scheme.primary.withOpacity(0.18),
+                scheme.secondary.withOpacity(0.12),
+              ]
+            : null,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: scheme.primary.withOpacity(isSelected ? 0.16 : 0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(icon, color: scheme.primary),
+                ),
+                const Spacer(),
+                Text(
+                  value,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: isSelected ? scheme.primary : null,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              subtitle,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SearchResultSummaryBar extends StatelessWidget {
+  const SearchResultSummaryBar({
+    super.key,
+    required this.filter,
+    required this.productsCount,
+    required this.animalsCount,
+    required this.helpersCount,
+  });
+
+  final _SearchFilter filter;
+  final int productsCount;
+  final int animalsCount;
+  final int helpersCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final copy = context.copy;
+    final count = switch (filter) {
+      _SearchFilter.products => productsCount,
+      _SearchFilter.listings => animalsCount,
+      _SearchFilter.helpers => helpersCount,
+      _ => productsCount + animalsCount + helpersCount,
+    };
+    final label = switch (filter) {
+      _SearchFilter.products => copy.products,
+      _SearchFilter.listings => copy.listings,
+      _SearchFilter.helpers => copy.helpers,
+      _ => copy.allResults,
+    };
+
+    return GlassPanel(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      borderRadius: BorderRadius.circular(22),
+      shadowOpacity: 0,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+            ),
+            child: Text(
+              '$count',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

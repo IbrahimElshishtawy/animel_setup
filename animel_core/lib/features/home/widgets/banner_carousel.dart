@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_copy.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
 import '../data/home_content.dart';
@@ -125,6 +126,7 @@ class _BannerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final copy = context.copy;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -177,7 +179,7 @@ class _BannerCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadius.pill),
                     ),
                     child: Text(
-                      'Animal Connect',
+                      copy.animalConnect,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,

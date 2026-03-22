@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_copy.dart';
 import '../../../core/widgets/glass_panel.dart';
 
 class SearchBarWidget extends StatelessWidget {
@@ -18,6 +19,7 @@ class SearchBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final copy = context.copy;
 
     return ScaleTap(
       onTap: onTap,
@@ -42,14 +44,14 @@ class SearchBarWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Search pets, food, sitters...',
+                    copy.homeSearchBarTitle,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Marketplace listings, nearby helpers, and curated essentials',
+                    copy.homeSearchBarSubtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(

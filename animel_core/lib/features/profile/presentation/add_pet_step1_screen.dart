@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/localization/app_copy.dart';
 import '../../home/logic/animal_bloc.dart';
 
 class AddPetStep2Screen extends StatefulWidget {
@@ -69,25 +70,26 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
   }
 
   String? _validateForm() {
+    final copy = context.copy;
     if (_nameController.text.trim().length < 2) {
-      return 'Please enter the pet name';
+      return copy.petNameValidation;
     }
     if (_dobController.text.trim().isEmpty) {
-      return 'Please choose the date of birth';
+      return copy.petDobValidation;
     }
     if (_locationController.text.trim().length < 2) {
-      return 'Please enter the pet location';
+      return copy.petLocationValidation;
     }
     if (_aboutController.text.trim().length < 10) {
-      return 'Please add a short description with at least 10 characters';
+      return copy.petDescriptionValidation;
     }
     if (_selectedImageUrls.isEmpty) {
-      return 'Please select at least one photo for the animal';
+      return copy.petPhotoValidation;
     }
     if (!_isForAdoption) {
       final price = double.tryParse(_priceController.text.trim());
       if (price == null || price < 0) {
-        return 'Please enter a valid price';
+        return copy.validPriceValidation;
       }
     }
     return null;
@@ -116,23 +118,26 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
     }
 
     if (years > 0) {
-      return years == 1 ? '1 year' : '$years years';
+      return years == 1 ? context.copy.yearLabel(years) : context.copy.yearsLabel(years);
     }
     if (months > 0) {
-      return months == 1 ? '1 month' : '$months months';
+      return months == 1
+          ? context.copy.monthLabel(months)
+          : context.copy.monthsLabel(months);
     }
-    return 'Less than 1 month';
+    return context.copy.lessThanOneMonth;
   }
 
   String _buildDescription() {
+    final copy = context.copy;
     final segments = <String>[
       _aboutController.text.trim(),
-      'Color: $_selectedColor',
-      'Behavior: $_selectedBehavior',
+      '${copy.color}: ${copy.petFormOption(_selectedColor)}',
+      '${copy.behavior}: ${copy.petFormOption(_selectedBehavior)}',
       if (_weightController.text.trim().isNotEmpty)
-        'Weight: ${_weightController.text.trim()} kg',
+        '${copy.weightKg}: ${_weightController.text.trim()}',
       if (_favoritesController.text.trim().isNotEmpty)
-        'Favorites: ${_favoritesController.text.trim()}',
+        '${copy.favorites}: ${_favoritesController.text.trim()}',
     ];
 
     return segments.where((segment) => segment.isNotEmpty).join(' | ');
@@ -141,7 +146,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
   Future<void> _pickImages() async {
     final remainingSlots = 4 - _selectedImageUrls.length;
     if (remainingSlots <= 0) {
-      _showMessage('You can add up to 4 photos only');
+      _showMessage(context.copy.photoLimitMessage(4));
       return;
     }
 
@@ -168,7 +173,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
     });
 
     if (pickedFiles.length > remainingSlots) {
-      _showMessage('Only the first $remainingSlots photos were added');
+      _showMessage(context.copy.firstPhotosAdded(remainingSlots));
     }
   }
 
@@ -220,6 +225,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     const plum = Color(0xFF4B1A45);
     const shell = Color(0xFFF6ECF3);
 
@@ -243,8 +249,8 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
             backgroundColor: Colors.white,
             elevation: 0,
             foregroundColor: plum,
-            title: const Text(
-              'Set a pet profile',
+            title: Text(
+              copy.setPetProfile,
               style: TextStyle(color: Colors.black87),
             ),
           ),
@@ -263,7 +269,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       const HeaderIcon(),
                       const SizedBox(height: 16),
                       Text(
-                        'Build a strong profile for your pet before listing, adoption, or future updates.',
+                        copy.petProfileIntro,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.black54,
                           height: 1.45,
@@ -271,7 +277,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'Listing type',
+                        copy.listingType,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -280,23 +286,26 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       Row(
                         children: [
                           ChoiceChipButton(
-                            label: 'For sale',
+                            label: copy.forSale,
                             isSelected: !_isForAdoption,
                             onTap: () => setState(() => _isForAdoption = false),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
-                            label: 'For adoption',
+                            label: copy.forAdoptionOption,
                             isSelected: _isForAdoption,
                             onTap: () => setState(() => _isForAdoption = true),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      PetTextField(label: 'Name', controller: _nameController),
+                      PetTextField(
+                        label: copy.nameLabel,
+                        controller: _nameController,
+                      ),
                       const SizedBox(height: 12),
                       PetTextField(
-                        label: 'Date of birth',
+                        label: copy.dateOfBirth,
                         controller: _dobController,
                         suffixIcon: Icons.calendar_today_outlined,
                         readOnly: true,
@@ -316,12 +325,12 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 12),
                       PetTextField(
-                        label: 'Location',
+                        label: copy.location,
                         controller: _locationController,
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Pet',
+                        copy.pet,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -330,28 +339,28 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       Row(
                         children: [
                           ChoiceChipButton(
-                            label: 'Cat',
+                            label: copy.petFormOption('Cat'),
                             isSelected: _selectedPetType == 'Cat',
                             onTap: () =>
                                 setState(() => _selectedPetType = 'Cat'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
-                            label: 'Dog',
+                            label: copy.petFormOption('Dog'),
                             isSelected: _selectedPetType == 'Dog',
                             onTap: () =>
                                 setState(() => _selectedPetType = 'Dog'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
-                            label: 'Bird',
+                            label: copy.petFormOption('Bird'),
                             isSelected: _selectedPetType == 'Bird',
                             onTap: () =>
                                 setState(() => _selectedPetType = 'Bird'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
-                            label: 'Other',
+                            label: copy.petFormOption('Other'),
                             isSelected: _selectedPetType == 'Other',
                             onTap: () =>
                                 setState(() => _selectedPetType = 'Other'),
@@ -360,7 +369,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 16),
                       DropdownField(
-                        label: 'Breed',
+                        label: copy.breed,
                         value: _selectedBreed,
                         items: const [
                           'Mixed',
@@ -369,6 +378,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                           'Golden Retriever',
                           'German Shepherd',
                         ],
+                        itemLabelBuilder: copy.petFormOption,
                         onChanged: (val) {
                           if (val != null) {
                             setState(() => _selectedBreed = val);
@@ -377,7 +387,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 12),
                       DropdownField(
-                        label: 'Color',
+                        label: copy.color,
                         value: _selectedColor,
                         items: const [
                           'Brown',
@@ -386,6 +396,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                           'Gray',
                           'Mixed',
                         ],
+                        itemLabelBuilder: copy.petFormOption,
                         onChanged: (val) {
                           if (val != null) {
                             setState(() => _selectedColor = val);
@@ -394,7 +405,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Gender',
+                        copy.gender,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -403,14 +414,14 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       Row(
                         children: [
                           ChoiceChipButton(
-                            label: 'Male',
+                            label: copy.petFormOption('Male'),
                             isSelected: _selectedGender == 'Male',
                             onTap: () =>
                                 setState(() => _selectedGender = 'Male'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
-                            label: 'Female',
+                            label: copy.petFormOption('Female'),
                             isSelected: _selectedGender == 'Female',
                             onTap: () =>
                                 setState(() => _selectedGender = 'Female'),
@@ -419,7 +430,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 16),
                       PetTextField(
-                        label: 'Weight (kg)',
+                        label: copy.weightKg,
                         controller: _weightController,
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
@@ -427,7 +438,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Size',
+                        copy.size,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -436,21 +447,21 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       Row(
                         children: [
                           ChoiceChipButton(
-                            label: 'Small',
+                            label: copy.petFormOption('Small'),
                             isSelected: _selectedSize == 'Small',
                             onTap: () =>
                                 setState(() => _selectedSize = 'Small'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
-                            label: 'Medium',
+                            label: copy.petFormOption('Medium'),
                             isSelected: _selectedSize == 'Medium',
                             onTap: () =>
                                 setState(() => _selectedSize = 'Medium'),
                           ),
                           const SizedBox(width: 8),
                           ChoiceChipButton(
-                            label: 'Large',
+                            label: copy.petFormOption('Large'),
                             isSelected: _selectedSize == 'Large',
                             onTap: () =>
                                 setState(() => _selectedSize = 'Large'),
@@ -459,9 +470,10 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 16),
                       DropdownField(
-                        label: 'Behavior',
+                        label: copy.behavior,
                         value: _selectedBehavior,
                         items: const ['Calm', 'Playful', 'Aggressive', 'Shy'],
+                        itemLabelBuilder: copy.petFormOption,
                         onChanged: (val) {
                           if (val != null) {
                             setState(() => _selectedBehavior = val);
@@ -470,7 +482,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ),
                       const SizedBox(height: 12),
                       DropdownField(
-                        label: 'Health status',
+                        label: copy.healthStatusLabel,
                         value: _selectedHealthStatus,
                         items: const [
                           'Healthy',
@@ -478,6 +490,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                           'Recovering',
                           'Special needs',
                         ],
+                        itemLabelBuilder: copy.petFormOption,
                         onChanged: (val) {
                           if (val != null) {
                             setState(() => _selectedHealthStatus = val);
@@ -487,7 +500,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       if (!_isForAdoption) ...[
                         const SizedBox(height: 12),
                         PetTextField(
-                          label: 'Price',
+                          label: copy.price,
                           controller: _priceController,
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
@@ -496,19 +509,19 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       ],
                       const SizedBox(height: 16),
                       PetTextField(
-                        label: 'About / Special marks',
+                        label: copy.aboutSpecialMarks,
                         controller: _aboutController,
                         maxLines: 4,
                       ),
                       const SizedBox(height: 12),
                       PetTextField(
-                        label: 'Favorites',
+                        label: copy.favorites,
                         controller: _favoritesController,
                         maxLines: 3,
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Animal photos',
+                        copy.animalPhotos,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -569,7 +582,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Choose up to 4 photos from your phone. The first photo will be used as the cover.',
+                          copy.choosePhotosHint,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: Colors.black54, height: 1.4),
                         ),
@@ -595,8 +608,8 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                                     strokeWidth: 2,
                                   ),
                                 )
-                              : const Text(
-                                  'Save',
+                              : Text(
+                                  copy.save,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,

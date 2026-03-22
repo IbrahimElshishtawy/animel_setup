@@ -65,6 +65,11 @@ class _SearchScreenState extends State<SearchScreen> {
     context.read<AnimalBloc>().add(FetchAnimals(query: query));
   }
 
+  void _activateFilter(_SearchFilter filter) {
+    if (_activeFilter == filter) return;
+    setState(() => _activeFilter = filter);
+  }
+
   @override
   Widget build(BuildContext context) {
     final copy = context.copy;
@@ -135,9 +140,15 @@ class _SearchScreenState extends State<SearchScreen> {
                               const SizedBox(height: 16),
                               SearchFilterTabs(
                                 activeFilter: _activeFilter,
-                                onChanged: (value) {
-                                  setState(() => _activeFilter = value);
-                                },
+                                onChanged: _activateFilter,
+                              ),
+                              const SizedBox(height: 16),
+                              SearchExplorerCards(
+                                activeFilter: _activeFilter,
+                                productsCount: products.length,
+                                animalsCount: animals.length,
+                                helpersCount: helpers.length,
+                                onSelectFilter: _activateFilter,
                               ),
                               const SizedBox(height: 22),
                             ],
@@ -179,12 +190,21 @@ class _SearchScreenState extends State<SearchScreen> {
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                           sliver: SliverList(
                             delegate: SliverChildListDelegate(
-                              _buildSections(
-                                context,
-                                products: products,
-                                animals: animals,
-                                helpers: helpers,
-                              ),
+                              [
+                                SearchResultSummaryBar(
+                                  filter: _activeFilter,
+                                  productsCount: products.length,
+                                  animalsCount: animals.length,
+                                  helpersCount: helpers.length,
+                                ),
+                                const SizedBox(height: 20),
+                                ..._buildSections(
+                                  context,
+                                  products: products,
+                                  animals: animals,
+                                  helpers: helpers,
+                                ),
+                              ],
                             ),
                           ),
                         ),

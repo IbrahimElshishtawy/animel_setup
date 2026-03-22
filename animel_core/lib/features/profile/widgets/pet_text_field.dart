@@ -8,6 +8,7 @@ class PetTextField extends StatelessWidget {
   final IconData? suffixIcon;
   final bool readOnly;
   final VoidCallback? onTap;
+  final Localizations? localizations;
 
   const PetTextField({
     super.key,
@@ -18,6 +19,7 @@ class PetTextField extends StatelessWidget {
     this.suffixIcon,
     this.readOnly = false,
     this.onTap,
+    this.localizations,
   });
 
   @override

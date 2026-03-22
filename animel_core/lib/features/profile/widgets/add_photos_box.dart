@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_copy.dart';
+
 class AddPhotosBox extends StatelessWidget {
   final VoidCallback onTap;
   final int photoCount;
@@ -16,6 +18,7 @@ class AddPhotosBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final isFull = photoCount >= maxPhotos;
 
     return GestureDetector(
@@ -50,7 +53,7 @@ class AddPhotosBox extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    isFull ? 'Photos selected' : 'Select photos',
+                    isFull ? copy.photosSelected : copy.selectPhotos,
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -58,7 +61,7 @@ class AddPhotosBox extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '$photoCount / $maxPhotos selected from your phone',
+                    copy.photoSelectionSummary(photoCount, maxPhotos),
                     style: const TextStyle(fontSize: 12, color: Colors.black54),
                   ),
                 ],
@@ -66,7 +69,7 @@ class AddPhotosBox extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              isFull ? 'Full' : 'Add',
+              isFull ? copy.fullLabel : copy.addButton,
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

@@ -322,6 +322,122 @@ class AppCopy {
   String get call => isArabic ? 'اتصال' : 'Call';
   String get map => isArabic ? 'الخريطة' : 'Map';
   String get directions => isArabic ? 'الاتجاهات' : 'Directions';
+  String get defaultUserName => isArabic ? 'صديق' : 'friend';
+  String discoverCompanion(String name) => isArabic
+      ? 'اكتشف رفيقك القادم، $name'
+      : 'Discover your next companion, $name';
+  String get homeHeroSubtitle => isArabic
+      ? 'اكتشف الحيوانات المميزة وفرص التبني ومستحضرات الرعاية الراقية في مكان واحد.'
+      : 'Find rare animals, adoption, and premium supplies';
+  String get homeSearchBarTitle => isArabic
+      ? 'ابحث عن الحيوانات والطعام والخدمات...'
+      : 'Search pets, food, sitters...';
+  String get homeSearchBarSubtitle => isArabic
+      ? 'إعلانات السوق والخدمات القريبة والمنتجات المختارة في شاشة واحدة'
+      : 'Marketplace listings, nearby helpers, and curated essentials';
+  String get bannerTrustedCompanionsTitle => isArabic
+      ? 'رفقاء موثوقون لكل نوع من البيوت'
+      : 'Trusted companions for every kind of home';
+  String get bannerTrustedCompanionsSubtitle => isArabic
+      ? 'إعلانات مميزة وقصص تبنٍ موثوقة وبائعون معتمدون داخل سوق هادئ وواضح.'
+      : 'Premium listings, careful adoption stories, and verified sellers in one calm marketplace.';
+  String get bannerTrustedCompanionsCta =>
+      isArabic ? 'استكشف الحيوانات' : 'Explore pets';
+  String get bannerUrgentAdoptionTitle => isArabic
+      ? 'تبنٍ عاجل بعناية أكبر'
+      : 'Urgent adoption, handled with more care';
+  String get bannerUrgentAdoptionSubtitle => isArabic
+      ? 'تعرّف على الحيوانات التي تحتاج منزلًا بسرعة وتواصل مع أشخاص موثوقين.'
+      : 'Meet animals that need a home quickly and connect with people you can trust.';
+  String get bannerUrgentAdoptionCta =>
+      isArabic ? 'تبنَّ الآن' : 'Adopt now';
+  String get bannerHelpersTitle => isArabic
+      ? 'طعام وإكسسوارات ومساعدون بالقرب منك'
+      : 'Food, accessories, and nearby helpers';
+  String get bannerHelpersSubtitle => isArabic
+      ? 'وفّر مستلزمات الرعاية اليومية واكتشف العناية والتنزه والجلسات القريبة منك.'
+      : 'Stock up on everyday supplies and discover groomers, walkers, and sitters around you.';
+  String get bannerHelpersCta =>
+      isArabic ? 'عرض الأساسيات' : 'View essentials';
+  String get petsCategory => isArabic ? 'الحيوانات' : 'Pets';
+  String get adoptionCategory => isArabic ? 'التبني' : 'Adoption';
+  String get foodCategory => isArabic ? 'الطعام' : 'Food';
+  String get accessoriesCategory => isArabic ? 'الإكسسوارات' : 'Accessories';
+  String get servicesCategory => isArabic ? 'الخدمات' : 'Services';
+  String get featuredAnimalsRefreshing => isArabic
+      ? 'نعرض اختيارات مميزة إلى أن يتم تحديث الإعلانات المباشرة.'
+      : 'Showing curated picks while live featured listings refresh.';
+  String get adoptionRefreshing => isArabic
+      ? 'نعرض حالات تبنٍ مختارة إلى أن يتم تحديث الإعلانات المباشرة.'
+      : 'Showing curated adoption spotlights while live adoption listings refresh.';
+  String get discoverNearby => isArabic ? 'اكتشف القريب منك' : 'Discover nearby';
+  String get discoverNearbySubtitle => isArabic
+      ? 'افتح الخريطة لعرض إعلانات التبني والبيع القريبة منك.'
+      : 'Open the map for local adoption and sale listings.';
+  String get readyForAdoption =>
+      isArabic ? 'جاهز للتبني' : 'Ready for adoption';
+  String get pleaseSignInAgainToLoadNearby => isArabic
+      ? 'يرجى تسجيل الدخول مرة أخرى لتحميل الأشخاص القريبين.'
+      : 'Please sign in again to load nearby people.';
+  String get locationNotSet => isArabic ? 'الموقع غير محدد' : 'Location not set';
+  String get healthStatusLabel =>
+      isArabic ? 'الحالة الصحية' : 'Health status';
+  String get nameLabel => isArabic ? 'الاسم' : 'Name';
+  String get forAdoptionOption =>
+      isArabic ? 'للتبني' : 'For adoption';
+  String get openPetProfileHint => isArabic
+      ? 'افتح هذا الملف لمراجعة الصحة والموقع وبيانات التواصل.'
+      : 'Open this profile to review health, location, and contact details.';
+  String get selectPhotos =>
+      isArabic ? 'اختر الصور' : 'Select photos';
+  String get photosSelected =>
+      isArabic ? 'تم اختيار الصور' : 'Photos selected';
+  String photoSelectionSummary(int selected, int total) => isArabic
+      ? '$selected / $total تم اختيارها من الهاتف'
+      : '$selected / $total selected from your phone';
+  String get fullLabel => isArabic ? 'مكتمل' : 'Full';
+  String petFormOption(String value) {
+    if (!isArabic) return value;
+    return switch (value) {
+      'Cat' => 'قط',
+      'Dog' => 'كلب',
+      'Bird' => 'طائر',
+      'Other' => 'أخرى',
+      'Mixed' => 'مختلط',
+      'Persian' => 'شيرازي',
+      'Siamese' => 'سيامي',
+      'Golden Retriever' => 'جولدن ريتريفر',
+      'German Shepherd' => 'جيرمن شيبرد',
+      'Brown' => 'بني',
+      'Black' => 'أسود',
+      'White' => 'أبيض',
+      'Gray' => 'رمادي',
+      'Male' => 'ذكر',
+      'Female' => 'أنثى',
+      'Small' => 'صغير',
+      'Medium' => 'متوسط',
+      'Large' => 'كبير',
+      'Calm' => 'هادئ',
+      'Playful' => 'مرح',
+      'Aggressive' => 'عدواني',
+      'Shy' => 'خجول',
+      'Healthy' => 'سليم',
+      'Needs care' => 'يحتاج رعاية',
+      'Recovering' => 'في مرحلة تعافٍ',
+      'Special needs' => 'احتياجات خاصة',
+      _ => value,
+    };
+  }
+
+  String get adoptAFriend => isArabic
+      ? 'ØªØ¨Ù†Ù‘Ù‰ ØµØ¯ÙŠÙ‚Ù‹Ø§'
+      : 'Adopt a Friend';
+
+  String get rareAnimalsForSale => isArabic
+      ? 'Ø­ÙŠÙˆØ§Ù†Ø§Øª Ù†Ø§Ø¯Ø±Ø© Ù„Ù„Ø¨ÙŠØ¹'
+      : 'Rare Animals for Sale';
+
+  String get location => isArabic ? 'Ø§Ù„Ù…ÙˆÙ‚Ø¹' : 'Location';
 }
 
 extension AppCopyBuildContext on BuildContext {

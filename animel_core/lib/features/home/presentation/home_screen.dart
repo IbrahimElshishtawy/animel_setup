@@ -1,9 +1,10 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: unused_local_variable, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_copy.dart';
 import '../../../core/models/animal_model.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/bottom_nav_bar.dart';
@@ -46,14 +47,81 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  List<HomeBannerData> _localizedBanners(AppCopy copy) {
+    return [
+      HomeBannerData(
+        title: copy.bannerTrustedCompanionsTitle,
+        subtitle: copy.bannerTrustedCompanionsSubtitle,
+        ctaLabel: copy.bannerTrustedCompanionsCta,
+        route: HomeContent.banners[0].route,
+        imageUrl: HomeContent.banners[0].imageUrl,
+        gradientColors: HomeContent.banners[0].gradientColors,
+      ),
+      HomeBannerData(
+        title: copy.bannerUrgentAdoptionTitle,
+        subtitle: copy.bannerUrgentAdoptionSubtitle,
+        ctaLabel: copy.bannerUrgentAdoptionCta,
+        route: HomeContent.banners[1].route,
+        imageUrl: HomeContent.banners[1].imageUrl,
+        gradientColors: HomeContent.banners[1].gradientColors,
+      ),
+      HomeBannerData(
+        title: copy.bannerHelpersTitle,
+        subtitle: copy.bannerHelpersSubtitle,
+        ctaLabel: copy.bannerHelpersCta,
+        route: HomeContent.banners[2].route,
+        imageUrl: HomeContent.banners[2].imageUrl,
+        gradientColors: HomeContent.banners[2].gradientColors,
+      ),
+    ];
+  }
+
+  List<HomeCategoryData> _localizedCategories(AppCopy copy) {
+    return [
+      HomeCategoryData(
+        label: copy.petsCategory,
+        icon: HomeContent.categories[0].icon,
+        tint: HomeContent.categories[0].tint,
+        route: HomeContent.categories[0].route,
+      ),
+      HomeCategoryData(
+        label: copy.adoptionCategory,
+        icon: HomeContent.categories[1].icon,
+        tint: HomeContent.categories[1].tint,
+        route: HomeContent.categories[1].route,
+      ),
+      HomeCategoryData(
+        label: copy.foodCategory,
+        icon: HomeContent.categories[2].icon,
+        tint: HomeContent.categories[2].tint,
+        route: HomeContent.categories[2].route,
+      ),
+      HomeCategoryData(
+        label: copy.accessoriesCategory,
+        icon: HomeContent.categories[3].icon,
+        tint: HomeContent.categories[3].tint,
+        route: HomeContent.categories[3].route,
+      ),
+      HomeCategoryData(
+        label: copy.servicesCategory,
+        icon: HomeContent.categories[4].icon,
+        tint: HomeContent.categories[4].tint,
+        route: HomeContent.categories[4].route,
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final authState = context.watch<AuthBloc>().state;
-    final userName = authState is Authenticated ? authState.user.name : 'User';
+    final userName = authState is Authenticated ? authState.user.name : '';
     final profileImageUrl = authState is Authenticated
         ? authState.user.profileImageUrl
         : null;
+    final banners = _localizedBanners(copy);
+    final categories = _localizedCategories(copy);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -75,14 +143,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           delay: const Duration(milliseconds: 60),
                           child: HomeHeader(
                             userName: userName,
-                            subtitle:
-                                'Find rare animals, adoption, and premium supplies',
+                            subtitle: copy.homeHeroSubtitle,
                             profileImageUrl: profileImageUrl,
                             onProfileTap: () => context.go('/profile'),
                             onNotificationTap: () {},
                             currentLocation: authState is Authenticated
-                                ? (authState.user.location ?? 'Nearby')
-                                : 'Nearby',
+                                ? (authState.user.location ?? copy.nearby)
+                                : copy.nearby,
                             onLocationTap: () => context.push('/map'),
                           ),
                         ),
@@ -98,24 +165,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 180),
                           child: BannerCarousel(
-                            items: HomeContent.banners,
+                            items: banners,
                             onActionTap: (item) => context.push(item.route),
                           ),
                         ),
                         const SizedBox(height: 28),
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 240),
-                          child: const _HomeSectionHeader(
-                            title: 'Browse by category',
-                            subtitle:
-                                'Curated paths for shopping, adoption, and discovery.',
+                          child: _HomeSectionHeader(
+                            title: copy.browseCategory,
+                            subtitle: copy.browseCategorySubtitle,
                           ),
                         ),
                         const SizedBox(height: 16),
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 300),
                           child: CategoriesList(
-                            items: HomeContent.categories,
+                            items: categories,
                             onSelected: (item) => context.push(item.route),
                           ),
                         ),
@@ -128,10 +194,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 420),
                           child: _HomeSectionHeader(
-                            title: 'Food & Supplies',
-                            subtitle:
-                                'Modern essentials with premium presentation and quick actions.',
-                            actionLabel: 'View shop',
+                            title: copy.foodAndSupplies,
+                            subtitle: copy.foodAndSuppliesSubtitle,
+                            actionLabel: copy.viewShop,
                             onTap: () => context.push('/shop'),
                           ),
                         ),
@@ -266,13 +331,13 @@ class _FeaturedAnimalsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     return BlocBuilder<AnimalBloc, AnimalState>(
       builder: (context, state) {
         if (state.isLoading && state.animals.isEmpty) {
-          return const _AnimalSectionSkeleton(
-            title: 'Featured Animals',
-            subtitle:
-                'Trending listings from trusted sellers and standout breeders.',
+          return _AnimalSectionSkeleton(
+            title: copy.featuredAnimals,
+            subtitle: copy.featuredAnimalsSubtitle,
           );
         }
 
@@ -287,11 +352,11 @@ class _FeaturedAnimalsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _HomeSectionHeader(
-              title: 'Featured Animals',
+              title: copy.featuredAnimals,
               subtitle: state.errorMessage == null
-                  ? 'Trending listings from trusted sellers and standout breeders.'
-                  : 'Showing curated picks while live featured listings refresh.',
-              actionLabel: 'See all',
+                  ? copy.featuredAnimalsSubtitle
+                  : copy.featuredAnimalsRefreshing,
+              actionLabel: copy.seeAll,
               onTap: () => context.push('/animal-list'),
             ),
             const SizedBox(height: 18),
@@ -324,6 +389,7 @@ class _ProductsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
@@ -351,9 +417,9 @@ class _ProductsSection extends StatelessWidget {
               onTap: () =>
                   context.push('/product-details', extra: item.product),
               onAddToCart: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${item.product.name} added to cart')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(copy.addedToCart)));
               },
             );
           },
@@ -366,7 +432,7 @@ class _ProductsSection extends StatelessWidget {
 class _NearbyAnimalsSection extends StatelessWidget {
   const _NearbyAnimalsSection();
 
-  List<NearbyAnimalData> _buildNearbyItems(List<Animal> animals) {
+  List<NearbyAnimalData> _buildNearbyItems(List<Animal> animals, AppCopy copy) {
     if (animals.isEmpty) {
       return HomeContent.nearbyAnimals;
     }
@@ -380,24 +446,25 @@ class _NearbyAnimalsSection extends StatelessWidget {
       return NearbyAnimalData(
         animal: animal,
         distance: distances[index % distances.length],
-        typeLabel: animal.isForAdoption ? 'Adoption' : 'Sale',
+        typeLabel: animal.isForAdoption ? copy.adoptionLabel : copy.forSale,
       );
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     return BlocBuilder<AnimalBloc, AnimalState>(
       builder: (context, state) {
-        final nearbyItems = _buildNearbyItems(state.animals);
+        final nearbyItems = _buildNearbyItems(state.animals, copy);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _HomeSectionHeader(
-              title: 'Nearby Animals',
-              subtitle: 'Quick local discovery with a map-first preview.',
-              actionLabel: 'Open map',
+              title: copy.nearbyAnimalsTitle,
+              subtitle: copy.nearbyAnimalsSubtitle,
+              actionLabel: copy.openMap,
               onTap: () => context.push('/map'),
             ),
             const SizedBox(height: 18),
@@ -445,6 +512,7 @@ class _AdoptionSpotlightSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     return BlocBuilder<AdoptionBloc, AdoptionState>(
       builder: (context, state) {
         if (state.isLoading && state.animals.isEmpty) {
@@ -462,11 +530,11 @@ class _AdoptionSpotlightSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _HomeSectionHeader(
-              title: 'Give Them a Home',
+              title: copy.adoptionSpotlightTitle,
               subtitle: state.errorMessage == null
-                  ? 'Warm, trustworthy adoption stories with quick actions.'
-                  : 'Showing curated adoption spotlights while live adoption listings refresh.',
-              actionLabel: 'See all',
+                  ? copy.adoptionSpotlightSubtitle
+                  : copy.adoptionRefreshing,
+              actionLabel: copy.seeAll,
               onTap: () => context.push('/adopt'),
             ),
             const SizedBox(height: 18),
@@ -502,6 +570,7 @@ class _MapPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
@@ -557,7 +626,7 @@ class _MapPreviewCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Discover nearby',
+                        copy.discoverNearby,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
@@ -565,7 +634,7 @@ class _MapPreviewCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Open the map for local adoption and sale listings.',
+                        copy.discoverNearbySubtitle,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: Colors.white.withOpacity(0.84),
                         ),
@@ -641,6 +710,7 @@ class _NearbyAnimalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final imageUrl = data.animal.imageUrls.isEmpty
@@ -803,7 +873,7 @@ class _AdoptionSpotlightCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadius.pill),
                     ),
                     child: Text(
-                      'Ready for adoption',
+                      copy.readyForAdoption,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: scheme.secondary,
                         fontWeight: FontWeight.w800,
@@ -838,7 +908,7 @@ class _AdoptionSpotlightCard extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: onTap,
-                      child: const Text('Adopt Now'),
+                      child: Text(copy.adoptNow),
                     ),
                   ),
                 ],
@@ -918,12 +988,13 @@ class _AdoptionSectionSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const _HomeSectionHeader(
-          title: 'Give Them a Home',
-          subtitle: 'Warm, trustworthy adoption stories with quick actions.',
+        _HomeSectionHeader(
+          title: copy.adoptionSpotlightTitle,
+          subtitle: copy.adoptionSpotlightSubtitle,
         ),
         const SizedBox(height: 18),
         SizedBox(

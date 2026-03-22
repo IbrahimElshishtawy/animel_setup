@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_copy.dart';
 import '../../../core/models/animal_model.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
@@ -17,6 +18,7 @@ class AnimalDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final imageUrls = animal.imageUrls.isEmpty
@@ -73,8 +75,8 @@ class AnimalDetailScreen extends StatelessWidget {
                               ),
                               child: Text(
                                 animal.isForAdoption
-                                    ? 'Adoption listing'
-                                    : 'Marketplace listing',
+                                    ? copy.adoptionListing
+                                    : copy.marketplaceListing,
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   color: scheme.primary,
                                   fontWeight: FontWeight.w800,
@@ -101,7 +103,7 @@ class AnimalDetailScreen extends StatelessWidget {
                       const SizedBox(width: 12),
                       Text(
                         animal.isForAdoption
-                            ? 'Free'
+                            ? copy.freeLabel
                             : '\$${animal.price.toStringAsFixed(0)}',
                         style: theme.textTheme.headlineSmall?.copyWith(
                           color: scheme.primary,
@@ -114,10 +116,10 @@ class AnimalDetailScreen extends StatelessWidget {
                   _InfoGrid(animal: animal),
                   const SizedBox(height: 22),
                   _DetailSection(
-                    title: 'About ${animal.name}',
+                    title: copy.aboutAnimal(animal.name),
                     child: Text(
                       animal.description.trim().isEmpty
-                          ? 'This listing has not added a detailed description yet.'
+                          ? copy.noAnimalDescription
                           : animal.description,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: scheme.onSurfaceVariant,
@@ -126,7 +128,7 @@ class AnimalDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
                   _DetailSection(
-                    title: 'Health and care',
+                    title: copy.healthAndCare,
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -152,7 +154,7 @@ class AnimalDetailScreen extends StatelessWidget {
                           Expanded(
                             child: Text(
                               animal.healthStatus.trim().isEmpty
-                                  ? 'No health notes added yet.'
+                                  ? copy.noHealthNotes
                                   : animal.healthStatus,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w700,
@@ -165,7 +167,7 @@ class AnimalDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
                   _DetailSection(
-                    title: 'Location',
+                    title: copy.location,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -194,7 +196,7 @@ class AnimalDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
                   _DetailSection(
-                    title: 'Owner',
+                    title: copy.owner,
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -224,8 +226,8 @@ class AnimalDetailScreen extends StatelessWidget {
                                 Text(
                                   animal.owner?.name ??
                                       (animal.isForAdoption
-                                          ? 'Caretaker'
-                                          : 'Seller'),
+                                          ? copy.caretaker
+                                          : copy.seller),
                                   style: theme.textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.w800,
                                   ),
@@ -233,7 +235,7 @@ class AnimalDetailScreen extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Text(
                                   animal.owner?.email ??
-                                      'Open chat to continue with the owner.',
+                                      copy.openChatOwner,
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: scheme.onSurfaceVariant,
                                   ),
@@ -261,8 +263,8 @@ class AnimalDetailScreen extends StatelessWidget {
                       icon: const Icon(Icons.chat_bubble_outline_rounded),
                       label: Text(
                         animal.isForAdoption
-                            ? 'Contact caretaker'
-                            : 'Contact seller',
+                            ? copy.contactCaretaker
+                            : copy.contactSeller,
                       ),
                     ),
                   ),
@@ -361,10 +363,10 @@ class _InfoGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      (Icons.pets_outlined, 'Breed', animal.breed),
-      (Icons.straighten_outlined, 'Size', animal.size),
-      (Icons.cake_outlined, 'Age', animal.age),
-      (Icons.transgender_outlined, 'Gender', animal.gender),
+      (Icons.pets_outlined, context.copy.breed, animal.breed),
+      (Icons.straighten_outlined, context.copy.size, animal.size),
+      (Icons.cake_outlined, context.copy.age, animal.age),
+      (Icons.transgender_outlined, context.copy.gender, animal.gender),
     ];
 
     return GridView.builder(

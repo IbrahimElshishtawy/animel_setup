@@ -158,6 +158,7 @@ class ShopCategoryTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     return SizedBox(
       height: 42,
       child: ListView.separated(
@@ -169,7 +170,7 @@ class ShopCategoryTabs extends StatelessWidget {
           final isSelected = selectedCategory == category;
 
           return ChoiceChip(
-            label: Text(category),
+            label: Text(category == 'All' ? copy.all : category),
             selected: isSelected,
             onSelected: (_) => onSelected(category),
           );

@@ -1,40 +1,11 @@
-// ignore_for_file: unused_element, deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+part of '../presentation/my_pets_screen.dart';
 
-import '../../../core/localization/app_copy.dart';
-import '../../../core/models/animal_model.dart';
-import '../../../core/theme/app_tokens.dart';
-import '../../../core/widgets/app_media.dart';
-import '../../home/logic/animal_bloc.dart';
+class MyPetsHeroSection extends StatelessWidget {
+  const MyPetsHeroSection({super.key, required this.onAdd});
 
-part '../widgets/my_pets_screen_sections.dart';
-
-class MyPetsScreen extends StatefulWidget {
-  const MyPetsScreen({super.key});
-
-  @override
-  State<MyPetsScreen> createState() => _MyPetsScreenState();
-}
-
-class _MyPetsScreenState extends State<MyPetsScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AnimalBloc>().add(ClearAnimalMessage());
-      context.read<AnimalBloc>().add(FetchMyAnimals());
-    });
-  }
-
-  void _showMessage(String message) {
-    final messenger = ScaffoldMessenger.of(context);
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
-  }
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -42,80 +13,82 @@ class _MyPetsScreenState extends State<MyPetsScreen> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return BlocConsumer<AnimalBloc, AnimalState>(
-      listener: (context, state) {
-        if (state.errorMessage != null) {
-          _showMessage(state.errorMessage!);
-          context.read<AnimalBloc>().add(ClearAnimalMessage());
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: const Color(0xFFF4F4EF),
-          appBar: AppBar(
-            title: Text(copy.myPets),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.add_rounded),
-                onPressed: () => context.push('/profile/pets/add-step1'),
+    return Container(
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        gradient: LinearGradient(
+          colors: [
+            scheme.primary,
+            Color.alphaBlend(scheme.secondary.withOpacity(0.24), scheme.primary),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: AppShadows.soft(scheme.primary, opacity: 0.16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.14),
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+            ),
+            child: Text(
+              copy.ownerSpace,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
               ),
-            ],
-          ),
-          body: RefreshIndicator(
-            onRefresh: () async {
-              context.read<AnimalBloc>().add(FetchMyAnimals());
-            },
-            child: ListView(
-              padding: AppSpacing.screenPadding,
-              children: [
-                MyPetsHeroSection(
-                  onAdd: () => context.push('/profile/pets/add-step1'),
-                ),
-                const SizedBox(height: 18),
-                Text(
-                  copy.petProfilesCount(state.myAnimals.length),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  copy.myPetsSubtitle,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                if (state.isLoading)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                else if (state.myAnimals.isEmpty)
-                  EmptyPetsState(
-                    onAdd: () => context.push('/profile/pets/add-step1'),
-                  )
-                else
-                  for (final animal in state.myAnimals) ...[
-                    PetProfileCard(animal: animal),
-                    const SizedBox(height: 14),
-                  ],
-              ],
             ),
           ),
-        );
-      },
+          const SizedBox(height: 16),
+          Text(
+            copy.ownerSpaceTitle,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              height: 1.18,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            copy.ownerSpaceSubtitle,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.white.withOpacity(0.84),
+              height: 1.45,
+            ),
+          ),
+          const SizedBox(height: 18),
+          FilledButton.icon(
+            onPressed: onAdd,
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: scheme.primary,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
+            icon: const Icon(Icons.pets_rounded),
+            label: Text(copy.addPetProfile),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _PetCard extends StatelessWidget {
-  const _PetCard({required this.animal});
+class PetProfileCard extends StatelessWidget {
+  const PetProfileCard({super.key, required this.animal});
 
   final Animal animal;
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final accent = animal.isForAdoption ? AppPalette.indigo : AppPalette.plum;
@@ -177,8 +150,8 @@ class _PetCard extends StatelessWidget {
                         ),
                         child: Text(
                           animal.isForAdoption
-                              ? 'Adoption profile'
-                              : 'For sale',
+                              ? copy.adoptionProfile
+                              : copy.forSale,
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: accent,
                             fontWeight: FontWeight.w800,
@@ -242,7 +215,7 @@ class _PetCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             animal.description.trim().isEmpty
-                                ? 'Open this profile to review health, location, and contact details.'
+                                ? copy.openPetProfileHint
                                 : animal.description,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -255,7 +228,7 @@ class _PetCard extends StatelessWidget {
                         const SizedBox(width: 12),
                         Text(
                           animal.isForAdoption
-                              ? 'Free'
+                              ? copy.freeLabel
                               : '\$${animal.price.toStringAsFixed(0)}',
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: accent,
@@ -269,18 +242,18 @@ class _PetCard extends StatelessWidget {
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        _InfoChip(
+                        PetInfoChip(
                           icon: Icons.cake_outlined,
                           label: animal.age,
                           accent: accent,
                         ),
-                        _InfoChip(
+                        PetInfoChip(
                           icon: Icons.place_outlined,
                           label: animal.location,
                           accent: accent,
                         ),
                         if (animal.healthStatus.trim().isNotEmpty)
-                          _InfoChip(
+                          PetInfoChip(
                             icon: Icons.health_and_safety_outlined,
                             label: animal.healthStatus,
                             accent: accent,
@@ -306,7 +279,7 @@ class _PetCard extends StatelessWidget {
                           ),
                         ),
                         icon: const Icon(Icons.visibility_outlined, size: 18),
-                        label: const Text('Open pet profile'),
+                        label: Text(copy.openPetProfile),
                       ),
                     ),
                   ],
@@ -320,8 +293,9 @@ class _PetCard extends StatelessWidget {
   }
 }
 
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({
+class PetInfoChip extends StatelessWidget {
+  const PetInfoChip({
+    super.key,
     required this.icon,
     required this.label,
     required this.accent,
@@ -360,13 +334,14 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
-class _EmptyPetsState extends StatelessWidget {
-  const _EmptyPetsState({required this.onAdd});
+class EmptyPetsState extends StatelessWidget {
+  const EmptyPetsState({super.key, required this.onAdd});
 
   final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
@@ -390,14 +365,14 @@ class _EmptyPetsState extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Text(
-            'No pet profiles yet',
+            copy.noPetProfiles,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Create your first pet profile so it appears here with its health, location, and listing details.',
+            copy.noPetProfilesMessage,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: scheme.onSurfaceVariant,
@@ -408,7 +383,7 @@ class _EmptyPetsState extends StatelessWidget {
           FilledButton.icon(
             onPressed: onAdd,
             icon: const Icon(Icons.add_rounded),
-            label: const Text('Add first pet'),
+            label: Text(copy.addFirstPet),
           ),
         ],
       ),
