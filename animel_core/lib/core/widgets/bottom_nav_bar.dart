@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../localization/app_copy.dart';
 import '../theme/app_tokens.dart';
 import 'glass_panel.dart';
 
@@ -52,6 +53,7 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
@@ -127,9 +129,9 @@ class AppBottomNavBar extends StatelessWidget {
                         ? scheme.primary.withOpacity(isDark ? 0.16 : 0.1)
                         : Colors.transparent,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                       Icon(
                         isSelected ? item.activeIcon : item.icon,
                         size: 20,
@@ -139,7 +141,13 @@ class AppBottomNavBar extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        item.label,
+                        switch (item.label) {
+                          'Home' => copy.home,
+                          'Explore' => copy.explore,
+                          'Add' => copy.add,
+                          'Messages' => copy.messages,
+                          _ => copy.profile,
+                        },
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: isSelected
                               ? scheme.primary

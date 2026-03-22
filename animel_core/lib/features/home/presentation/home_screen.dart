@@ -80,6 +80,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             profileImageUrl: profileImageUrl,
                             onProfileTap: () => context.go('/profile'),
                             onNotificationTap: () {},
+                            currentLocation: authState is Authenticated
+                                ? (authState.user.location ?? 'Nearby')
+                                : 'Nearby',
+                            onLocationTap: () => context.push('/map'),
                           ),
                         ),
                         const SizedBox(height: 22),

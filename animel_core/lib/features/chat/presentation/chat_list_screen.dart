@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../../../core/models/conversation_model.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/loading_widget.dart';
@@ -40,6 +41,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final currentUserId = authState is Authenticated ? authState.user.id : '';
 
     return Scaffold(
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 3),
       body: SafeArea(
         child: BlocBuilder<ChatBloc, ChatState>(
           builder: (context, state) {

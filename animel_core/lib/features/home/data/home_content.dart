@@ -363,7 +363,8 @@ class HomeContent {
         name: 'Interactive Enrichment Toy',
         category: 'Accessories',
         price: 22,
-        description: 'A premium toy that keeps pets engaged throughout the day.',
+        description:
+            'A premium toy that keeps pets engaged throughout the day.',
         imageUrl:
             'https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=900&q=80',
         animalType: 'Dogs & cats',

@@ -92,7 +92,7 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       backgroundColor: AppPalette.shell,
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 1),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _loadNearbyUsers,

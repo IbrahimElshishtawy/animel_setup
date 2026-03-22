@@ -57,7 +57,7 @@ class _AdoptionListScreenState extends State<AdoptionListScreen> {
     final scheme = theme.colorScheme;
 
     return Scaffold(
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 3),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 1),
       body: SafeArea(
         child: BlocBuilder<AdoptionBloc, AdoptionState>(
           builder: (context, state) {

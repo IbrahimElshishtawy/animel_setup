@@ -137,7 +137,9 @@ class AppTheme {
 
     return baseTheme.copyWith(
       primaryColor: primaryColor,
-      cardColor: surfaceColor.withOpacity(brightness == Brightness.dark ? 0.8 : 0.88),
+      cardColor: surfaceColor.withOpacity(
+        brightness == Brightness.dark ? 0.8 : 0.88,
+      ),
       textTheme: textTheme,
       appBarTheme: AppBarTheme(
         elevation: 0,
@@ -164,7 +166,9 @@ class AppTheme {
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: borderColor.withOpacity(brightness == Brightness.dark ? 0.72 : 1),
+        color: borderColor.withOpacity(
+          brightness == Brightness.dark ? 0.72 : 1,
+        ),
         thickness: 1,
         space: 1,
       ),
@@ -179,11 +183,16 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,
         filled: true,
-        fillColor: inputFillColor.withOpacity(brightness == Brightness.dark ? 0.9 : 0.82),
+        fillColor: inputFillColor.withOpacity(
+          brightness == Brightness.dark ? 0.9 : 0.82,
+        ),
         hintStyle: textTheme.bodyMedium?.copyWith(color: mutedTextColor),
         prefixIconColor: mutedTextColor,
         suffixIconColor: mutedTextColor,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.sm),
           borderSide: BorderSide(color: borderColor.withOpacity(0.72)),
@@ -194,7 +203,10 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.sm),
-          borderSide: BorderSide(color: primaryColor.withOpacity(0.9), width: 1.2),
+          borderSide: BorderSide(
+            color: primaryColor.withOpacity(0.9),
+            width: 1.2,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -264,7 +276,9 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
         labelStyle: textTheme.labelMedium,
-        secondaryLabelStyle: textTheme.labelMedium?.copyWith(color: Colors.white),
+        secondaryLabelStyle: textTheme.labelMedium?.copyWith(
+          color: Colors.white,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
       tabBarTheme: TabBarThemeData(
@@ -272,7 +286,9 @@ class AppTheme {
         unselectedLabelColor: mutedTextColor,
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(AppRadius.pill),
-          color: primaryColor.withOpacity(brightness == Brightness.dark ? 0.22 : 0.12),
+          color: primaryColor.withOpacity(
+            brightness == Brightness.dark ? 0.22 : 0.12,
+          ),
         ),
         dividerColor: Colors.transparent,
         labelStyle: textTheme.labelLarge,
@@ -283,7 +299,9 @@ class AppTheme {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) return primaryColor;
-          return brightness == Brightness.dark ? const Color(0xFFCCE1E6) : Colors.white;
+          return brightness == Brightness.dark
+              ? const Color(0xFFCCE1E6)
+              : Colors.white;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {

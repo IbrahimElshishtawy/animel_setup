@@ -106,7 +106,8 @@ class HomeHeader extends StatelessWidget {
                       width: 62,
                       height: 62,
                       child: ClipOval(
-                        child: profileImageUrl == null || profileImageUrl!.isEmpty
+                        child:
+                            profileImageUrl == null || profileImageUrl!.isEmpty
                             ? DecoratedBox(
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -137,7 +138,10 @@ class HomeHeader extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: const Color(0xFF57C27E),
                         shape: BoxShape.circle,
-                        border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
+                        border: Border.all(
+                          color: theme.scaffoldBackgroundColor,
+                          width: 3,
+                        ),
                       ),
                     ),
                   ),

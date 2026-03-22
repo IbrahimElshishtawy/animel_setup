@@ -37,8 +37,8 @@ class GlassPanel extends StatelessWidget {
     final colors =
         gradientColors ??
         [
-          Colors.white.withOpacity(isDark ? 0.12 : 0.74),
-          Colors.white.withOpacity(isDark ? 0.06 : 0.34),
+          Colors.white.withValues(alpha: isDark ? 0.12 : 0.74),
+          Colors.white.withValues(alpha: isDark ? 0.06 : 0.34),
         ];
 
     return Container(
@@ -65,7 +65,9 @@ class GlassPanel extends StatelessWidget {
               border: Border.all(
                 color:
                     borderColor ??
-                    scheme.outlineVariant.withOpacity(isDark ? 0.34 : 0.72),
+                    scheme.outlineVariant.withValues(
+                      alpha: isDark ? 0.34 : 0.72,
+                    ),
               ),
             ),
             child: Padding(padding: padding, child: child),
