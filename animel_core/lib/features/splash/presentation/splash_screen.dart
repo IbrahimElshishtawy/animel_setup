@@ -77,7 +77,6 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final copy = context.copy;
 
     return Scaffold(
       body: Stack(
@@ -92,8 +91,8 @@ class _SplashScreenState extends State<SplashScreen>
                   child: SplashGlassCard(
                     glowFade: _glowFade,
                     textSlide: _textSlide,
-                    title: copy.animalConnect,
-                    subtitle: copy.splashSubtitle,
+                    title: context.copy.animalConnect,
+                    subtitle: context.copy.splashSubtitle,
                     scheme: scheme,
                     theme: theme,
                   ),

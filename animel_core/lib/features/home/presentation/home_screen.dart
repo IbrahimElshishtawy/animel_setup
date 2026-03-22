@@ -819,6 +819,7 @@ class _AdoptionSpotlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final imageUrl = animal.imageUrls.isEmpty ? null : animal.imageUrls.first;

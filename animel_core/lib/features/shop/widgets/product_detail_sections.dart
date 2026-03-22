@@ -43,7 +43,6 @@ class ProductSummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final copy = context.copy;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,8 +86,8 @@ class ProductSummarySection extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           product.animalType.isEmpty
-              ? copy.suitableForEverydayCare
-              : copy.recommendedFor(product.animalType),
+              ? context.copy.suitableForEverydayCare
+              : context.copy.recommendedFor(product.animalType),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: scheme.onSurfaceVariant,
           ),

@@ -19,7 +19,6 @@ class SearchBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final copy = context.copy;
 
     return ScaleTap(
       onTap: onTap,
@@ -44,14 +43,14 @@ class SearchBarWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    copy.homeSearchBarTitle,
+                    context.copy.homeSearchBarTitle,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    copy.homeSearchBarSubtitle,
+                    context.copy.homeSearchBarSubtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
