@@ -19,6 +19,8 @@ class AppTextField extends StatelessWidget {
     this.autofillHints,
     this.onSubmitted,
     this.inputFormatters,
+    this.readOnly = false,
+    this.enabled = true,
   });
 
   final String label;
@@ -34,6 +36,8 @@ class AppTextField extends StatelessWidget {
   final Iterable<String>? autofillHints;
   final ValueChanged<String>? onSubmitted;
   final List<TextInputFormatter>? inputFormatters;
+  final bool readOnly;
+  final bool enabled;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -52,6 +56,8 @@ class AppTextField extends StatelessWidget {
         const SizedBox(height: 6),
         TextFormField(
           controller: controller,
+          enabled: enabled,
+          readOnly: readOnly,
           keyboardType: keyboardType,
           obscureText: obscure,
           maxLines: obscure ? 1 : maxLines,

@@ -67,7 +67,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
     return Column(
       children: [
         SizedBox(
-          height: 226,
+          height: 210,
           child: PageView.builder(
             controller: _pageController,
             itemCount: widget.items.length,
@@ -171,8 +171,8 @@ class _BannerCard extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
+                      horizontal: 9,
+                      vertical: 5,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.16),
@@ -180,7 +180,7 @@ class _BannerCard extends StatelessWidget {
                     ),
                     child: Text(
                       copy.animalConnect,
-                      style: theme.textTheme.labelMedium?.copyWith(
+                      style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                       ),
@@ -193,37 +193,43 @@ class _BannerCard extends StatelessWidget {
                       item.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.headlineSmall?.copyWith(
+                      style: theme.textTheme.titleLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 270),
                     child: Text(
                       item.subtitle,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium?.copyWith(
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.white.withOpacity(0.86),
+                        height: 1.35,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: onActionTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: item.gradientColors.first,
-                      minimumSize: const Size(112, 42),
+                      minimumSize: const Size(102, 38),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 10,
+                        horizontal: 16,
+                        vertical: 8,
                       ),
                     ),
-                    child: Text(item.ctaLabel),
+                    child: Text(
+                      item.ctaLabel,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ],
               ),

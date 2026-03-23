@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:animel_core/core/widgets/app_media.dart';
 import 'package:animel_core/features/profile/widgets/add_photos_box.dart';
-import 'package:animel_core/features/profile/widgets/choice_chip_button.dart';
 import 'package:animel_core/features/profile/widgets/dropdown_field.dart';
 import 'package:animel_core/features/profile/widgets/header_icon.dart';
 import 'package:animel_core/features/profile/widgets/pet_text_field.dart';
@@ -12,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/localization/app_copy.dart';
+import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../home/logic/animal_bloc.dart';
 
 class AddPetStep2Screen extends StatefulWidget {
@@ -118,7 +118,9 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
     }
 
     if (years > 0) {
-      return years == 1 ? context.copy.yearLabel(years) : context.copy.yearsLabel(years);
+      return years == 1
+          ? context.copy.yearLabel(years)
+          : context.copy.yearsLabel(years);
     }
     if (months > 0) {
       return months == 1
@@ -226,8 +228,8 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
   @override
   Widget build(BuildContext context) {
     final copy = context.copy;
-    const plum = Color(0xFF4B1A45);
-    const shell = Color(0xFFF6ECF3);
+    const plum = Color(0xFF7E452A);
+    const shell = Color(0xFFF7F2EC);
 
     return BlocConsumer<AnimalBloc, AnimalState>(
       listener: (context, state) {
@@ -245,53 +247,64 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: shell,
+          bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: shell,
             elevation: 0,
             foregroundColor: plum,
             title: Text(
               copy.setPetProfile,
-              style: TextStyle(color: Colors.black87),
+              style: const TextStyle(color: Colors.black87),
             ),
           ),
           body: SafeArea(
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 430),
+                constraints: const BoxConstraints(maxWidth: 460),
                 child: Container(
-                  color: Colors.white,
+                  margin: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 24,
+                        offset: const Offset(0, 12),
+                      ),
+                    ],
+                  ),
                   child: ListView(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 16,
                     ),
                     children: [
-                      const HeaderIcon(),
-                      const SizedBox(height: 16),
-                      Text(
-                        copy.petProfileIntro,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.black54,
-                          height: 1.45,
-                        ),
+                      HeaderIcon(
+                        imageUrl: _selectedImageUrls.isEmpty
+                            ? null
+                            : _selectedImageUrls.first,
+                        title: copy.setPetProfile,
+                        subtitle: copy.petProfileIntro,
                       ),
                       const SizedBox(height: 20),
                       Text(
                         copy.listingType,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.forSale,
                             isSelected: !_isForAdoption,
                             onTap: () => setState(() => _isForAdoption = false),
                           ),
-                          const SizedBox(width: 8),
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.forAdoptionOption,
                             isSelected: _isForAdoption,
                             onTap: () => setState(() => _isForAdoption = true),
@@ -331,35 +344,34 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       const SizedBox(height: 16),
                       Text(
                         copy.pet,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Cat'),
                             isSelected: _selectedPetType == 'Cat',
                             onTap: () =>
                                 setState(() => _selectedPetType = 'Cat'),
                           ),
-                          const SizedBox(width: 8),
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Dog'),
                             isSelected: _selectedPetType == 'Dog',
                             onTap: () =>
                                 setState(() => _selectedPetType = 'Dog'),
                           ),
-                          const SizedBox(width: 8),
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Bird'),
                             isSelected: _selectedPetType == 'Bird',
                             onTap: () =>
                                 setState(() => _selectedPetType = 'Bird'),
                           ),
-                          const SizedBox(width: 8),
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Other'),
                             isSelected: _selectedPetType == 'Other',
                             onTap: () =>
@@ -406,21 +418,22 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       const SizedBox(height: 16),
                       Text(
                         copy.gender,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Male'),
                             isSelected: _selectedGender == 'Male',
                             onTap: () =>
                                 setState(() => _selectedGender = 'Male'),
                           ),
-                          const SizedBox(width: 8),
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Female'),
                             isSelected: _selectedGender == 'Female',
                             onTap: () =>
@@ -439,28 +452,28 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       const SizedBox(height: 16),
                       Text(
                         copy.size,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Small'),
                             isSelected: _selectedSize == 'Small',
                             onTap: () =>
                                 setState(() => _selectedSize = 'Small'),
                           ),
-                          const SizedBox(width: 8),
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Medium'),
                             isSelected: _selectedSize == 'Medium',
                             onTap: () =>
                                 setState(() => _selectedSize = 'Medium'),
                           ),
-                          const SizedBox(width: 8),
-                          ChoiceChipButton(
+                          _InlineChoiceChip(
                             label: copy.petFormOption('Large'),
                             isSelected: _selectedSize == 'Large',
                             onTap: () =>
@@ -522,7 +535,7 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                       const SizedBox(height: 12),
                       Text(
                         copy.animalPhotos,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -546,9 +559,9 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                                   width: 86,
                                   height: 86,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(16),
                                     border: Border.all(
-                                      color: const Color(0xFFDAC4E4),
+                                      color: const Color(0xFFE8E0D7),
                                     ),
                                   ),
                                   child: AppMedia(
@@ -564,8 +577,10 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                                     child: Container(
                                       width: 24,
                                       height: 24,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF4B1A45),
+                                      decoration: BoxDecoration(
+                                        color: const Color(
+                                          0xFF7E452A,
+                                        ).withValues(alpha: 1),
                                         shape: BoxShape.circle,
                                       ),
                                       child: const Icon(
@@ -587,15 +602,15 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                               ?.copyWith(color: Colors.black54, height: 1.4),
                         ),
                       ],
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       SizedBox(
                         width: double.infinity,
-                        height: 48,
+                        height: 46,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: plum,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
                           onPressed: state.isSubmitting ? null : _submit,
@@ -610,8 +625,8 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
                                 )
                               : Text(
                                   copy.save,
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                  style: const TextStyle(
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -625,6 +640,45 @@ class _AddPetStep2ScreenState extends State<AddPetStep2Screen> {
           ),
         );
       },
+    );
+  }
+}
+
+class _InlineChoiceChip extends StatelessWidget {
+  const _InlineChoiceChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF7E452A) : Colors.white,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: isSelected
+                ? const Color(0xFF7E452A)
+                : const Color(0xFFE8E0D7),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: isSelected ? Colors.white : Colors.black87,
+          ),
+        ),
+      ),
     );
   }
 }

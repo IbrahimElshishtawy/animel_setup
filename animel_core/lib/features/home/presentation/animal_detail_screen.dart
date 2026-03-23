@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/app_copy.dart';
@@ -8,6 +9,7 @@ import '../../../core/models/animal_model.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
 import '../widgets/google_static_map.dart';
+import '../../favorites/logic/favorites_cubit.dart';
 
 class AnimalDetailScreen extends StatelessWidget {
   const AnimalDetailScreen({super.key, required this.animal});
@@ -37,9 +39,19 @@ class AnimalDetailScreen extends StatelessWidget {
                 icon: const Icon(Icons.share_outlined),
                 onPressed: () {},
               ),
-              IconButton(
-                icon: const Icon(Icons.favorite_border_rounded),
-                onPressed: () {},
+              BlocBuilder<FavoritesCubit, Set<String>>(
+                builder: (context, favorites) {
+                  final isFavorite = favorites.contains(animal.id);
+                  return IconButton(
+                    icon: Icon(
+                      isFavorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                    ),
+                    onPressed: () =>
+                        context.read<FavoritesCubit>().toggleAnimal(animal.id),
+                  );
+                },
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(

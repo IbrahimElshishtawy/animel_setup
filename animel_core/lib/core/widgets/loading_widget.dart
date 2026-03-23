@@ -36,84 +36,104 @@ class _LoadingWidgetState extends State<LoadingWidget>
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        final shimmerX = (_controller.value * 2) - 1;
-        return Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 380),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 66,
-                    height: 66,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          scheme.primary.withOpacity(0.14),
-                          scheme.secondary.withOpacity(0.16),
-                        ],
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          scheme.primary,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxHeight = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : 520.0;
+        final availableForSkeletons =
+            maxHeight - (widget.message == null ? 110 : 145);
+        final visibleItems = availableForSkeletons < 110
+            ? 1
+            : (availableForSkeletons / 98).floor().clamp(1, widget.itemCount);
+
+        return AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            final shimmerX = (_controller.value * 2) - 1;
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 380),
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 66,
+                        height: 66,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              scheme.primary.withOpacity(0.14),
+                              scheme.secondary.withOpacity(0.16),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  if (widget.message != null) ...[
-                    Text(
-                      widget.message!,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                  ...List.generate(
-                    widget.itemCount,
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-                        child: ShaderMask(
-                          shaderCallback: (bounds) {
-                            return LinearGradient(
-                              begin: Alignment(-1 + shimmerX, -0.2),
-                              end: Alignment(1 + shimmerX, 0.2),
-                              colors: [
-                                scheme.surfaceContainerHighest.withOpacity(0.8),
-                                scheme.surface.withOpacity(0.95),
-                                scheme.surfaceContainerHighest.withOpacity(0.8),
-                              ],
-                              stops: const [0.2, 0.5, 0.8],
-                            ).createShader(bounds);
-                          },
-                          blendMode: BlendMode.srcATop,
-                          child: Container(
-                            height: 86,
-                            decoration: BoxDecoration(
-                              color: scheme.surfaceContainerHighest,
-                              borderRadius: BorderRadius.circular(24),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              scheme.primary,
                             ),
                           ),
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 20),
+                      if (widget.message != null) ...[
+                        Text(
+                          widget.message!,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                      ...List.generate(
+                        visibleItems,
+                        (index) => Padding(
+                          padding: EdgeInsets.only(
+                            bottom: index == visibleItems - 1 ? 0 : 12,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(24),
+                            child: ShaderMask(
+                              shaderCallback: (bounds) {
+                                return LinearGradient(
+                                  begin: Alignment(-1 + shimmerX, -0.2),
+                                  end: Alignment(1 + shimmerX, 0.2),
+                                  colors: [
+                                    scheme.surfaceContainerHighest.withOpacity(
+                                      0.8,
+                                    ),
+                                    scheme.surface.withOpacity(0.95),
+                                    scheme.surfaceContainerHighest.withOpacity(
+                                      0.8,
+                                    ),
+                                  ],
+                                  stops: const [0.2, 0.5, 0.8],
+                                ).createShader(bounds);
+                              },
+                              blendMode: BlendMode.srcATop,
+                              child: Container(
+                                height: 86,
+                                decoration: BoxDecoration(
+                                  color: scheme.surfaceContainerHighest,
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

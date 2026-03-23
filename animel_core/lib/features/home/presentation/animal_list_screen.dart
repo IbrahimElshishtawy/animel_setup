@@ -14,6 +14,7 @@ import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/loading_widget.dart';
+import '../../favorites/logic/favorites_cubit.dart';
 import '../logic/animal_bloc.dart';
 
 part '../widgets/animal_list_screen_sections.dart';
@@ -241,10 +242,25 @@ class _AnimalGridCard extends StatelessWidget {
                               color: Colors.white.withOpacity(0.92),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Icon(
-                              Icons.favorite_border_rounded,
-                              size: 18,
-                              color: scheme.primary,
+                            child: BlocBuilder<FavoritesCubit, Set<String>>(
+                              builder: (context, favorites) {
+                                final isFavorite = favorites.contains(animal.id);
+                                return IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () => context
+                                      .read<FavoritesCubit>()
+                                      .toggleAnimal(animal.id),
+                                  icon: Icon(
+                                    isFavorite
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_border_rounded,
+                                    size: 18,
+                                    color: isFavorite
+                                        ? scheme.secondary
+                                        : scheme.primary,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],

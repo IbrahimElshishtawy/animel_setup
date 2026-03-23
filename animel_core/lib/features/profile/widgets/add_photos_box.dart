@@ -25,28 +25,28 @@ class AddPhotosBox extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: const Color(0xFFFDF7FF),
-          border: Border.all(color: const Color(0xFFDAC4E4)),
+          borderRadius: BorderRadius.circular(18),
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFE8E0D7)),
         ),
         child: Row(
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
-                color: const Color(0xFF4B1A45).withOpacity(0.08),
+                color: const Color(0xFF7E452A).withOpacity(0.08),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: const Icon(
                 Icons.add_photo_alternate_outlined,
-                size: 24,
-                color: Color(0xFF4B1A45),
+                size: 22,
+                color: Color(0xFF7E452A),
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,14 +55,14 @@ class AddPhotosBox extends StatelessWidget {
                   Text(
                     isFull ? copy.photosSelected : copy.selectPhotos,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     copy.photoSelectionSummary(photoCount, maxPhotos),
-                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                    style: const TextStyle(fontSize: 11, color: Colors.black54),
                   ),
                 ],
               ),
@@ -71,9 +71,9 @@ class AddPhotosBox extends StatelessWidget {
             Text(
               isFull ? copy.fullLabel : copy.addButton,
               style: const TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF4B1A45),
+                color: Color(0xFF7E452A),
               ),
             ),
           ],

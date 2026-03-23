@@ -30,21 +30,24 @@ class ProductCard extends StatelessWidget {
       onTap: onTap,
       scaleDown: 0.975,
       child: AspectRatio(
-        aspectRatio: 0.78,
+        aspectRatio: 0.82,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(26),
             boxShadow: AppShadows.soft(
               scheme.primary,
               opacity: isDark ? 0.16 : 0.08,
             ),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(26),
             child: Stack(
               fit: StackFit.expand,
               children: [
-                AppMedia(imageUrl: data.product.imageUrl),
+                AppMedia(
+                  imageUrl: data.product.imageUrl,
+                  fallbackImageUrl: AppMedia.productPlaceholder,
+                ),
                 DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -59,12 +62,12 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  left: 14,
-                  top: 14,
+                  left: 12,
+                  top: 12,
                   child: GlassPanel(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
+                      horizontal: 9,
+                      vertical: 5,
                     ),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                     blurSigma: 12,
@@ -79,17 +82,18 @@ class ProductCard extends StatelessWidget {
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
+                        fontSize: 10.5,
                       ),
                     ),
                   ),
                 ),
                 Positioned(
-                  right: 14,
-                  top: 14,
+                  right: 12,
+                  top: 12,
                   child: GlassPanel(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 7,
+                      horizontal: 9,
+                      vertical: 6,
                     ),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                     blurSigma: 12,
@@ -104,15 +108,16 @@ class ProductCard extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.star_rounded,
-                          size: 14,
+                          size: 12,
                           color: scheme.secondary,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 3),
                         Text(
                           data.rating.toStringAsFixed(1),
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
+                            fontSize: 10.5,
                           ),
                         ),
                       ],
@@ -120,12 +125,12 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  left: 12,
-                  right: 12,
-                  bottom: 12,
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
                   child: GlassPanel(
-                    padding: const EdgeInsets.all(14),
-                    borderRadius: BorderRadius.circular(24),
+                    padding: const EdgeInsets.all(12),
+                    borderRadius: BorderRadius.circular(22),
                     blurSigma: 18,
                     borderColor: Colors.white.withOpacity(0.18),
                     gradientColors: [
@@ -140,25 +145,28 @@ class ProductCard extends StatelessWidget {
                           data.product.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleMedium?.copyWith(
+                          style: theme.textTheme.titleSmall?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
                         Text(
-                          data.product.category,
+                          '${data.product.category} • ${data.product.animalType}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: Colors.white.withOpacity(0.78),
+                            fontSize: 11,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Expanded(
                               child: Text(
                                 _currency.format(data.product.price),
-                                style: theme.textTheme.titleMedium?.copyWith(
+                                style: theme.textTheme.titleSmall?.copyWith(
                                   color: scheme.secondary,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -169,20 +177,21 @@ class ProductCard extends StatelessWidget {
                               scaleDown: 0.92,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 10,
+                                  horizontal: 12,
+                                  vertical: 8,
                                 ),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.18),
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.white.withOpacity(0.16),
                                   ),
                                 ),
                                 child: Text(
                                   'Add',
-                                  style: theme.textTheme.labelLarge?.copyWith(
+                                  style: theme.textTheme.labelMedium?.copyWith(
                                     color: Colors.white,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),

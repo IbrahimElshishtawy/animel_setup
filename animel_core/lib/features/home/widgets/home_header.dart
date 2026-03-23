@@ -56,8 +56,8 @@ class HomeHeader extends StatelessWidget {
                 children: [
                   GlassPanel(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+                      horizontal: 10,
+                      vertical: 7,
                     ),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                     shadowOpacity: 0,
@@ -72,7 +72,7 @@ class HomeHeader extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           copy.animalConnect,
-                          style: theme.textTheme.labelLarge?.copyWith(
+                          style: theme.textTheme.labelMedium?.copyWith(
                             color: scheme.primary,
                             fontWeight: FontWeight.w700,
                           ),
@@ -80,18 +80,20 @@ class HomeHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 14),
                   Text(
                     copy.discoverCompanion(greetingName),
-                    style: theme.textTheme.headlineLarge?.copyWith(
+                    style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w800,
+                      height: 1.08,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     subtitle,
-                    style: theme.textTheme.bodyLarge?.copyWith(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: scheme.onSurfaceVariant,
+                      height: 1.35,
                     ),
                   ),
                 ],
@@ -105,11 +107,11 @@ class HomeHeader extends StatelessWidget {
                 children: [
                   GlassPanel(
                     padding: const EdgeInsets.all(4),
-                    borderRadius: BorderRadius.circular(26),
+                    borderRadius: BorderRadius.circular(24),
                     shadowColor: scheme.primary,
                     child: SizedBox(
-                      width: 62,
-                      height: 62,
+                      width: 56,
+                      height: 56,
                       child: ClipOval(
                         child:
                             profileImageUrl == null || profileImageUrl!.isEmpty
@@ -127,10 +129,13 @@ class HomeHeader extends StatelessWidget {
                                 child: Icon(
                                   Icons.person_rounded,
                                   color: scheme.primary,
-                                  size: 28,
+                                  size: 24,
                                 ),
                               )
-                            : AppMedia(imageUrl: profileImageUrl),
+                            : AppMedia(
+                                imageUrl: profileImageUrl,
+                                fallbackImageUrl: AppMedia.profilePlaceholder,
+                              ),
                       ),
                     ),
                   ),
@@ -163,15 +168,15 @@ class HomeHeader extends StatelessWidget {
                 onTap: onLocationTap,
                 child: GlassPanel(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                    horizontal: 14,
+                    vertical: 12,
                   ),
                   borderRadius: BorderRadius.circular(22),
                   child: Row(
                     children: [
                       Container(
-                        width: 40,
-                        height: 40,
+                        width: 36,
+                        height: 36,
                         decoration: BoxDecoration(
                           color: scheme.primary.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(16),
@@ -179,10 +184,10 @@ class HomeHeader extends StatelessWidget {
                         child: Icon(
                           Icons.place_rounded,
                           color: scheme.primary,
-                          size: 20,
+                          size: 18,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,12 +196,13 @@ class HomeHeader extends StatelessWidget {
                               copy.nearby,
                               style: theme.textTheme.labelMedium?.copyWith(
                                 color: scheme.onSurfaceVariant,
+                                fontSize: 11,
                               ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               currentLocation,
-                              style: theme.textTheme.titleMedium?.copyWith(
+                              style: theme.textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -216,7 +222,7 @@ class HomeHeader extends StatelessWidget {
             ScaleTap(
               onTap: onNotificationTap,
               child: GlassPanel(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.all(12),
                 borderRadius: BorderRadius.circular(22),
                 child: Stack(
                   clipBehavior: Clip.none,
@@ -224,7 +230,7 @@ class HomeHeader extends StatelessWidget {
                     Icon(
                       Icons.notifications_none_rounded,
                       color: scheme.onSurface,
-                      size: 24,
+                      size: 22,
                     ),
                     Positioned(
                       right: -2,

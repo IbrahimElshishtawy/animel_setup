@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:animel_core/features/auth/presentation/welcome_auth_screen.dart';
+import 'package:animel_core/features/favorites/presentation/favorites_screen.dart';
 import 'package:animel_core/features/home/presentation/animal_detail_screen.dart';
+import 'package:animel_core/features/notifications/presentation/notifications_screen.dart';
 import 'package:animel_core/features/profile/presentation/contact_screen.dart';
 import 'package:animel_core/features/profile/presentation/profile_language_screen.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +106,10 @@ class AppRouter {
       ),
       _route(path: '/home', builder: (context, state) => const HomeScreen()),
       _route(
+        path: '/favorites',
+        builder: (context, state) => const FavoritesScreen(),
+      ),
+      _route(
         path: '/animal-list',
         builder: (context, state) => const AnimalListScreen(),
       ),
@@ -117,6 +123,10 @@ class AppRouter {
       _route(
         path: '/search',
         builder: (context, state) => const SearchScreen(),
+      ),
+      _route(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
       ),
       _route(
         path: '/report',

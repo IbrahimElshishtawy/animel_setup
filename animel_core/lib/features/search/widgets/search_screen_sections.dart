@@ -24,8 +24,8 @@ class SearchHeroCard extends StatelessWidget {
     final scheme = theme.colorScheme;
 
     return GlassPanel(
-      padding: const EdgeInsets.all(20),
-      borderRadius: BorderRadius.circular(30),
+      padding: const EdgeInsets.all(18),
+      borderRadius: BorderRadius.circular(28),
       gradientColors: [
         scheme.primary.withOpacity(0.14),
         scheme.secondary.withOpacity(0.08),
@@ -35,18 +35,19 @@ class SearchHeroCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: theme.textTheme.headlineMedium?.copyWith(
+            style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             subtitle,
-            style: theme.textTheme.bodyMedium?.copyWith(
+            style: theme.textTheme.bodySmall?.copyWith(
               color: scheme.onSurfaceVariant,
+              height: 1.35,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           Row(
             children: [
               Expanded(
@@ -86,8 +87,8 @@ class _SearchHeroMetric extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassPanel(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      borderRadius: BorderRadius.circular(20),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      borderRadius: BorderRadius.circular(18),
       shadowOpacity: 0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,13 +97,14 @@ class _SearchHeroMetric extends StatelessWidget {
             value,
             style: Theme.of(
               context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontSize: 11,
             ),
           ),
         ],
@@ -132,20 +134,20 @@ class SearchQueryBar extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return GlassPanel(
-      padding: const EdgeInsets.all(10),
-      borderRadius: BorderRadius.circular(28),
+      padding: const EdgeInsets.all(9),
+      borderRadius: BorderRadius.circular(24),
       child: Row(
         children: [
           Container(
-            width: 46,
-            height: 46,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: scheme.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(15),
             ),
-            child: Icon(Icons.search_rounded, color: scheme.primary),
+            child: Icon(Icons.search_rounded, color: scheme.primary, size: 20),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,6 +166,7 @@ class SearchQueryBar extends StatelessWidget {
                   subhint,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: scheme.onSurfaceVariant,
+                    fontSize: 11,
                   ),
                 ),
               ],
@@ -201,7 +204,7 @@ class SearchFilterTabs extends StatelessWidget {
     ];
 
     return SizedBox(
-      height: 44,
+      height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: items.length,
@@ -213,7 +216,7 @@ class SearchFilterTabs extends StatelessWidget {
           return ScaleTap(
             onTap: () => onChanged(item.$1),
             child: GlassPanel(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
               borderRadius: BorderRadius.circular(AppRadius.pill),
               gradientColors: isSelected
                   ? [
@@ -224,10 +227,11 @@ class SearchFilterTabs extends StatelessWidget {
               shadowOpacity: 0,
               child: Text(
                 item.$2,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: isSelected
                       ? Theme.of(context).colorScheme.primary
                       : Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -292,7 +296,7 @@ class SearchExplorerCards extends StatelessWidget {
             crossAxisCount: compact ? 1 : 3,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: compact ? 2.8 : 1.08,
+            childAspectRatio: compact ? 3.1 : 1.18,
           ),
           itemBuilder: (context, index) {
             final card = cards[index];
@@ -340,52 +344,60 @@ class SearchExplorerCard extends StatelessWidget {
     return ScaleTap(
       onTap: onTap,
       child: GlassPanel(
-        padding: const EdgeInsets.all(16),
-        borderRadius: BorderRadius.circular(26),
+        padding: const EdgeInsets.all(12),
+        borderRadius: BorderRadius.circular(22),
         gradientColors: isSelected
             ? [
                 scheme.primary.withOpacity(0.18),
                 scheme.secondary.withOpacity(0.12),
               ]
             : null,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: scheme.primary.withOpacity(isSelected ? 0.16 : 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Icon(icon, color: scheme.primary),
-                ),
-                const Spacer(),
-                Text(
-                  value,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: isSelected ? scheme.primary : null,
-                  ),
-                ),
-              ],
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: scheme.primary.withOpacity(isSelected ? 0.16 : 0.1),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: Icon(icon, color: scheme.primary, size: 19),
             ),
-            const SizedBox(height: 14),
-            Text(
-              title,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w800,
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12.5,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 10.5,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(width: 8),
             Text(
-              subtitle,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
+              value,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: isSelected ? scheme.primary : null,
               ),
             ),
           ],
@@ -426,7 +438,7 @@ class SearchResultSummaryBar extends StatelessWidget {
     };
 
     return GlassPanel(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       borderRadius: BorderRadius.circular(22),
       shadowOpacity: 0,
       child: Row(
@@ -436,7 +448,7 @@ class SearchResultSummaryBar extends StatelessWidget {
               label,
               style: Theme.of(
                 context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
             ),
           ),
           Container(
@@ -447,8 +459,9 @@ class SearchResultSummaryBar extends StatelessWidget {
             ),
             child: Text(
               '$count',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),
@@ -480,7 +493,7 @@ class SearchProductsSection extends StatelessWidget {
               crossAxisCount: columns,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 0.72,
+              childAspectRatio: 0.82,
             ),
             itemBuilder: (context, index) {
               final item = items[index];
@@ -508,7 +521,7 @@ class SearchAnimalsSection extends StatelessWidget {
       title: context.copy.adoptionSpotlight,
       subtitle: context.copy.searchAnimalsLabel,
       child: SizedBox(
-        height: 320,
+        height: 292,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: animals.length,
@@ -517,7 +530,7 @@ class SearchAnimalsSection extends StatelessWidget {
             final animal = animals[index];
             return AnimalCard(
               animal: animal,
-              width: 228,
+              width: 210,
               onTap: () => context.push('/animal-details', extra: animal),
             );
           },
@@ -573,14 +586,15 @@ class _SearchSectionShell extends StatelessWidget {
           title,
           style: Theme.of(
             context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 6),
         Text(
           subtitle,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: scheme.onSurfaceVariant,
+            height: 1.35,
+          ),
         ),
         const SizedBox(height: 14),
         child,
@@ -600,51 +614,55 @@ class _ServiceHelperCard extends StatelessWidget {
     final scheme = theme.colorScheme;
 
     return GlassPanel(
-      padding: const EdgeInsets.all(16),
-      borderRadius: BorderRadius.circular(24),
+      padding: const EdgeInsets.all(14),
+      borderRadius: BorderRadius.circular(22),
       child: Row(
         children: [
           Container(
-            width: 52,
-            height: 52,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               color: helper.accent.withOpacity(0.14),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(helper.icon, color: helper.accent),
+            child: Icon(helper.icon, color: helper.accent, size: 20),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   helper.title,
-                  style: theme.textTheme.titleMedium?.copyWith(
+                  style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 3),
                 Text(
                   helper.subtitle,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: scheme.onSurfaceVariant,
+                    height: 1.3,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 7),
                 Row(
                   children: [
-                    Icon(Icons.star_rounded, size: 16, color: scheme.secondary),
+                    Icon(Icons.star_rounded, size: 14, color: scheme.secondary),
                     const SizedBox(width: 4),
                     Text(
                       helper.rating.toStringAsFixed(1),
-                      style: theme.textTheme.labelLarge,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Text(
                       helper.badge,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: scheme.onSurfaceVariant,
+                        fontSize: 11,
                       ),
                     ),
                   ],

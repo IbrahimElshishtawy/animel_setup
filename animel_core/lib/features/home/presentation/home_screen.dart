@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/localization/app_copy.dart';
 import '../../../core/models/animal_model.dart';
 import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/app_media.dart';
 import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../../core/widgets/fade_in_animation.dart';
 import '../../../core/widgets/shimmer_box.dart';
@@ -146,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             subtitle: copy.homeHeroSubtitle,
                             profileImageUrl: profileImageUrl,
                             onProfileTap: () => context.go('/profile'),
-                            onNotificationTap: () {},
+                            onNotificationTap: () =>
+                                context.push('/notifications'),
                             currentLocation: authState is Authenticated
                                 ? (authState.user.location ?? copy.nearby)
                                 : copy.nearby,
@@ -306,21 +308,31 @@ class _HomeSectionHeader extends StatelessWidget {
               Text(
                 title,
                 style: theme.textTheme.headlineSmall?.copyWith(
+                  fontSize: 22,
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: theme.textTheme.bodyMedium?.copyWith(
+                style: theme.textTheme.bodySmall?.copyWith(
                   color: scheme.onSurfaceVariant,
+                  height: 1.35,
                 ),
               ),
             ],
           ),
         ),
         if (actionLabel != null && onTap != null)
-          TextButton(onPressed: onTap, child: Text(actionLabel!)),
+          TextButton(
+            onPressed: onTap,
+            child: Text(
+              actionLabel!,
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -361,7 +373,7 @@ class _FeaturedAnimalsSection extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             SizedBox(
-              height: 360,
+              height: 328,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
@@ -405,9 +417,9 @@ class _ProductsSection extends StatelessWidget {
           itemCount: HomeContent.products.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            childAspectRatio: width >= 760 ? 0.78 : 0.67,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
+            childAspectRatio: width >= 760 ? 0.86 : 0.74,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
           ),
           itemBuilder: (context, index) {
             final item = HomeContent.products[index];
@@ -467,38 +479,24 @@ class _NearbyAnimalsSection extends StatelessWidget {
               actionLabel: copy.openMap,
               onTap: () => context.push('/map'),
             ),
-            const SizedBox(height: 18),
-            SizedBox(
-              height: 172,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 11,
-                    child: _MapPreviewCard(onTap: () => context.push('/map')),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    flex: 16,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: nearbyItems.length,
-                      separatorBuilder: (_, _) => const SizedBox(width: 12),
-                      itemBuilder: (context, index) {
-                        final item = nearbyItems[index];
+            const SizedBox(height: 16),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: nearbyItems.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final item = nearbyItems[index];
 
-                        return _NearbyAnimalCard(
-                          data: item,
-                          onTap: () => context.push(
-                            '/animal-details',
-                            extra: item.animal,
-                          ),
-                        );
-                      },
-                    ),
+                return SizedBox(
+                  height: 118,
+                  child: _NearbyAnimalCard(
+                    data: item,
+                    onTap: () =>
+                        context.push('/animal-details', extra: item.animal),
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         );
@@ -539,7 +537,7 @@ class _AdoptionSpotlightSection extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             SizedBox(
-              height: 332,
+              height: 300,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
@@ -563,145 +561,6 @@ class _AdoptionSpotlightSection extends StatelessWidget {
   }
 }
 
-class _MapPreviewCard extends StatelessWidget {
-  const _MapPreviewCard({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final copy = context.copy;
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(28),
-        child: Ink(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
-            gradient: LinearGradient(
-              colors: [
-                scheme.primary.withOpacity(0.92),
-                scheme.secondary.withOpacity(0.88),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: AppShadows.soft(scheme.primary, opacity: 0.18),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                left: 18,
-                top: 22,
-                right: 18,
-                bottom: 22,
-                child: Opacity(
-                  opacity: 0.18,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Colors.white),
-                    ),
-                    child: CustomPaint(painter: _MapLinesPainter()),
-                  ),
-                ),
-              ),
-              const Positioned(left: 34, top: 42, child: _MapPinMarker()),
-              const Positioned(right: 30, top: 62, child: _MapPinMarker()),
-              Positioned(
-                left: 18,
-                right: 18,
-                bottom: 18,
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.16),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        copy.discoverNearby,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        copy.discoverNearbySubtitle,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white.withOpacity(0.84),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MapPinMarker extends StatelessWidget {
-  const _MapPinMarker();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 26,
-      height: 26,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: AppShadows.soft(Colors.black, opacity: 0.16),
-      ),
-      child: Icon(
-        Icons.place_rounded,
-        color: Theme.of(context).colorScheme.primary,
-        size: 16,
-      ),
-    );
-  }
-}
-
-class _MapLinesPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.3;
-
-    final horizontalStep = size.height / 4;
-    final verticalStep = size.width / 4;
-
-    for (var i = 1; i < 4; i++) {
-      canvas.drawLine(
-        Offset(0, horizontalStep * i),
-        Offset(size.width, horizontalStep * i),
-        paint,
-      );
-      canvas.drawLine(
-        Offset(verticalStep * i, 0),
-        Offset(verticalStep * i, size.height),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 class _NearbyAnimalCard extends StatelessWidget {
   const _NearbyAnimalCard({required this.data, required this.onTap});
 
@@ -710,58 +569,73 @@ class _NearbyAnimalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final copy = context.copy;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final imageUrl = data.animal.imageUrls.isEmpty
         ? null
         : data.animal.imageUrls.first;
 
-    return SizedBox(
-      width: 152,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(24),
-          child: Ink(
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: scheme.outlineVariant.withOpacity(0.78),
-              ),
-              boxShadow: AppShadows.soft(Colors.black, opacity: 0.04),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(24),
-                    ),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.network(
-                          imageUrl ?? '',
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => Image.asset(
-                            'assets/image/image.png',
-                            fit: BoxFit.cover,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: scheme.outlineVariant.withOpacity(0.78)),
+            boxShadow: AppShadows.soft(Colors.black, opacity: 0.04),
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(24),
+                ),
+                child: SizedBox(
+                  width: 104,
+                  height: double.infinity,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      AppMedia(
+                        imageUrl: imageUrl,
+                        fallbackImageUrl: AppMedia.animalPlaceholder,
+                      ),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.black.withOpacity(0.02),
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.28),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
                           ),
                         ),
-                        Positioned(
-                          left: 10,
-                          top: 10,
-                          child: Container(
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 5,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.92),
+                              color: scheme.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(
                                 AppRadius.pill,
                               ),
@@ -771,19 +645,23 @@ class _NearbyAnimalCard extends StatelessWidget {
                               style: theme.textTheme.labelSmall?.copyWith(
                                 color: scheme.primary,
                                 fontWeight: FontWeight.w800,
+                                fontSize: 10.5,
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                          const Spacer(),
+                          Text(
+                            data.typeLabel,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: scheme.secondary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
                       Text(
                         data.animal.name,
                         maxLines: 1,
@@ -794,16 +672,29 @@ class _NearbyAnimalCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        data.typeLabel,
+                        '${data.animal.breed} • ${data.animal.location}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: scheme.onSurfaceVariant,
+                          fontSize: 11,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        data.animal.isForAdoption
+                            ? 'Adopt'
+                            : '\$${data.animal.price.toStringAsFixed(0)}',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: scheme.primary,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -825,10 +716,10 @@ class _AdoptionSpotlightCard extends StatelessWidget {
     final imageUrl = animal.imageUrls.isEmpty ? null : animal.imageUrls.first;
 
     return SizedBox(
-      width: 286,
+      width: 256,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(28),
           gradient: LinearGradient(
             colors: [
               const Color(
@@ -848,26 +739,24 @@ class _AdoptionSpotlightCard extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(30),
+                  top: Radius.circular(28),
                 ),
-                child: Image.network(
-                  imageUrl ?? '',
-                  fit: BoxFit.cover,
+                child: AppMedia(
+                  imageUrl: imageUrl,
                   width: double.infinity,
-                  errorBuilder: (_, _, _) =>
-                      Image.asset('assets/image/image.png', fit: BoxFit.cover),
+                  fallbackImageUrl: AppMedia.animalPlaceholder,
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
+                      horizontal: 9,
+                      vertical: 5,
                     ),
                     decoration: BoxDecoration(
                       color: scheme.secondary.withOpacity(0.14),
@@ -878,13 +767,14 @@ class _AdoptionSpotlightCard extends StatelessWidget {
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: scheme.secondary,
                         fontWeight: FontWeight.w800,
+                        fontSize: 10.5,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   Text(
                     animal.name,
-                    style: theme.textTheme.titleLarge?.copyWith(
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -893,23 +783,33 @@ class _AdoptionSpotlightCard extends StatelessWidget {
                     '${animal.breed} / ${animal.age}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: scheme.onSurfaceVariant,
+                      fontSize: 11,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     animal.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.bodySmall?.copyWith(
                       color: scheme.onSurfaceVariant,
+                      height: 1.35,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: onTap,
-                      child: Text(copy.adoptNow),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(40),
+                      ),
+                      child: Text(
+                        copy.adoptNow,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                 ],

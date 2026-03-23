@@ -215,10 +215,34 @@ class AdoptionListCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                  color: scheme.onSurfaceVariant,
+                Column(
+                  children: [
+                    BlocBuilder<FavoritesCubit, Set<String>>(
+                      builder: (context, favorites) {
+                        final isFavorite = favorites.contains(animal.id);
+                        return IconButton(
+                          onPressed: () => context
+                              .read<FavoritesCubit>()
+                              .toggleAnimal(animal.id),
+                          icon: Icon(
+                            isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            size: 20,
+                            color: isFavorite
+                                ? scheme.secondary
+                                : scheme.onSurfaceVariant,
+                          ),
+                        );
+                      },
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ],
                 ),
               ],
             ),

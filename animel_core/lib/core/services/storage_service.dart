@@ -5,6 +5,7 @@ class StorageService {
   final _storage = const FlutterSecureStorage();
   static const String _tokenKey = 'auth_token';
   static const String _userIdKey = 'user_id';
+  static const String _favoriteAnimalIdsKey = 'favorite_animal_ids';
 
   String _journeyKey(String userId) => 'user_journey_$userId';
 
@@ -38,6 +39,16 @@ class StorageService {
   Future<String?> getUserJourney(String userId) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_journeyKey(userId));
+  }
+
+  Future<List<String>> getFavoriteAnimalIds() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_favoriteAnimalIdsKey) ?? const [];
+  }
+
+  Future<void> saveFavoriteAnimalIds(List<String> ids) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_favoriteAnimalIdsKey, ids);
   }
 
   Future<void> clearAll() async {

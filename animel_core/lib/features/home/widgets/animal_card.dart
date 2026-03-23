@@ -1,12 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/models/animal_model.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
 import '../../../core/widgets/glass_panel.dart';
+import '../../favorites/logic/favorites_cubit.dart';
 
 class AnimalCard extends StatelessWidget {
   AnimalCard({
@@ -45,11 +47,15 @@ class AnimalCard extends StatelessWidget {
     final imageUrl = animal.imageUrls.isEmpty ? null : animal.imageUrls.first;
 
     final card = ClipRRect(
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(28),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          AppMedia(imageUrl: imageUrl, heroTag: heroTag),
+          AppMedia(
+            imageUrl: imageUrl,
+            heroTag: heroTag,
+            fallbackImageUrl: AppMedia.animalPlaceholder,
+          ),
           DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -64,50 +70,59 @@ class AnimalCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 14,
-            top: 14,
-            right: 14,
-            child: Row(
-              children: [
-                GlassPanel(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
+            left: 12,
+            top: 12,
+            child: GlassPanel(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+              blurSigma: 12,
+              shadowOpacity: 0,
+              borderColor: Colors.white.withOpacity(0.24),
+              gradientColors: [
+                Colors.white.withOpacity(isDark ? 0.18 : 0.28),
+                Colors.white.withOpacity(isDark ? 0.12 : 0.18),
+              ],
+              child: Text(
+                _badgeLabel,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 10,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 12,
+            right: 12,
+            child: BlocBuilder<FavoritesCubit, Set<String>>(
+              builder: (context, favorites) {
+                final isFavorite = favorites.contains(animal.id);
+
+                return GestureDetector(
+                  onTap: () => context.read<FavoritesCubit>().toggleAnimal(
+                    animal.id,
                   ),
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                  blurSigma: 12,
-                  shadowOpacity: 0,
-                  borderColor: Colors.white.withOpacity(0.24),
-                  gradientColors: [
-                    Colors.white.withOpacity(isDark ? 0.18 : 0.28),
-                    Colors.white.withOpacity(isDark ? 0.12 : 0.18),
-                  ],
-                  child: Text(
-                    _badgeLabel,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
+                  child: GlassPanel(
+                    padding: const EdgeInsets.all(8),
+                    borderRadius: BorderRadius.circular(999),
+                    blurSigma: 12,
+                    shadowOpacity: 0,
+                    borderColor: Colors.white.withOpacity(0.24),
+                    gradientColors: [
+                      Colors.white.withOpacity(isDark ? 0.18 : 0.28),
+                      Colors.white.withOpacity(isDark ? 0.12 : 0.18),
+                    ],
+                    child: Icon(
+                      isFavorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      size: 16,
+                      color: isFavorite ? scheme.secondary : Colors.white,
                     ),
                   ),
-                ),
-                const Spacer(),
-                GlassPanel(
-                  padding: const EdgeInsets.all(10),
-                  borderRadius: BorderRadius.circular(16),
-                  blurSigma: 12,
-                  shadowOpacity: 0,
-                  borderColor: Colors.white.withOpacity(0.24),
-                  gradientColors: [
-                    Colors.white.withOpacity(isDark ? 0.18 : 0.28),
-                    Colors.white.withOpacity(isDark ? 0.12 : 0.18),
-                  ],
-                  child: const Icon(
-                    Icons.favorite_border_rounded,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ),
           Positioned(
@@ -115,8 +130,8 @@ class AnimalCard extends StatelessWidget {
             right: 12,
             bottom: 12,
             child: GlassPanel(
-              padding: const EdgeInsets.all(14),
-              borderRadius: BorderRadius.circular(24),
+              padding: const EdgeInsets.all(12),
+              borderRadius: BorderRadius.circular(22),
               blurSigma: 18,
               borderColor: Colors.white.withOpacity(0.18),
               gradientColors: [
@@ -131,12 +146,12 @@ class AnimalCard extends StatelessWidget {
                     animal.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleLarge?.copyWith(
+                    style: theme.textTheme.titleMedium?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     animal.breed,
                     maxLines: 1,
@@ -153,10 +168,10 @@ class AnimalCard extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.place_rounded,
-                              size: 15,
+                              size: 13,
                               color: Colors.white.withOpacity(0.76),
                             ),
-                            const SizedBox(width: 5),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Text(
                                 animal.location,
@@ -164,6 +179,7 @@ class AnimalCard extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.labelMedium?.copyWith(
                                   color: Colors.white.withOpacity(0.82),
+                                  fontSize: 11.5,
                                 ),
                               ),
                             ),
@@ -175,7 +191,7 @@ class AnimalCard extends StatelessWidget {
                         animal.isForAdoption
                             ? 'Adopt'
                             : _currency.format(animal.price),
-                        style: theme.textTheme.titleMedium?.copyWith(
+                        style: theme.textTheme.titleSmall?.copyWith(
                           color: scheme.secondary,
                           fontWeight: FontWeight.w800,
                         ),
@@ -196,10 +212,10 @@ class AnimalCard extends StatelessWidget {
         onTap: onTap,
         scaleDown: 0.975,
         child: AspectRatio(
-          aspectRatio: 0.76,
+          aspectRatio: 0.8,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(28),
               boxShadow: AppShadows.soft(
                 scheme.primary,
                 opacity: isDark ? 0.18 : 0.1,

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/models/animal_model.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_media.dart';
+import '../../favorites/logic/favorites_cubit.dart';
 import '../logic/adoption_bloc.dart';
 
 class AdoptionDetailScreen extends StatelessWidget {
@@ -38,6 +39,22 @@ class AdoptionDetailScreen extends StatelessWidget {
             SliverAppBar(
               pinned: true,
               expandedHeight: 320,
+              actions: [
+                BlocBuilder<FavoritesCubit, Set<String>>(
+                  builder: (context, favorites) {
+                    final isFavorite = favorites.contains(animal.id);
+                    return IconButton(
+                      icon: Icon(
+                        isFavorite
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                      ),
+                      onPressed: () =>
+                          context.read<FavoritesCubit>().toggleAnimal(animal.id),
+                    );
+                  },
+                ),
+              ],
               flexibleSpace: FlexibleSpaceBar(
                 background: AppMedia(
                   imageUrl: imageUrl,

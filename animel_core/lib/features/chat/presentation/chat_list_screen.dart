@@ -6,8 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/models/conversation_model.dart';
+import '../../../core/models/user_journey.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/app_media.dart';
 import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
@@ -56,20 +58,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       children: [
                         Text(
                           'Messages',
-                          style: theme.textTheme.headlineMedium?.copyWith(
+                          style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 6),
                         Text(
                           'Keep seller, adopter, and helper conversations tidy with a calmer messaging layout.',
-                          style: theme.textTheme.bodyMedium?.copyWith(
+                          style: theme.textTheme.bodySmall?.copyWith(
                             color: scheme.onSurfaceVariant,
+                            height: 1.35,
                           ),
                         ),
-                        const SizedBox(height: 18),
+                        const SizedBox(height: 16),
                         Container(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(18),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(AppRadius.lg),
                             gradient: LinearGradient(
@@ -92,38 +95,95 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                   children: [
                                     Text(
                                       'Conversation hub',
-                                      style: theme.textTheme.labelLarge
+                                      style: theme.textTheme.labelMedium
                                           ?.copyWith(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w800,
                                           ),
                                     ),
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 4),
                                     Text(
                                       '${state.conversations.length} active threads',
-                                      style: theme.textTheme.headlineSmall
+                                      style: theme.textTheme.titleLarge
                                           ?.copyWith(color: Colors.white),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: [
+                                        _ChatStatChip(
+                                          label: 'Unread',
+                                          value:
+                                              '${state.conversations.where((conversation) => conversation.lastMessage.isNotEmpty).length}',
+                                        ),
+                                        _ChatStatChip(
+                                          label: 'Adoption',
+                                          value:
+                                              '${state.conversations.length ~/ 2}',
+                                        ),
+                                        _ChatStatChip(
+                                          label: 'Shop',
+                                          value:
+                                              '${state.conversations.length - (state.conversations.length ~/ 2)}',
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
                               Container(
-                                width: 60,
-                                height: 60,
+                                width: 54,
+                                height: 54,
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.12),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: const Icon(
                                   Icons.forum_outlined,
                                   color: Colors.white,
-                                  size: 28,
+                                  size: 24,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 18),
+                        const SizedBox(height: 14),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.cardColor,
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(color: scheme.outlineVariant),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.search_rounded,
+                                color: scheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Search conversations',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                Icons.tune_rounded,
+                                color: scheme.onSurfaceVariant,
+                                size: 18,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -206,6 +266,7 @@ class _ConversationTile extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final lastTimestamp = conversation.lastMessageAt;
+    final avatarUrl = participant?.profileImageUrl;
 
     return Material(
       color: Colors.transparent,
@@ -221,40 +282,88 @@ class _ConversationTile extends StatelessWidget {
               ),
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: Ink(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: theme.cardColor,
-            borderRadius: BorderRadius.circular(AppRadius.md),
+            borderRadius: BorderRadius.circular(24),
             border: Border.all(color: scheme.outlineVariant),
             boxShadow: AppShadows.soft(Colors.black, opacity: 0.04),
           ),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 26,
-                backgroundColor: scheme.primary.withOpacity(0.12),
-                child: Text(
-                  (participant?.name.isNotEmpty ?? false)
-                      ? participant!.name.characters.first.toUpperCase()
-                      : 'A',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: scheme.primary,
-                    fontWeight: FontWeight.w800,
-                  ),
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  color: scheme.primary.withOpacity(0.08),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: avatarUrl != null && avatarUrl.isNotEmpty
+                      ? AppMedia(
+                          imageUrl: avatarUrl,
+                          fallbackImageUrl: AppMedia.profilePlaceholder,
+                        )
+                      : DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                scheme.primary.withOpacity(0.18),
+                                scheme.secondary.withOpacity(0.14),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              (participant?.name.isNotEmpty ?? false)
+                                  ? participant!.name.characters.first
+                                        .toUpperCase()
+                                  : 'A',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: scheme.primary,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ),
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            participant?.name ?? 'Animal Connect',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        if (lastTimestamp != null)
+                          Text(
+                            DateFormat('h:mm a').format(lastTimestamp),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
                     Text(
-                      participant?.name ?? 'Animal Connect',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
+                      participant?.journey?.title ?? 'Community support',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: scheme.primary,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     Text(
                       conversation.lastMessage.isEmpty
                           ? 'Start the conversation'
@@ -263,22 +372,53 @@ class _ConversationTile extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: scheme.onSurfaceVariant,
+                        height: 1.35,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              Text(
-                lastTimestamp == null
-                    ? ''
-                    : DateFormat('h:mm a').format(lastTimestamp),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
+              const SizedBox(width: 10),
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: scheme.primary.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.arrow_forward_rounded,
+                  color: scheme.primary,
+                  size: 18,
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ChatStatChip extends StatelessWidget {
+  const _ChatStatChip({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.14),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+      ),
+      child: Text(
+        '$label $value',
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

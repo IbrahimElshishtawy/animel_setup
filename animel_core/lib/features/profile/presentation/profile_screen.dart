@@ -287,6 +287,26 @@ class _IndividualProfileView extends StatelessWidget {
         ),
         const SizedBox(height: 18),
         FadeInAnimation(
+          delay: const Duration(milliseconds: 230),
+          child: _ShortcutRow(
+            items: [
+              _ShortcutData(
+                title: 'Edit account',
+                subtitle: 'Update photo, bio, and contact details.',
+                icon: Icons.manage_accounts_rounded,
+                onTap: () => context.push('/profile/account'),
+              ),
+              _ShortcutData(
+                title: 'My pets',
+                subtitle: 'Manage your pet profiles in one place.',
+                icon: Icons.pets_rounded,
+                onTap: () => context.push('/profile/pets'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
+        FadeInAnimation(
           delay: const Duration(milliseconds: 250),
           child: _SummaryRow(
             left: _MiniCard(
@@ -431,6 +451,26 @@ class _BusinessProfileView extends StatelessWidget {
                 Icons.near_me_rounded,
                 false,
                 () => context.push('/map'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
+        FadeInAnimation(
+          delay: const Duration(milliseconds: 230),
+          child: _ShortcutRow(
+            items: [
+              _ShortcutData(
+                title: 'Shop profile',
+                subtitle: 'Adjust account details and cover image.',
+                icon: Icons.storefront_rounded,
+                onTap: () => context.push('/profile/account'),
+              ),
+              _ShortcutData(
+                title: 'Add pet listing',
+                subtitle: 'Open the compact form for a new animal card.',
+                icon: Icons.add_box_rounded,
+                onTap: () => context.push('/profile/pets/add-step1'),
               ),
             ],
           ),
@@ -845,6 +885,59 @@ class _ActionRow extends StatelessWidget {
   }
 }
 
+class _ShortcutRow extends StatelessWidget {
+  const _ShortcutRow({required this.items});
+
+  final List<_ShortcutData> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: List.generate(items.length, (index) {
+        final item = items[index];
+
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: index == items.length - 1 ? 0 : 12),
+            child: ScaleTap(
+              onTap: item.onTap,
+              child: GlassPanel(
+                padding: const EdgeInsets.all(14),
+                borderRadius: BorderRadius.circular(22),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      item.icon,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      item.title,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item.subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
 class _SummaryRow extends StatelessWidget {
   const _SummaryRow({required this.left, required this.right});
 
@@ -1109,7 +1202,7 @@ class _AnimalGrid extends StatelessWidget {
                 crossAxisCount: columns,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                mainAxisExtent: 320,
+                mainAxisExtent: 300,
               ),
               itemBuilder: (context, index) {
                 final animal = items[index];
@@ -1245,7 +1338,7 @@ class _ProductGrid extends StatelessWidget {
                 crossAxisCount: columns,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                mainAxisExtent: 300,
+                mainAxisExtent: 284,
               ),
               itemBuilder: (context, index) {
                 final item = products[index];
@@ -1471,4 +1564,18 @@ class _InfoData {
   final String title;
   final String value;
   final IconData icon;
+}
+
+class _ShortcutData {
+  const _ShortcutData({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final VoidCallback onTap;
 }

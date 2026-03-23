@@ -14,6 +14,7 @@ import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/loading_widget.dart';
+import '../../favorites/logic/favorites_cubit.dart';
 import '../logic/adoption_bloc.dart';
 
 part '../widgets/adoption_list_screen_sections.dart';

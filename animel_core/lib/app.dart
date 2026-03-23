@@ -12,6 +12,7 @@ import 'features/adoption/logic/adoption_bloc.dart';
 import 'features/shop/logic/shop_bloc.dart';
 import 'features/auth/logic/auth_bloc.dart';
 import 'features/chat/logic/chat_bloc.dart';
+import 'features/favorites/logic/favorites_cubit.dart';
 
 class AnimalConnectApp extends StatefulWidget {
   const AnimalConnectApp({super.key});
@@ -28,6 +29,7 @@ class _AnimalConnectAppState extends State<AnimalConnectApp> {
   late final AdoptionBloc _adoptionBloc;
   late final ShopBloc _shopBloc;
   late final ChatBloc _chatBloc;
+  late final FavoritesCubit _favoritesCubit;
   late final AppRouter _appRouter;
 
   @override
@@ -40,6 +42,7 @@ class _AnimalConnectAppState extends State<AnimalConnectApp> {
     _adoptionBloc = AdoptionBloc();
     _shopBloc = ShopBloc();
     _chatBloc = ChatBloc();
+    _favoritesCubit = FavoritesCubit()..loadFavorites();
     _appRouter = AppRouter(_authBloc);
   }
 
@@ -47,6 +50,7 @@ class _AnimalConnectAppState extends State<AnimalConnectApp> {
   void dispose() {
     _appRouter.dispose();
     _chatBloc.close();
+    _favoritesCubit.close();
     _shopBloc.close();
     _adoptionBloc.close();
     _animalBloc.close();
@@ -67,6 +71,7 @@ class _AnimalConnectAppState extends State<AnimalConnectApp> {
         BlocProvider.value(value: _adoptionBloc),
         BlocProvider.value(value: _shopBloc),
         BlocProvider.value(value: _chatBloc),
+        BlocProvider.value(value: _favoritesCubit),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
