@@ -10,9 +10,9 @@ import {
   getMySentAdoptionRequests,
   updateAdoptionRequestStatus,
   updateAnimal,
-} from '../controllers/animalController';
-import { authMiddleware } from '../middlewares/authMiddleware';
-import { validateBody } from '../middlewares/validate';
+} from '../../controllers/animal/animalController';
+import { authMiddleware } from '../../middlewares/authMiddleware';
+import { validateBody } from '../../middlewares/validate';
 
 const router = Router();
 

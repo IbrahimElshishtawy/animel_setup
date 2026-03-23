@@ -2,11 +2,11 @@ import cors from 'cors';
 import path from 'path';
 import dotenv from 'dotenv';
 import express from 'express';
-import animalRoutes from './routes/animalRoutes';
-import chatRoutes from './routes/chatRoutes';
+import animalRoutes from './routes/animal/animalRoutes';
+import chatRoutes from './routes/chat/chatRoutes';
 import mapRoutes from './routes/mapRoutes';
-import shopRoutes from './routes/shopRoutes';
-import userRoutes from './routes/userRoutes';
+import shopRoutes from './routes/shop/shopRoutes';
+import userRoutes from './routes/user/userRoutes';
 import { errorHandler } from './middlewares/errorMiddleware';
 import { notFoundHandler } from './middlewares/notFoundMiddleware';
 

@@ -7,9 +7,9 @@ import {
   register,
   searchUsers,
   updateProfile,
-} from '../controllers/userController';
-import { authMiddleware } from '../middlewares/authMiddleware';
-import { validateBody } from '../middlewares/validate';
+} from '../../controllers/user/userController';
+import { authMiddleware } from '../../middlewares/authMiddleware';
+import { validateBody } from '../../middlewares/validate';
 
 const router = Router();
 

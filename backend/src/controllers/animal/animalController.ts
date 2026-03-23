@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import AdoptionRequest from '../models/AdoptionRequest';
-import Animal from '../models/animal/Animal';
-import { ApiError } from '../utils/ApiError';
-import { asyncHandler } from '../utils/asyncHandler';
+import AdoptionRequest from '../../models/AdoptionRequest';
+import Animal from '../../models/animal/Animal';
+import { ApiError } from '../../utils/ApiError';
+import { asyncHandler } from '../../utils/asyncHandler';
 
 const sanitizeImageUrls = (value: unknown) =>
   Array.isArray(value)

@@ -1,10 +1,10 @@
 import type { Request, Response } from 'express';
-import Conversation from '../models/Conversation';
-import Message from '../models/massage/Message';
-import User from '../models/user/User';
-import { ensureConversation } from '../services/chatService';
-import { ApiError } from '../utils/ApiError';
-import { asyncHandler } from '../utils/asyncHandler';
+import Conversation from '../../models/Conversation';
+import Message from '../../models/massage/Message';
+import User from '../../models/user/User';
+import { ensureConversation } from '../../services/chatService';
+import { ApiError } from '../../utils/ApiError';
+import { asyncHandler } from '../../utils/asyncHandler';
 
 export const getConversations = asyncHandler(async (req: Request, res: Response) => {
   const conversations = await Conversation.find({

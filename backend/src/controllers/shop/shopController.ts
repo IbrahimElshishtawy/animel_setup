@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import Cart from '../models/Cart';
-import Product from '../models/product/Product';
-import { ApiError } from '../utils/ApiError';
-import { asyncHandler } from '../utils/asyncHandler';
+import Cart from '../../models/Cart';
+import Product from '../../models/product/Product';
+import { ApiError } from '../../utils/ApiError';
+import { asyncHandler } from '../../utils/asyncHandler';
 
 const serializeCart = async (userId: string) => {
   const cart = await Cart.findOne({ userId }).populate('items.productId');

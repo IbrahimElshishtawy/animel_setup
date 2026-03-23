@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
-import Animal from '../models/animal/Animal';
-import { defaultPlaces } from '../constants/defaultPlaces';
-import { asyncHandler } from '../utils/asyncHandler';
+import Animal from '../../models/animal/Animal';
+import { defaultPlaces } from '../../constants/defaultPlaces';
+import { asyncHandler } from '../../utils/asyncHandler';
 
 export const getMapMarkers = asyncHandler(async (req: Request, res: Response) => {
   const { isForAdoption, query } = req.query;

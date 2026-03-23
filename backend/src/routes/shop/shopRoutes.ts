@@ -8,9 +8,9 @@ import {
   getProducts,
   removeCartItem,
   updateCartItem,
-} from '../controllers/shopController';
-import { authMiddleware } from '../middlewares/authMiddleware';
-import { validateBody } from '../middlewares/validate';
+} from '../../controllers/shop/shopController';
+import { authMiddleware } from '../../middlewares/authMiddleware';
+import { validateBody } from '../../middlewares/validate';
 
 const router = Router();
 

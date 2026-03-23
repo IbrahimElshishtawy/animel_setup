@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 class AppPalette {
   static const Color ink = Color(0xFF09141A);
-  static const Color plum = Color(0xFF2A7C7E);
-  static const Color plumDeep = Color(0xFF133B46);
-  static const Color magenta = Color(0xFF5FA3A5);
-  static const Color sunset = Color(0xFFE2B07C);
+  static const Color plum = Color.fromARGB(255, 126, 69, 42);
+  static const Color plumDeep = Color.fromARGB(255, 70, 35, 19);
+  static const Color magenta = Color.fromARGB(255, 94, 66, 52);
+  static const Color sunset = Color.fromARGB(255, 246, 146, 39);
   static const Color blush = Color(0xFFF1F7F8);
   static const Color shell = Color(0xFFF4F8FA);
   static const Color surface = Color(0xFFFDFEFE);
