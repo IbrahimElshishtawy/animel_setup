@@ -5,6 +5,7 @@ class DropdownField extends StatelessWidget {
   final String value;
   final List<String> items;
   final ValueChanged<String?> onChanged;
+  final String Function(String item)? itemLabelBuilder;
 
   const DropdownField({
     super.key,
@@ -12,6 +13,7 @@ class DropdownField extends StatelessWidget {
     required this.value,
     required this.items,
     required this.onChanged,
+    this.itemLabelBuilder,
   });
 
   @override
@@ -19,24 +21,28 @@ class DropdownField extends StatelessWidget {
     return InputDecorator(
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Color(0xFFB4A4B8)),
+        labelStyle: const TextStyle(
+          color: Color(0xFF7A6D6F),
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
         filled: true,
-        fillColor: const Color(0xFFF5F2F7),
+        fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
-          vertical: 12,
+          vertical: 13,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE0D2EA), width: 1.2),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xFFE8E0D7), width: 1.1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE0D2EA), width: 1.2),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xFFE8E0D7), width: 1.1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF4B1A45), width: 1.4),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xFF7E452A), width: 1.4),
         ),
       ),
       child: DropdownButtonHideUnderline(
@@ -46,8 +52,10 @@ class DropdownField extends StatelessWidget {
           onChanged: onChanged,
           items: items
               .map(
-                (item) =>
-                    DropdownMenuItem<String>(value: item, child: Text(item)),
+                (item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(itemLabelBuilder?.call(item) ?? item),
+                ),
               )
               .toList(),
         ),

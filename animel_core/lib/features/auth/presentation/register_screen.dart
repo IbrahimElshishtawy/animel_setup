@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
+
+import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/app_text_field.dart';
+import '../logic/auth_bloc.dart';
+import '../widgets/auth_screen_frame.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -11,97 +16,225 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _firstName = TextEditingController();
-  final _lastName = TextEditingController();
-  final _email = TextEditingController();
-  final _password = TextEditingController();
-  bool _isLoading = false;
-  bool _hasPet = false;
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
 
-  Future<void> _onRegister() async {
-    setState(() => _isLoading = true);
-
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() => _isLoading = false);
-
-    if (!mounted) return;
-    context.go("/verify-email");
-  }
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _firstName.dispose();
-    _lastName.dispose();
-    _email.dispose();
-    _password.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _phoneController.dispose();
     super.dispose();
+  }
+
+  void _submit() {
+    FocusScope.of(context).unfocus();
+    if (!_formKey.currentState!.validate()) return;
+
+    context.read<AuthBloc>().add(
+      RegisterRequested({
+        'name': _nameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'password': _passwordController.text.trim(),
+        'phoneNumber': _normalizeEgyptianPhone(_phoneController.text),
+      }),
+    );
+  }
+
+  String _normalizeEgyptianPhone(String value) {
+    final text = value.trim().replaceAll(' ', '');
+
+    if (text.startsWith('+20')) {
+      return '0${text.substring(3)}';
+    }
+
+    if (text.startsWith('20') && text.length == 12) {
+      return '0${text.substring(2)}';
+    }
+
+    return text;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text("Create account")),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Join HopePaw",
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          context.go('/home');
+        } else if (state is AuthFailure) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: AuthScreenFrame(
+          title: 'Create your account',
+          subtitle:
+              'Set up your profile to buy, adopt, and connect with the Animal Connect community.',
+          form: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppTextField(
+                  label: 'Full name',
+                  controller: _nameController,
+                  hint: 'Enter your full name',
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.name],
+                  prefixIcon: const Icon(Icons.person_outline_rounded),
+                  validator: _validateName,
                 ),
-              ),
-              const SizedBox(height: 24),
-              AppTextField(label: "First name", controller: _firstName),
-              const SizedBox(height: 16),
-              AppTextField(label: "Last name", controller: _lastName),
-              const SizedBox(height: 16),
-              AppTextField(
-                label: "Email",
-                hint: "name@example.com",
-                controller: _email,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 16),
-              AppTextField(
-                label: "Password",
-                hint: "At least 8 characters",
-                controller: _password,
-                obscure: true,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Switch(
-                    value: _hasPet,
-                    onChanged: (val) => setState(() => _hasPet = val),
+                const SizedBox(height: 16),
+                AppTextField(
+                  label: 'Email',
+                  controller: _emailController,
+                  hint: 'Enter your Email',
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.email],
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  validator: _validateEmail,
+                ),
+                const SizedBox(height: 16),
+                AppTextField(
+                  label: 'Phone number',
+                  controller: _phoneController,
+                  hint: '01xxxxxxxxx',
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.telephoneNumber],
+                  prefixIcon: const Icon(Icons.phone_outlined),
+                  validator: _validateEgyptianPhone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
+                    LengthLimitingTextInputFormatter(13),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                AppTextField(
+                  label: 'Password',
+                  controller: _passwordController,
+                  hint: 'Create a secure password',
+                  obscure: _obscurePassword,
+                  textInputAction: TextInputAction.done,
+                  autofillHints: const [AutofillHints.newPassword],
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    },
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                  const Text("I already have a pet"),
-                ],
-              ),
-              const SizedBox(height: 24),
-              AppButton(
-                title: "Create account",
-                isLoading: _isLoading,
-                onPressed: _onRegister,
-              ),
-              const SizedBox(height: 16),
-              Center(
-                child: TextButton(
-                  onPressed: () => context.go("/login"),
-                  child: const Text("Already have an account? Login"),
+                  validator: _validateStrongPassword,
+                  onSubmitted: (_) => _submit(),
                 ),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  'Password must contain at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return AppButton(
+                      title: 'Create account',
+                      onPressed: _submit,
+                      isLoading: state is AuthLoading,
+                      borderRadius: 16,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          footer: TextButton(
+            onPressed: () => context.pop(),
+            child: const Text('Already have an account? Login'),
           ),
         ),
       ),
     );
+  }
+
+  String? _validateName(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Full name is required';
+    if (text.length < 3) return 'Enter a valid full name';
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Email is required';
+
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    if (!emailRegex.hasMatch(text)) return 'Enter a valid email';
+
+    return null;
+  }
+
+  String? _validateEgyptianPhone(String? value) {
+    final raw = value?.trim() ?? '';
+    if (raw.isEmpty) return 'Phone number is required';
+
+    final phone = raw.replaceAll(' ', '');
+
+    final egyptPhoneRegex = RegExp(r'^(?:\+20|20|0)?1[0125][0-9]{8}$');
+
+    if (!egyptPhoneRegex.hasMatch(phone)) {
+      return 'Enter a valid Egyptian mobile number';
+    }
+
+    final normalized = _normalizeEgyptianPhone(phone);
+
+    if (normalized.length != 11 || !normalized.startsWith('01')) {
+      return 'Enter a valid Egyptian mobile number';
+    }
+
+    return null;
+  }
+
+  String? _validateStrongPassword(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Password is required';
+    if (text.length < 8) return 'Password must be at least 8 characters';
+
+    final hasUppercase = RegExp(r'[A-Z]').hasMatch(text);
+    final hasLowercase = RegExp(r'[a-z]').hasMatch(text);
+    final hasDigit = RegExp(r'[0-9]').hasMatch(text);
+    final hasSpecialChar = RegExp(
+      r'[!@#$%^&*(),.?":{}|<>_\-\\/\[\]=+~`]',
+    ).hasMatch(text);
+
+    if (!hasUppercase) {
+      return 'Password must include at least one uppercase letter';
+    }
+    if (!hasLowercase) {
+      return 'Password must include at least one lowercase letter';
+    }
+    if (!hasDigit) {
+      return 'Password must include at least one number';
+    }
+    if (!hasSpecialChar) {
+      return 'Password must include at least one special character';
+    }
+
+    return null;
   }
 }

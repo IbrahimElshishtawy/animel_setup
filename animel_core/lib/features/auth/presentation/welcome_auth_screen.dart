@@ -1,167 +1,219 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/app_media.dart';
 
 class WelcomeAuthScreen extends StatelessWidget {
   const WelcomeAuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const lightPurple = Color(0xFFF6ECF3);
-    const purple = Color(0xFF4B1A45);
-    const orange = Color(0xFFE27D60);
-
-    final baseTextStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
-      fontWeight: FontWeight.w700,
-      fontSize: 18,
-      height: 1.4,
-    );
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: lightPurple,
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 430),
-            child: Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 24,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 28,
-                      child: Image.asset(
-                        'assets/image/image.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    const SizedBox(height: 200),
-                    Center(
-                      child: RichText(
-                        textAlign: TextAlign.left,
-                        text: TextSpan(
-                          style: baseTextStyle,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  scheme.primary.withOpacity(0.22),
+                  theme.scaffoldBackgroundColor,
+                  scheme.secondary.withOpacity(0.16),
+                ],
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: -60,
+            left: -40,
+            child: _BlurCircle(
+              size: 180,
+              color: scheme.primary.withOpacity(0.16),
+            ),
+          ),
+
+          Positioned(
+            bottom: -70,
+            right: -30,
+            child: _BlurCircle(
+              size: 200,
+              color: scheme.secondary.withOpacity(0.14),
+            ),
+          ),
+
+          SafeArea(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 460),
+                child: SingleChildScrollView(
+                  padding: AppSpacing.screenPadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 8),
+
+                      _GlassContainer(
+                        padding: const EdgeInsets.all(28),
+                        borderRadius: AppRadius.lg,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const TextSpan(text: 'Because '),
-                            TextSpan(
-                              text: 'Every Paw Deserves\n',
-                              style: baseTextStyle?.copyWith(color: purple),
+                            Center(
+                              child: const AppMedia(height: 82, width: 82),
                             ),
-                            TextSpan(
-                              text: 'To Find Its Way Home — ',
-                              style: baseTextStyle?.copyWith(color: orange),
-                            ),
-                            TextSpan(
-                              text:
-                                  '\nYour All-In-One App For Animal\nCare, Rescue, And Adoption',
-                              style: baseTextStyle?.copyWith(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w600,
+                            const SizedBox(height: 18),
+
+                            Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: scheme.primary.withOpacity(0.10),
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.pill,
+                                  ),
+                                  border: Border.all(
+                                    color: scheme.primary.withOpacity(0.18),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Animal Connect',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: scheme.primary,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
                               ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            const SizedBox(height: 10),
+
+                            Text(
+                              'Explore premium listings, nearby adoptions, trusted helpers, and a calmer messaging experience built for real pet communities.',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: scheme.onSurfaceVariant,
+                                height: 1.2,
+                                fontSize: 16,
+                              ),
+                            ),
+
+                            const SizedBox(height: 18),
+
+                            Wrap(
+                              spacing: 20,
+                              runSpacing: 20,
+                              children: const [
+                                _FeaturePill(label: 'Marketplace'),
+                                _FeaturePill(label: 'Adoption'),
+                                _FeaturePill(label: 'Community map'),
+                                _FeaturePill(label: 'Live chat'),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    SizedBox(height: 120),
-                    Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 26,
-                            height: 4,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(999),
-                              gradient: const LinearGradient(
-                                colors: [purple, orange],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
+
+                      const SizedBox(height: 18),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => context.go('/login'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(AppRadius.lg),
                             ),
+                            elevation: 0,
                           ),
-                          const SizedBox(width: 6),
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey,
+                          child: const Text('Login'),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => context.go('/register'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(AppRadius.lg),
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey,
+                            side: BorderSide(
+                              color: Colors.white.withOpacity(0.18),
                             ),
+                            backgroundColor: theme.cardColor.withOpacity(0.08),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: purple,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
-                        onPressed: () => context.go('/login'),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          child: const Text('Create account'),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: purple,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
+
+                      const SizedBox(height: 18),
+
+                      Center(
+                        child: Text(
+                          'Google sign-in can be connected here when your auth provider is ready.',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                            height: 1.45,
                           ),
-                        ),
-                        onPressed: () => context.go('/register'),
-                        child: const Text(
-                          'Sign up',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: _GoogleButton(
-                        onTap: () {
-                          // Google sign in
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FeaturePill extends StatelessWidget {
+  const _FeaturePill({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadius.pill),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: theme.cardColor.withOpacity(0.10),
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+            border: Border.all(color: Colors.white.withOpacity(0.14)),
+          ),
+          child: Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: scheme.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
@@ -170,56 +222,59 @@ class WelcomeAuthScreen extends StatelessWidget {
   }
 }
 
-class _GoogleButton extends StatelessWidget {
-  final VoidCallback onTap;
+class _GlassContainer extends StatelessWidget {
+  const _GlassContainer({
+    required this.child,
+    required this.padding,
+    required this.borderRadius,
+  });
 
-  const _GoogleButton({required this.onTap});
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
-    const purple = Color(0xFF4B1A45);
-    const orange = Color(0xFFE27D60);
+    final theme = Theme.of(context);
 
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(18),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: onTap,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
         child: Container(
+          padding: padding,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            gradient: const LinearGradient(
-              colors: [purple, orange],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-          ),
-          padding: const EdgeInsets.all(1),
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(17),
-            ),
-            child: RichText(
-              text: const TextSpan(
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-                children: [
-                  TextSpan(text: 'Sign in with '),
-                  TextSpan(
-                    text: 'Google',
-                    style: TextStyle(color: orange),
-                  ),
-                ],
+            color: theme.cardColor.withOpacity(0.14),
+            borderRadius: BorderRadius.circular(borderRadius),
+            border: Border.all(color: Colors.white.withOpacity(0.14)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
-            ),
+            ],
           ),
+          child: child,
         ),
+      ),
+    );
+  }
+}
+
+class _BlurCircle extends StatelessWidget {
+  const _BlurCircle({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
       ),
     );
   }

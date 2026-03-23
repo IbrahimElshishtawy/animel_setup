@@ -14,25 +14,25 @@ class ChoiceChipButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const purple = Color(0xFF4B1A45);
+    const primary = Color(0xFF7E452A);
 
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: 36,
+          height: 34,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? purple : const Color(0xFFF6ECF3),
+            color: isSelected ? primary : Colors.white,
             borderRadius: BorderRadius.circular(999),
             border: Border.all(
-              color: isSelected ? purple : const Color(0xFFE0D2EA),
+              color: isSelected ? primary : const Color(0xFFE8E0D7),
             ),
           ),
           child: Text(
             label,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
               color: isSelected ? Colors.white : Colors.black87,
             ),

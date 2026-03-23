@@ -6,11 +6,11 @@ class L10n {
   static String getLanguageName(String code) {
     switch (code) {
       case 'en':
-        return "English";
+        return 'English';
       case 'ar':
-        return "العربية";
+        return '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
       default:
-        return "English";
+        return 'English';
     }
   }
 }

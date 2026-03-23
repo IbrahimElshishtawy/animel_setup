@@ -1,0 +1,19 @@
+{
+  "appTitle": "Animal Connect",
+  "home": "Home",
+  "shop": "Shop",
+  "adopt": "Adopt",
+  "profile": "Profile",
+  "search": "Search",
+  "nearbyAnimals": "Nearby Animals",
+  "messages": "Messages",
+  "rareAnimalsForSale": "Rare Animals for Sale",
+  "adoptAFriend": "Adopt a Friend",
+  "animalSupplies": "Animal Supplies",
+  "contactSeller": "Contact Seller",
+  "sendAdoptionRequest": "Send Adoption Request",
+  "addToCart": "Add to Cart",
+  "description": "Description",
+  "healthStatus": "Health Status",
+  "location": "Location"
+}

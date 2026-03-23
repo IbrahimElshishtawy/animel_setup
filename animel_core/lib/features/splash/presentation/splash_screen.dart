@@ -1,5 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/localization/app_copy.dart';
+import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/app_media.dart';
+
+part '../widgets/splash_screen_sections.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,31 +18,52 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _cardScale;
+  late final Animation<double> _cardFade;
+  late final Animation<Offset> _textSlide;
+  late final Animation<double> _glowFade;
 
   @override
   void initState() {
     super.initState();
 
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1700),
       vsync: this,
     );
 
-    _scaleAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutBack,
+    _cardScale = Tween<double>(
+      begin: 0.92,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
+
+    _cardFade = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.65, curve: Curves.easeOut),
+      ),
     );
 
-    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _textSlide = Tween<Offset>(begin: const Offset(0, 0.18), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.2, 0.85, curve: Curves.easeOutCubic),
+          ),
+        );
+
+    _glowFade = Tween<double>(
+      begin: 0.4,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      context.go("/choose-language");
+    Future.delayed(const Duration(milliseconds: 2400), () {
+      if (mounted) {
+        context.go('/choose-language');
+      }
     });
   }
 
@@ -46,57 +75,32 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-
-        // ************ الخلفية الجذابة ************
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFFF6ECF3),
-              Color.fromARGB(255, 255, 255, 255),
-              Color(0xFFEAD7EF),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-
-        child: Center(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: ScaleTransition(
-              scale: _scaleAnimation,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 130,
-                    width: 130,
-                    child: Image.asset(
-                      'assets/image/image.png',
-                      fit: BoxFit.contain,
-                    ),
+      body: Stack(
+        children: [
+          SplashBackground(scheme: scheme, theme: theme),
+          SafeArea(
+            child: Center(
+              child: FadeTransition(
+                opacity: _cardFade,
+                child: ScaleTransition(
+                  scale: _cardScale,
+                  child: SplashGlassCard(
+                    glowFade: _glowFade,
+                    textSlide: _textSlide,
+                    title: context.copy.animalConnect,
+                    subtitle: context.copy.splashSubtitle,
+                    scheme: scheme,
+                    theme: theme,
                   ),
-
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    "HopePaw",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF4B1A45),
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -1,136 +1,126 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/app_tokens.dart';
 
 class ContactScreen extends StatelessWidget {
   const ContactScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const lightPurple = Color(0xFFF6ECF3);
-    const purple = Color(0xFF4B1A45);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final contactItems = const [
+      (
+        Icons.location_on_outlined,
+        'Location',
+        '5 Abbas El Akkad Street, Nasr City, Cairo, Egypt',
+      ),
+      (Icons.phone_outlined, 'Phone', '+20 155459381'),
+      (Icons.email_outlined, 'Email', 'support@animalconnect.app'),
+      (Icons.public_outlined, 'Website', 'https://animalconnect.app'),
+    ];
 
     return Scaffold(
-      backgroundColor: lightPurple,
-      appBar: AppBar(
-        backgroundColor: lightPurple,
-        elevation: 0,
-        leading: const BackButton(color: purple),
-        title: const Text(
-          'Contact',
-          style: TextStyle(color: purple, fontWeight: FontWeight.w600),
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 430),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Contact Us',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: purple,
-                    ),
+      appBar: AppBar(title: const Text('Contact')),
+      body: ListView(
+        padding: AppSpacing.screenPadding,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: theme.cardColor,
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              border: Border.all(color: scheme.outlineVariant),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Talk to the Animal Connect team',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
                   ),
-                  const SizedBox(height: 12),
-                  const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFE0C7B2),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Questions, partnerships, and support requests all start here.',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
                   ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      children: const [
-                        _ContactCard(
-                          icon: Icons.location_on_outlined,
-                          title: 'Location',
-                          subtitle:
-                              '5 Abbas El Akkad Street, Nasr City, Cairo, Egypt',
-                        ),
-                        SizedBox(height: 12),
-                        _ContactCard(
-                          icon: Icons.phone_outlined,
-                          title: '+20 155459381',
-                          subtitle: 'Tap to call',
-                        ),
-                        SizedBox(height: 12),
-                        _ContactCard(
-                          icon: Icons.email_outlined,
-                          title: 'hopepaw@example.com',
-                          subtitle: 'Tap to send email',
-                        ),
-                        SizedBox(height: 12),
-                        _ContactCard(
-                          icon: Icons.public,
-                          title: 'https://hopefultails.wordpress.com',
-                          subtitle: 'Tap to open website',
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
+          ...contactItems.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _ContactCard(
+                icon: item.$1,
+                title: item.$2,
+                subtitle: item.$3,
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
 class _ContactCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
   const _ContactCard({
     required this.icon,
     required this.title,
     required this.subtitle,
   });
 
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
   @override
   Widget build(BuildContext context) {
-    const cardColor = Color(0xFFFFE7CC);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(10),
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: scheme.outlineVariant),
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.brown[700]),
-          const SizedBox(width: 12),
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: scheme.primary.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: scheme.primary),
+          ),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: const TextStyle(fontSize: 12, color: Colors.black87),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),

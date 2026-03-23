@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
+
+import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/app_text_field.dart';
+import '../logic/auth_bloc.dart';
+import '../widgets/auth_screen_frame.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,19 +15,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLoading = false;
-
-  Future<void> _onLogin() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() => _isLoading = false);
-
-    if (!mounted) return;
-    context.go("/home");
-  }
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -32,91 +27,108 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _submit() {
+    FocusScope.of(context).unfocus();
+    if (!_formKey.currentState!.validate()) return;
+
+    context.read<AuthBloc>().add(
+      LoginRequested(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Spacer(flex: 2),
-              SizedBox(
-                height: 130,
-                width: 130,
-                child: Image.asset(
-                  'assets/image/image.png',
-                  fit: BoxFit.contain,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          context.go('/home');
+        } else if (state is AuthFailure) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: AuthScreenFrame(
+          title: 'Welcome back',
+          subtitle:
+              'Login with your account to continue browsing pets, adoptions, and messages.',
+          form: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppTextField(
+                  label: 'Email',
+                  controller: _emailController,
+                  hint: 'Enter your Email',
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.email],
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  validator: _validateEmail,
                 ),
-              ),
-
-              // Spacer(flex: 1),
-              const Text(
-                "HopePaw",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF4B1A45),
-                  letterSpacing: 1,
+                const SizedBox(height: 16),
+                AppTextField(
+                  label: 'Password',
+                  controller: _passwordController,
+                  hint: 'Enter your password',
+                  obscure: _obscurePassword,
+                  textInputAction: TextInputAction.done,
+                  autofillHints: const [AutofillHints.password],
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    },
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
+                  ),
+                  validator: _validatePassword,
+                  onSubmitted: (_) => _submit(),
                 ),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                "Welcome back 👋",
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Login to HopePaw to help pets find their home.",
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[700],
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              AppTextField(
-                label: "Email",
-                hint: "name@example.com",
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
-              const SizedBox(height: 16),
-
-              AppTextField(
-                label: "Password",
-                hint: "Your password",
-                controller: _passwordController,
-                obscure: true,
-                prefixIcon: const Icon(Icons.lock_outline),
-              ),
-              const SizedBox(height: 24),
-
-              AppButton(
-                title: "Login",
-                isLoading: _isLoading,
-                onPressed: _onLogin,
-              ),
-
-              const SizedBox(height: 16),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    // لاحقاً: go to /register
+                const SizedBox(height: 24),
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return AppButton(
+                      title: 'Login',
+                      onPressed: _submit,
+                      isLoading: state is AuthLoading,
+                      borderRadius: 16,
+                    );
                   },
-                  child: const Text("Don’t have an account? Register"),
                 ),
-              ),
-              Spacer(flex: 3),
-            ],
+              ],
+            ),
+          ),
+          footer: TextButton(
+            onPressed: () => context.push('/register'),
+            child: const Text("Don't have an account? Create one"),
           ),
         ),
       ),
     );
+  }
+
+  String? _validateEmail(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Email is required';
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    if (!emailRegex.hasMatch(text)) return 'Enter a valid email';
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Password is required';
+    if (text.length < 6) return 'Password must be at least 6 characters';
+    return null;
   }
 }

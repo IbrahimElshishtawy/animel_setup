@@ -1,107 +1,118 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: deprecated_member_use
 
-class ProfileLanguageScreen extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/localization/logic/locale_bloc.dart';
+import '../../../core/theme/app_tokens.dart';
+
+class ProfileLanguageScreen extends StatelessWidget {
   const ProfileLanguageScreen({super.key});
 
   @override
-  State<ProfileLanguageScreen> createState() => _ProfileLanguageScreenState();
-}
-
-class _ProfileLanguageScreenState extends State<ProfileLanguageScreen> {
-  final List<String> _languages = const [
-    'English',
-    'Arabic',
-    'French',
-    'German',
-  ];
-
-  String _selected = 'English';
-
-  @override
   Widget build(BuildContext context) {
-    const lightPurple = Color(0xFFF6ECF3);
-    const purple = Color(0xFF4B1A45);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
-    return Scaffold(
-      backgroundColor: lightPurple,
-      appBar: AppBar(
-        backgroundColor: lightPurple,
-        elevation: 0,
-        leading: const BackButton(color: purple),
-        title: const Text(
-          'Choose language',
-          style: TextStyle(color: purple, fontWeight: FontWeight.w600),
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 430),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              padding: const EdgeInsets.all(16),
-              child: Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: 'Choose a language',
-                      labelStyle: const TextStyle(color: Color(0xFFB4A4B8)),
-                      filled: true,
-                      fillColor: const Color(0xFFF5F2F7),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFE0D2EA),
-                          width: 1.2,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFE0D2EA),
-                          width: 1.2,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: purple, width: 1.4),
+    return BlocBuilder<LocaleBloc, LocaleState>(
+      builder: (context, state) {
+        final selectedCode = state.locale?.languageCode ?? 'en';
+        final options = const [
+          _LanguagePreference(
+            code: 'en',
+            title: 'English',
+            subtitle: 'Default product copy and labels',
+          ),
+          _LanguagePreference(
+            code: 'ar',
+            title: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629',
+            subtitle: 'Arabic interface with right-to-left support',
+          ),
+        ];
+
+        return Scaffold(
+          appBar: AppBar(title: const Text('Language')),
+          body: ListView(
+            padding: AppSpacing.screenPadding,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Choose how Animal Connect speaks to you.',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selected,
-                        isExpanded: true,
-                        onChanged: (val) {
-                          if (val == null) return;
-                          setState(() => _selected = val);
-                          // هنا ممكن تحفظ اللغة في shared prefs / provider
-                        },
-                        items: _languages
-                            .map(
-                              (lang) => DropdownMenuItem<String>(
-                                value: lang,
-                                child: Text(lang),
-                              ),
-                            )
-                            .toList(),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Your preference is saved on this device and applied across the app.',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+              ...options.map(
+                (option) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: RadioListTile<String>(
+                    value: option.code,
+                    groupValue: selectedCode,
+                    onChanged: (value) {
+                      context.read<LocaleBloc>().add(
+                        SetLocalePreference(value),
+                      );
+                    },
+                    title: Text(
+                      option.title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    subtitle: Text(
+                      option.subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 6,
+                    ),
+                    tileColor: theme.cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                      side: BorderSide(color: scheme.outlineVariant),
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
+}
+
+class _LanguagePreference {
+  const _LanguagePreference({
+    required this.code,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String code;
+  final String title;
+  final String subtitle;
 }
