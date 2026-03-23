@@ -100,9 +100,8 @@ class AnimalCard extends StatelessWidget {
                 final isFavorite = favorites.contains(animal.id);
 
                 return GestureDetector(
-                  onTap: () => context.read<FavoritesCubit>().toggleAnimal(
-                    animal.id,
-                  ),
+                  onTap: () =>
+                      context.read<FavoritesCubit>().toggleAnimal(animal.id),
                   child: GlassPanel(
                     padding: const EdgeInsets.all(8),
                     borderRadius: BorderRadius.circular(999),

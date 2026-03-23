@@ -46,9 +46,8 @@ class FavoritesScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Favorites',
-                                  style: theme.textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.w800,
-                                  ),
+                                  style: theme.textTheme.headlineSmall
+                                      ?.copyWith(fontWeight: FontWeight.w800),
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
@@ -67,7 +66,9 @@ class FavoritesScreen extends StatelessWidget {
                                       colors: [
                                         scheme.primary,
                                         Color.alphaBlend(
-                                          scheme.secondary.withValues(alpha: 0.22),
+                                          scheme.secondary.withValues(
+                                            alpha: 0.22,
+                                          ),
                                           scheme.primary,
                                         ),
                                       ],
@@ -97,7 +98,9 @@ class FavoritesScreen extends StatelessWidget {
                                             const SizedBox(height: 6),
                                             Text(
                                               '${animals.length} items',
-                                              style: theme.textTheme.headlineSmall
+                                              style: theme
+                                                  .textTheme
+                                                  .headlineSmall
                                                   ?.copyWith(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.w800,
@@ -113,7 +116,9 @@ class FavoritesScreen extends StatelessWidget {
                                           color: Colors.white.withValues(
                                             alpha: 0.14,
                                           ),
-                                          borderRadius: BorderRadius.circular(18),
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
                                         ),
                                         child: const Icon(
                                           Icons.favorite_rounded,
@@ -151,22 +156,22 @@ class FavoritesScreen extends StatelessWidget {
                                     mainAxisSpacing: 14,
                                     childAspectRatio: 0.8,
                                   ),
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  final animal = animals[index];
-                                  return AnimalCard(
-                                    animal: animal,
-                                    heroTag: 'favorite-${animal.id}',
-                                    onTap: () => context.push(
-                                      animal.isForAdoption
-                                          ? '/adoption-details'
-                                          : '/animal-details',
-                                      extra: animal,
-                                    ),
-                                  );
-                                },
-                                childCount: animals.length,
-                              ),
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final animal = animals[index];
+                                return AnimalCard(
+                                  animal: animal,
+                                  heroTag: 'favorite-${animal.id}',
+                                  onTap: () => context.push(
+                                    animal.isForAdoption
+                                        ? '/adoption-details'
+                                        : '/animal-details',
+                                    extra: animal,
+                                  ),
+                                );
+                              }, childCount: animals.length),
                             ),
                           ),
                       ],

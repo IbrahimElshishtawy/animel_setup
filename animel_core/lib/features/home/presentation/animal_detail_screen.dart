@@ -246,8 +246,7 @@ class AnimalDetailScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  animal.owner?.email ??
-                                      copy.openChatOwner,
+                                  animal.owner?.email ?? copy.openChatOwner,
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: scheme.onSurfaceVariant,
                                   ),

@@ -20,7 +20,6 @@ import '../widgets/banner_carousel.dart';
 import '../widgets/categories_list.dart';
 import '../widgets/home_header.dart';
 import '../widgets/product_card.dart';
-import '../widgets/search_bar_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -155,15 +154,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             onLocationTap: () => context.push('/map'),
                           ),
                         ),
-                        const SizedBox(height: 22),
-                        FadeInAnimation(
-                          delay: const Duration(milliseconds: 120),
-                          child: SearchBarWidget(
-                            onTap: () => context.push('/search'),
-                            onFilterTap: () => context.push('/search'),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 2),
+                        // FadeInAnimation(
+                        //   delay: const Duration(milliseconds: 120),
+                        //   child: SearchBarWidget(
+                        //     onTap: () => context.push('/search'),
+                        //     onFilterTap: () => context.push('/search'),
+                        //   ),
+                        // ),
+                        const SizedBox(height: 4),
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 180),
                           child: BannerCarousel(
@@ -171,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             onActionTap: (item) => context.push(item.route),
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 8),
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 240),
                           child: _HomeSectionHeader(
@@ -179,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             subtitle: copy.browseCategorySubtitle,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 6),
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 300),
                           child: CategoriesList(
@@ -187,12 +186,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             onSelected: (item) => context.push(item.route),
                           ),
                         ),
-                        const SizedBox(height: 34),
+                        const SizedBox(height: 4),
                         const FadeInAnimation(
                           delay: Duration(milliseconds: 360),
                           child: _FeaturedAnimalsSection(),
                         ),
-                        const SizedBox(height: 34),
+                        const SizedBox(height: 4),
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 420),
                           child: _HomeSectionHeader(
@@ -202,17 +201,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             onTap: () => context.push('/shop'),
                           ),
                         ),
-                        const SizedBox(height: 18),
+                        const SizedBox(height: 8),
                         FadeInAnimation(
                           delay: const Duration(milliseconds: 480),
                           child: const _ProductsSection(),
                         ),
-                        const SizedBox(height: 34),
+                        const SizedBox(height: 4),
                         const FadeInAnimation(
                           delay: Duration(milliseconds: 540),
                           child: _NearbyAnimalsSection(),
                         ),
-                        const SizedBox(height: 34),
+                        const SizedBox(height: 14),
                         const FadeInAnimation(
                           delay: Duration(milliseconds: 600),
                           child: _AdoptionSpotlightSection(),
@@ -622,7 +621,7 @@ class _NearbyAnimalCard extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                  padding: const EdgeInsets.fromLTRB(11, 12, 1, 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -631,7 +630,7 @@ class _NearbyAnimalCard extends StatelessWidget {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
+                              horizontal: 2,
                               vertical: 5,
                             ),
                             decoration: BoxDecoration(
@@ -661,7 +660,7 @@ class _NearbyAnimalCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       Text(
                         data.animal.name,
                         maxLines: 1,
@@ -680,7 +679,7 @@ class _NearbyAnimalCard extends StatelessWidget {
                           fontSize: 11,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 3),
                       Text(
                         data.animal.isForAdoption
                             ? 'Adopt'

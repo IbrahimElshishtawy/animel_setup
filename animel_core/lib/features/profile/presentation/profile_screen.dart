@@ -12,6 +12,7 @@ import '../../../core/widgets/bottom_nav_bar.dart';
 import '../../../core/widgets/fade_in_animation.dart';
 import '../../../core/widgets/glass_panel.dart';
 import '../../auth/logic/auth_bloc.dart';
+import '../../favorites/logic/favorites_cubit.dart';
 import '../../home/data/home_content.dart';
 import '../../home/logic/animal_bloc.dart';
 import '../../home/widgets/animal_card.dart';
@@ -210,10 +211,7 @@ class _IndividualProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final favorites = [
-      ...HomeContent.featuredAnimals,
-      ...HomeContent.adoptionSpotlights,
-    ].take(4).toList();
+    final favorites = _resolveFavorites(context.watch<FavoritesCubit>().state);
     final requests = HomeContent.adoptionSpotlights;
     final items = switch (selectedTab) {
       0 => listings,
@@ -297,10 +295,10 @@ class _IndividualProfileView extends StatelessWidget {
                 onTap: () => context.push('/profile/account'),
               ),
               _ShortcutData(
-                title: 'My pets',
-                subtitle: 'Manage your pet profiles in one place.',
-                icon: Icons.pets_rounded,
-                onTap: () => context.push('/profile/pets'),
+                title: 'Favorites',
+                subtitle: 'Open your saved animals page.',
+                icon: Icons.favorite_rounded,
+                onTap: () => context.push('/favorites'),
               ),
             ],
           ),
@@ -315,11 +313,12 @@ class _IndividualProfileView extends StatelessWidget {
               subtitle: 'Improve trust with more profile details.',
               progress: _progress,
             ),
-            right: const _MiniCard(
+            right: _MiniCard(
               title: 'Wishlist',
-              value: '24',
-              subtitle: 'Saved animals and products ready to revisit.',
+              value: '${favorites.length}',
+              subtitle: 'Saved animals ready to revisit anytime.',
               icon: Icons.favorite_rounded,
+              onTap: () => context.push('/favorites'),
             ),
           ),
         ),
@@ -370,6 +369,23 @@ class _IndividualProfileView extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  List<Animal> _resolveFavorites(Set<String> favoriteIds) {
+    final catalog = <Animal>[
+      ...listings,
+      ...HomeContent.featuredAnimals,
+      ...HomeContent.adoptionSpotlights,
+    ];
+    final byId = <String, Animal>{};
+    for (final animal in catalog) {
+      byId[animal.id] = animal;
+    }
+
+    return favoriteIds
+        .map((id) => byId[id])
+        .whereType<Animal>()
+        .toList(growable: false);
   }
 }
 
@@ -967,6 +983,7 @@ class _MiniCard extends StatelessWidget {
     required this.subtitle,
     this.icon,
     this.progress,
+    this.onTap,
   });
 
   final String title;
@@ -974,48 +991,52 @@ class _MiniCard extends StatelessWidget {
   final String subtitle;
   final IconData? icon;
   final double? progress;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GlassPanel(
-      padding: const EdgeInsets.all(18),
-      borderRadius: BorderRadius.circular(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, color: theme.colorScheme.secondary),
-            const SizedBox(height: 10),
+    return ScaleTap(
+      onTap: onTap,
+      child: GlassPanel(
+        padding: const EdgeInsets.all(18),
+        borderRadius: BorderRadius.circular(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, color: theme.colorScheme.secondary),
+              const SizedBox(height: 10),
+            ],
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            if (progress != null) ...[
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.pill),
+                child: LinearProgressIndicator(value: progress, minHeight: 10),
+              ),
+            ],
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
           ],
-          Text(
-            title,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          if (progress != null) ...[
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.pill),
-              child: LinearProgressIndicator(value: progress, minHeight: 10),
-            ),
-          ],
-          const SizedBox(height: 8),
-          Text(
-            subtitle,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

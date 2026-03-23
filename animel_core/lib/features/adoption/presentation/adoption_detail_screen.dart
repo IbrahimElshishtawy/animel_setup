@@ -49,8 +49,9 @@ class AdoptionDetailScreen extends StatelessWidget {
                             ? Icons.favorite_rounded
                             : Icons.favorite_border_rounded,
                       ),
-                      onPressed: () =>
-                          context.read<FavoritesCubit>().toggleAnimal(animal.id),
+                      onPressed: () => context
+                          .read<FavoritesCubit>()
+                          .toggleAnimal(animal.id),
                     );
                   },
                 ),

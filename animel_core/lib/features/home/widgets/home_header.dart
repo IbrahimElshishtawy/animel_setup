@@ -56,8 +56,8 @@ class HomeHeader extends StatelessWidget {
                 children: [
                   GlassPanel(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 7,
+                      horizontal: 5,
+                      vertical: 2,
                     ),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                     shadowOpacity: 0,
@@ -80,12 +80,13 @@ class HomeHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 5),
                   Text(
                     copy.discoverCompanion(greetingName),
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                       height: 1.08,
+                      fontSize: 16,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -94,6 +95,7 @@ class HomeHeader extends StatelessWidget {
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: scheme.onSurfaceVariant,
                       height: 1.35,
+                      fontSize: 12,
                     ),
                   ),
                 ],

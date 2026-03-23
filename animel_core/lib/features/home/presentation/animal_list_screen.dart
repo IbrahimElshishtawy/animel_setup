@@ -244,7 +244,9 @@ class _AnimalGridCard extends StatelessWidget {
                             ),
                             child: BlocBuilder<FavoritesCubit, Set<String>>(
                               builder: (context, favorites) {
-                                final isFavorite = favorites.contains(animal.id);
+                                final isFavorite = favorites.contains(
+                                  animal.id,
+                                );
                                 return IconButton(
                                   padding: EdgeInsets.zero,
                                   onPressed: () => context
