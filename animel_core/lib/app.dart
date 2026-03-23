@@ -2,6 +2,7 @@ import 'package:animel_core/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'core/routing/app_router.dart';
 import 'core/localization/logic/locale_bloc.dart';
 import 'core/theme/app_theme.dart';
@@ -12,24 +13,60 @@ import 'features/shop/logic/shop_bloc.dart';
 import 'features/auth/logic/auth_bloc.dart';
 import 'features/chat/logic/chat_bloc.dart';
 
-class AnimalConnectApp extends StatelessWidget {
+class AnimalConnectApp extends StatefulWidget {
   const AnimalConnectApp({super.key});
+
+  @override
+  State<AnimalConnectApp> createState() => _AnimalConnectAppState();
+}
+
+class _AnimalConnectAppState extends State<AnimalConnectApp> {
+  late final ThemeBloc _themeBloc;
+  late final LocaleBloc _localeBloc;
+  late final AuthBloc _authBloc;
+  late final AnimalBloc _animalBloc;
+  late final AdoptionBloc _adoptionBloc;
+  late final ShopBloc _shopBloc;
+  late final ChatBloc _chatBloc;
+  late final AppRouter _appRouter;
+
+  @override
+  void initState() {
+    super.initState();
+    _themeBloc = ThemeBloc()..add(LoadThemePreference());
+    _localeBloc = LocaleBloc()..add(LoadLocalePreference());
+    _authBloc = AuthBloc()..add(AppStarted());
+    _animalBloc = AnimalBloc();
+    _adoptionBloc = AdoptionBloc();
+    _shopBloc = ShopBloc();
+    _chatBloc = ChatBloc();
+    _appRouter = AppRouter(_authBloc);
+  }
+
+  @override
+  void dispose() {
+    _appRouter.dispose();
+    _chatBloc.close();
+    _shopBloc.close();
+    _adoptionBloc.close();
+    _animalBloc.close();
+    _authBloc.close();
+    _localeBloc.close();
+    _themeBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ThemeBloc()..add(LoadThemePreference()),
-        ),
-        BlocProvider(
-          create: (context) => LocaleBloc()..add(LoadLocalePreference()),
-        ),
-        BlocProvider(create: (context) => AuthBloc()..add(AppStarted())),
-        BlocProvider(create: (context) => AnimalBloc()),
-        BlocProvider(create: (context) => AdoptionBloc()),
-        BlocProvider(create: (context) => ShopBloc()),
-        BlocProvider(create: (context) => ChatBloc()),
+        BlocProvider.value(value: _themeBloc),
+        BlocProvider.value(value: _localeBloc),
+        BlocProvider.value(value: _authBloc),
+        BlocProvider.value(value: _animalBloc),
+        BlocProvider.value(value: _adoptionBloc),
+        BlocProvider.value(value: _shopBloc),
+        BlocProvider.value(value: _chatBloc),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
@@ -42,7 +79,7 @@ class AnimalConnectApp extends StatelessWidget {
                 darkTheme: AppTheme.darkTheme,
                 themeMode: themeState.themeMode,
                 locale: localeState.locale,
-                routerConfig: AppRouter.router,
+                routerConfig: _appRouter.router,
                 localizationsDelegates: const [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,

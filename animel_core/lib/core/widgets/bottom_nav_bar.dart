@@ -60,109 +60,117 @@ class AppBottomNavBar extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-      child: GlassPanel(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        borderRadius: BorderRadius.circular(30),
-        blurSigma: 24,
-        shadowColor: scheme.primary,
-        shadowOpacity: isDark ? 0.22 : 0.1,
-        gradientColors: [
-          Colors.white.withOpacity(isDark ? 0.12 : 0.86),
-          Colors.white.withOpacity(isDark ? 0.06 : 0.56),
-        ],
-        child: Row(
-          children: List.generate(_items.length, (index) {
-            final item = _items[index];
-            final isSelected = index == currentIndex;
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        child: SizedBox(
+          height: 86,
+          child: GlassPanel(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            borderRadius: BorderRadius.circular(30),
+            blurSigma: 24,
+            shadowColor: scheme.primary,
+            shadowOpacity: isDark ? 0.22 : 0.1,
+            gradientColors: [
+              Colors.white.withOpacity(isDark ? 0.12 : 0.86),
+              Colors.white.withOpacity(isDark ? 0.06 : 0.56),
+            ],
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: List.generate(_items.length, (index) {
+                final item = _items[index];
+                final isSelected = index == currentIndex;
 
-            if (item.isCenterAction) {
-              return Expanded(
-                child: Center(
+                if (item.isCenterAction) {
+                  return Expanded(
+                    child: Center(
+                      child: ScaleTap(
+                        onTap: () => _onTap(context, index),
+                        scaleDown: 0.94,
+                        child: AnimatedContainer(
+                          duration: AppMotion.fast,
+                          curve: AppMotion.emphasized,
+                          width: 54,
+                          height: 54,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                scheme.primary,
+                                Color.alphaBlend(
+                                  scheme.secondary.withOpacity(0.28),
+                                  scheme.primary,
+                                ),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: AppShadows.soft(
+                              scheme.primary,
+                              opacity: isDark ? 0.26 : 0.18,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.add_rounded,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return Expanded(
                   child: ScaleTap(
                     onTap: () => _onTap(context, index),
-                    scaleDown: 0.94,
                     child: AnimatedContainer(
                       duration: AppMotion.fast,
                       curve: AppMotion.emphasized,
-                      width: 54,
-                      height: 54,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            scheme.primary,
-                            Color.alphaBlend(
-                              scheme.secondary.withOpacity(0.28),
-                              scheme.primary,
-                            ),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        boxShadow: AppShadows.soft(
-                          scheme.primary,
-                          opacity: isDark ? 0.26 : 0.18,
-                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        color: isSelected
+                            ? scheme.primary.withOpacity(isDark ? 0.16 : 0.1)
+                            : Colors.transparent,
                       ),
-                      child: const Icon(
-                        Icons.add_rounded,
-                        color: Colors.white,
-                        size: 28,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            isSelected ? item.activeIcon : item.icon,
+                            size: 20,
+                            color: isSelected
+                                ? scheme.primary
+                                : scheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            switch (item.label) {
+                              'Home' => copy.home,
+                              'Explore' => copy.explore,
+                              'Add' => copy.add,
+                              'Messages' => copy.messages,
+                              _ => copy.profile,
+                            },
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: isSelected
+                                  ? scheme.primary
+                                  : scheme.onSurfaceVariant,
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              );
-            }
-
-            return Expanded(
-              child: ScaleTap(
-                onTap: () => _onTap(context, index),
-                child: AnimatedContainer(
-                  duration: AppMotion.fast,
-                  curve: AppMotion.emphasized,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: isSelected
-                        ? scheme.primary.withOpacity(isDark ? 0.16 : 0.1)
-                        : Colors.transparent,
-                  ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                      Icon(
-                        isSelected ? item.activeIcon : item.icon,
-                        size: 20,
-                        color: isSelected
-                            ? scheme.primary
-                            : scheme.onSurfaceVariant,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        switch (item.label) {
-                          'Home' => copy.home,
-                          'Explore' => copy.explore,
-                          'Add' => copy.add,
-                          'Messages' => copy.messages,
-                          _ => copy.profile,
-                        },
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: isSelected
-                              ? scheme.primary
-                              : scheme.onSurfaceVariant,
-                          fontWeight: isSelected
-                              ? FontWeight.w700
-                              : FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }),
+                );
+              }),
+            ),
+          ),
         ),
       ),
     );

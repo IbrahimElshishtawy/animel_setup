@@ -19,6 +19,7 @@ class JourneySetupScreen extends StatefulWidget {
 class _JourneySetupScreenState extends State<JourneySetupScreen> {
   UserJourney? _selectedJourney;
   String? _pendingRoute;
+  bool _authRedirectScheduled = false;
 
   @override
   void didChangeDependencies() {
@@ -37,6 +38,16 @@ class _JourneySetupScreenState extends State<JourneySetupScreen> {
   void _saveAndGoHome(UserJourney journey) {
     setState(() => _pendingRoute = '/home');
     context.read<AuthBloc>().add(JourneyUpdated(journey));
+  }
+
+  void _scheduleAuthRedirect() {
+    if (_authRedirectScheduled) return;
+    _authRedirectScheduled = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.go('/welcome-auth');
+    });
   }
 
   @override
@@ -76,8 +87,13 @@ class _JourneySetupScreenState extends State<JourneySetupScreen> {
         }
 
         if (state is! Authenticated) {
-          return const Scaffold(body: SizedBox.shrink());
+          _scheduleAuthRedirect();
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
+
+        _authRedirectScheduled = false;
 
         final selectedJourney = _selectedJourney;
         final isSaving = _pendingRoute != null;

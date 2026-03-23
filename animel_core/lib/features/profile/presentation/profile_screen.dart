@@ -30,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _ProfileMode _mode = _ProfileMode.individual;
   int _userTab = 0;
   int _shopTab = 0;
+  bool _authRedirectScheduled = false;
 
   @override
   void initState() {
@@ -45,6 +46,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _scheduleAuthRedirect() {
+    if (_authRedirectScheduled) return;
+    _authRedirectScheduled = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.go('/welcome-auth');
+    });
   }
 
   @override
@@ -67,8 +78,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (authState is! Authenticated) {
-                    return const SizedBox.shrink();
+                    _scheduleAuthRedirect();
+                    return const Center(child: CircularProgressIndicator());
                   }
+
+                  _authRedirectScheduled = false;
 
                   return BlocBuilder<AnimalBloc, AnimalState>(
                     builder: (context, animalState) {

@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:animel_core/features/auth/presentation/welcome_auth_screen.dart';
 import 'package:animel_core/features/home/presentation/animal_detail_screen.dart';
 import 'package:animel_core/features/profile/presentation/contact_screen.dart';
 import 'package:animel_core/features/profile/presentation/profile_language_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/models/animal_model.dart';
@@ -35,6 +36,12 @@ import '../../features/shop/presentation/shop_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 
 class AppRouter {
+  AppRouter(this.authBloc)
+    : _refreshListenable = _AuthRouterRefreshListenable(authBloc.stream);
+
+  final AuthBloc authBloc;
+  final _AuthRouterRefreshListenable _refreshListenable;
+
   static const _publicRoutes = {
     '/splash',
     '/choose-language',
@@ -45,10 +52,11 @@ class AppRouter {
     '/verify-email',
   };
 
-  static final GoRouter router = GoRouter(
+  late final GoRouter router = GoRouter(
     initialLocation: '/splash',
+    refreshListenable: _refreshListenable,
     redirect: (context, state) {
-      final authState = context.read<AuthBloc>().state;
+      final authState = authBloc.state;
       final location = state.matchedLocation;
       final isPublicRoute = _publicRoutes.contains(location);
 
@@ -187,6 +195,11 @@ class AppRouter {
     ],
   );
 
+  void dispose() {
+    _refreshListenable.dispose();
+    router.dispose();
+  }
+
   static GoRoute _route({
     required String path,
     required Widget Function(BuildContext, GoRouterState) builder,
@@ -218,5 +231,19 @@ class AppRouter {
         },
       ),
     );
+  }
+}
+
+class _AuthRouterRefreshListenable extends ChangeNotifier {
+  _AuthRouterRefreshListenable(Stream<AuthState> stream) {
+    _subscription = stream.listen((_) => notifyListeners());
+  }
+
+  late final StreamSubscription<AuthState> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }
